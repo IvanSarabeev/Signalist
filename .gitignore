@@ -9,4 +9,5 @@
 /vendor/
 /.idea
 /.env
+/node_modules
 ###< symfony/framework-bundle ###
