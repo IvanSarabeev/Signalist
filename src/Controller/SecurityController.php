@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-class SecurityController
+final class SecurityController extends BaseController
 {
-
 }
