@@ -2,7 +2,9 @@ import {FC} from 'react'
 
 const App: FC = () => {
     return (
-        <div className="bg-green-500 text-white p-8 text-2xl">App: FC</div>
+        <div className="min-h-screen bg-red-500 text-white text-4xl flex items-center justify-center">
+            Tailwind v4 works 4123
+        </div>
     )
 }
 

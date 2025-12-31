@@ -24,5 +24,19 @@ module.exports = {
             },
         ]
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
+    devServer: {
+        hot: true,
+        port: 3000,
+        static: {
+            directory: path.resolve(__dirname, 'public')
+        },
+        proxy: [
+            {
+                context: ['/'],
+                target: 'https://localhost:8000',
+                changeOrigin: true
+            }
+        ]
+    }
 }

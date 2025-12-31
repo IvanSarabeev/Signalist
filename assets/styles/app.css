@@ -1,3 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@layer base {
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        background-color: rgb(2 6 23);
+        color: white;
+    }
+}
