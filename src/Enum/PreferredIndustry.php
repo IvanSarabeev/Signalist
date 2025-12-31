@@ -6,11 +6,11 @@ namespace App\Enum;
 
 enum PreferredIndustry: string
 {
-    case TECHNOLOGY = '1';
-    case HEALTHCARE = '2';
-    case FINANCE = '3';
-    case ENERGY = '4';
-    case CONSUMER_GOODS = '5';
+    case TECHNOLOGY = 'technology';
+    case HEALTHCARE = 'healthcare';
+    case FINANCE = 'finance';
+    case ENERGY = 'energy';
+    case CONSUMER_GOODS = 'consumerGoods';
 
     public function toLabel(): string
     {

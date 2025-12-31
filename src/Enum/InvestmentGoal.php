@@ -6,10 +6,10 @@ namespace App\Enum;
 
 enum InvestmentGoal: string
 {
-    case GROWTH = '1';
-    case INCOME = '2';
-    case BALANCED = '3';
-    case CONSERVATIVE = '4';
+    case GROWTH = 'growth';
+    case INCOME = 'income';
+    case BALANCED = 'balanced';
+    case CONSERVATIVE = 'conservative';
 
     public function toLabel(): string
     {
