@@ -11,6 +11,9 @@ enum InvestmentGoal: string
     case BALANCED = 'balanced';
     case CONSERVATIVE = 'conservative';
 
+    /**
+     * @return string
+     */
     public function toLabel(): string
     {
         return match ($this) {
@@ -19,5 +22,13 @@ enum InvestmentGoal: string
             self::BALANCED => 'Balanced',
             self::CONSERVATIVE => 'Conservative',
         };
+    }
+
+    /**
+     * @return array
+     */
+    public static function getValues(): array
+    {
+        return array_column(self::cases(), 'value');
     }
 }

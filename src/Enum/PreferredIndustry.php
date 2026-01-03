@@ -12,6 +12,9 @@ enum PreferredIndustry: string
     case ENERGY = 'energy';
     case CONSUMER_GOODS = 'consumerGoods';
 
+    /**
+     * @return string
+     */
     public function toLabel(): string
     {
         return match ($this) {
@@ -21,5 +24,13 @@ enum PreferredIndustry: string
             self::ENERGY => 'Energy',
             self::CONSUMER_GOODS => 'Consumers Goods',
         };
+    }
+
+    /**
+     * @return array
+     */
+    public static function getValues(): array
+    {
+        return array_column(self::cases(), 'value');
     }
 }
