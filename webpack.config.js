@@ -1,42 +1,27 @@
-const path = require("path");
+const Encore = require('@symfony/webpack-encore');
 
-module.exports = {
-    mode: 'development',
-    entry: './assets/app/index.tsx',
-    output: {
-        path: path.resolve(__dirname, 'public/build'),
-        filename: 'app.js',
-        publicPath: '/build/'
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(ts|tsx)$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
-            },
-        ]
-    },
-    devtool: 'source-map',
-    devServer: {
-        hot: true,
-        port: 3000,
-        static: {
-            directory: path.resolve(__dirname, 'public')
-        },
-        proxy: [
-            {
-                context: ['/'],
-                target: 'https://localhost:8000',
-                changeOrigin: true
-            }
-        ]
-    }
+if (!Encore.isRuntimeEnvironmentConfigured()) {
+    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
+
+Encore
+    // directory where compiled assets will be stored
+    .setOutputPath('public/build/')
+    // public path used by the web server to access the output path
+    .setPublicPath('/build')
+    .addEntry('app', './assets/app.js')
+    .enableReactPreset()
+    .enableTypeScriptLoader()
+    // Additional Type Checking
+    // .enableForkedTypeScriptTypesChecking()
+    .enableSingleRuntimeChunk()
+    .cleanupOutputBeforeBuild()
+    .splitEntryChunks()
+    .configureDevServerOptions(options => {
+        options.hot = true;
+        options.port = 8080;
+        options.allowedHosts = 'all';
+        // options.headers = { 'Access-Control-Allow-Origin': '*' };
+    });
+
+module.exports = Encore.getWebpackConfig();

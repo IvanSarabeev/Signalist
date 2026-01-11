@@ -1,11 +1,39 @@
-import {FC} from 'react'
+import React, {FC} from 'react';
+import {
+    createBrowserRouter,
+    RouterProvider,
+} from "react-router-dom";
+import AuthLayout from "../components/layouts/AuthLayout";
+import SignInPage from "../pages/auth/SignInPage";
+import SignUpPage from "../pages/auth/SignUpPage";
 
-const App: FC = () => {
-    return (
-        <div className="min-h-screen bg-red-500 text-white text-4xl flex items-center justify-center">
-            Tailwind v4 works 4123
-        </div>
-    )
-}
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <AuthLayout />,
+        children: [
+            // Default to Sign In
+            { index: true, Component: SignInPage },
+            { path: 'sign-in', Component: SignInPage },
+            { path: 'sign-up', Component: SignUpPage },
+        ],
+    },
+    // {
+    //     path: '/dashboard',
+    //     element: <ProtectedRoute></ProtectedRoute>,
+    //     children: [
+    //         { index: true, Component: DashboardPage },
+    //         { path: 'watchlist', Component: WatchlistPage}
+    //     ]
+    // },
+    {
+        path: '*',
+        element: (<div>404 - Page Not Found. Error Boundary To be added</div>),
+    }
+], {
+    basename: "/git-projects/stock-market/public"
+});
 
-export default App
+const App: FC = () => <RouterProvider router={router} />;
+
+export default App;

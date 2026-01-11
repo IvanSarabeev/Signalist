@@ -8,8 +8,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --watch --mode=development",
-    "build": "webpack --mode=production"
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "build": "encore production",
+    "watch": "encore dev --watch"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +22,14 @@
     "clsx": "^2.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-router-dom": "^7.11.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@symfony/webpack-encore": "^5.3.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
@@ -38,6 +43,7 @@
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
     "webpack": "^5.104.1",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
   }
 }
