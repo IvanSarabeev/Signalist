@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Notification;
+
+use App\Entity\User;
+use App\Enum\NotificationType;
+use App\Exception\Notification\NotificationTypeNotSupportedException;
+use Doctrine\ORM\EntityManagerInterface;
+
+final readonly class NotificationDispatcher
+{
+    /**
+     * @param iterable<NotificationInterface> $notifications
+     */
+    public function __construct(
+        private iterable $notifications,
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    public function notify(NotificationType $type, User $user): void
+    {
+        foreach ($this->notifications as $notification) {
+            if ($notification->supports($type)) {
+                $notification->notify($user);
+            }
+        }
+
+        throw new NotificationTypeNotSupportedException();
+    }
+}

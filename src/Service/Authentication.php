@@ -8,12 +8,14 @@ use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Entity\User;
 use App\Enum\InvestmentGoal;
+use App\Enum\NotificationType;
 use App\Enum\PreferredIndustry;
 use App\Enum\RiskTolerance;
 use App\Exception\Security\EmailExistsException;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Exception\Security\UserAlreadyExistsException;
 use App\Exception\Security\UserRegistrationFailedException;
+use App\Notification\NotificationDispatcher;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -30,6 +32,7 @@ final readonly class Authentication
         private UserRepository              $userRepository,
         private UserPasswordHasherInterface $passwordHasher,
         private LoggerInterface             $logger,
+        private NotificationDispatcher      $notificationDispatcher,
     ) {
     }
 
@@ -63,6 +66,8 @@ final readonly class Authentication
         try {
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
+            $this->notificationDispatcher->notify(NotificationType::USER_REGISTERED, $user);
         } catch (UserAlreadyExistsException $exception) {
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: duplicated email', [
                 'email' => $dto->email,
