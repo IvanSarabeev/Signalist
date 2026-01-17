@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev-server": "encore dev-server",
+    "hot": "encore dev-server",
     "dev": "encore dev",
     "build": "encore production",
     "watch": "encore dev --watch"

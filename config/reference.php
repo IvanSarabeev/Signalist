@@ -424,7 +424,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         resources?: array<string, scalar|null>,
  *     },
  *     messenger?: bool|array{ // Messenger configuration
- *         enabled?: bool, // Default: false
+ *         enabled?: bool, // Default: true
  *         routing?: array<string, array{ // Default: []
  *             senders?: list<scalar|null>,
  *         }>,
@@ -574,7 +574,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         }>,
  *     },
  *     mailer?: bool|array{ // Mailer configuration
- *         enabled?: bool, // Default: false
+ *         enabled?: bool, // Default: true
  *         message_bus?: scalar|null, // The message bus to use. Defaults to the default bus if the Messenger component is installed. // Default: null
  *         dsn?: scalar|null, // Default: null
  *         transports?: array<string, scalar|null>,

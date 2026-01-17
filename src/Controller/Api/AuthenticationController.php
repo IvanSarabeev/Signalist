@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Controller\BaseController;
+use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\SerializerFormat;
@@ -13,6 +13,7 @@ use App\Exception\Security\UserRegistrationFailedException;
 use App\Service\Authentication;
 use App\Service\Session;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route(path: '/v1/authentication', name: 'api_authentication')]
-final class AuthenticationController extends BaseController
+#[Route(path: '/v1/authentication', name: 'api_authentication', format: 'json')]
+final class AuthenticationController extends AbstractController
 {
+    use ValidatesRequestTrait;
+
     public function __construct(
         private readonly Authentication      $authentication,
         private readonly SerializerInterface $serializer,

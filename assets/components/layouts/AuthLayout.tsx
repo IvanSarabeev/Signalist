@@ -25,7 +25,7 @@ const AuthLayout: FC= () => {
             <section className="auth-right-section">
                 <div className="z-10 relative lg:mt-4 lg:mb-16">
                     <blockquote className="auth-blockquote">
-                        Signalist turned my watchlist into a winning list.
+                        Signalist turned my watchlist into a winning list. 1234
                         The alerts are spot-on and I feel more confident making moves in the market
                     </blockquote>
 

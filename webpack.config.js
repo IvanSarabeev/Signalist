@@ -12,6 +12,11 @@ Encore
     .addEntry('app', './assets/app.js')
     .enableReactPreset()
     .enableTypeScriptLoader()
+    .enablePostCssLoader((options) => {
+        options.postcssOptions = {
+            config: './postcss.config.js'
+        };
+    })
     // Additional Type Checking
     // .enableForkedTypeScriptTypesChecking()
     .enableSingleRuntimeChunk()

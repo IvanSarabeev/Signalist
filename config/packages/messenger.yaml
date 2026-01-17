@@ -8,7 +8,7 @@ framework:
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             async:
-                dsn: '%env(MESSENGER_TRANSPORT_DSN)%',
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 retry_strategy:
                     max_retries: 3
                     delay: 1000
