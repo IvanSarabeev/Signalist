@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route(path: '/v1/authentication', name: 'api_authentication', format: 'json')]
+#[Route(path: '/authentication', name: 'api_authentication', format: 'json')]
 final class AuthenticationController extends AbstractController
 {
     use ValidatesRequestTrait;
@@ -40,7 +40,7 @@ final class AuthenticationController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    #[Route(path: '/login', name: 'api_login', methods: 'POST')]
+    #[Route(path: '/login', name: 'login', methods: 'POST')]
     public function authenticateUser(Request $request): JsonResponse
     {
         try {
@@ -87,7 +87,7 @@ final class AuthenticationController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    #[Route(path: '/register', name: 'api_register', methods: 'POST')]
+    #[Route(path: '/register', name: 'register', methods: 'POST')]
     public function registerUser(Request $request): JsonResponse
     {
         try {
@@ -127,7 +127,7 @@ final class AuthenticationController extends AbstractController
         }
     }
 
-    #[Route(path: '/logout', name: 'api_logout', methods: 'POST')]
+    #[Route(path: '/logout', name: 'logout', methods: 'POST')]
     public function signOut(Request $request): Response
     {
         if ($request->getSession()->has('login_settings')) {

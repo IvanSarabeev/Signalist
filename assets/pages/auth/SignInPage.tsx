@@ -2,7 +2,7 @@ import React from 'react'
 
 const SignInPage = () => {
     return (
-        <div>SignInPage ALIBA231BA</div>
+        <div className="text-white size-96">SignInPage ALIBA231BA</div>
     )
 }
 

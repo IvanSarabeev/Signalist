@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DefaultController extends AbstractController
+final class ReactController extends AbstractController
 {
     #[Route(
         '/{reactRouting}',

@@ -1,5 +1,8 @@
 import React, { FC } from 'react';
 import { Link, Outlet } from "react-router-dom";
+import LogoImage from "../../icons/logo.svg";
+import StarSvg from "../../icons/star.svg";
+import DashboardImage from '../../images/dashboard.png';
 
 const AuthLayout: FC= () => {
     return (
@@ -7,7 +10,7 @@ const AuthLayout: FC= () => {
             <section className="auth-left-section scrollbar-hide-default">
                 <Link to="/" className="auth-logo">
                     <img
-                        src="/icons/logo.svg"
+                        src={LogoImage}
                         alt="Signalist logo"
                         width={140}
                         height={32}
@@ -38,12 +41,14 @@ const AuthLayout: FC= () => {
                         <div className="flex items-center gap-0 5">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <img
-                                    src="/icons/star.svg"
+                                    src={StarSvg}
                                     alt="Star"
                                     key={star}
                                     width={20}
                                     height={20}
                                     className="size-5"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             ))}
                         </div>
@@ -52,11 +57,13 @@ const AuthLayout: FC= () => {
 
                 <div className="flex-1 relative">
                     <img
-                        src="/images/dashboard.png"
+                        src={DashboardImage}
                         alt="Dashboard Preview"
                         width={1440}
                         height={1150}
                         className="auth-dashboard-preview absolute top-0"
+                        loading="lazy"
+                        decoding="auto"
                     />
                 </div>
             </section>
