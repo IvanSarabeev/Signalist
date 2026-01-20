@@ -5,7 +5,15 @@
         "jsx": "react",
         "strict": true,
         "moduleResolution": "bundler",
-        "sourceMap": true
+        "sourceMap": true,
+        "baseUrl": "assets",
+        "paths": {
+            "@/*": ["*"],
+            "@/app/*": ["app/*"],
+            "@/components/*": ["components/*"],
+            "@/lib/*": ["lib/*"],
+            "@/hooks/*": ["hooks/*"]
+        }
     },
-    "include": ["assets"]
+    "include": ["assets/app/types", "**/*.ts", "**/*.tsx"]
 }

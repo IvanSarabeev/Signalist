@@ -185,7 +185,7 @@
             "ref": "719f6110345acb6495e496601fc1b4977d7102b3"
         },
         "files": [
-            "./assets/app.js",
+            "./assets/index.tsx",
             "./assets/styles/app.css",
             "./config/packages/webpack_encore.yaml",
             "./package.json",

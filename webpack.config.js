@@ -1,18 +1,25 @@
 const Encore = require('@symfony/webpack-encore');
+const path = require("node:path");
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
+
+const isDevelopmentMode = process.env.NODE_ENV === "dev" ? "development" : "production";
+
 Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
 
-    .addEntry('app', './assets/app.js')
+    .addEntry('app', './assets/index.tsx')
 
     .enableReactPreset()
     .enableTypeScriptLoader()
     .enableForkedTypeScriptTypesChecking()
+
+    .enableSourceMaps(!Encore.isProduction())
+    .enableVersioning(!isDevelopmentMode)
 
     .enableSingleRuntimeChunk()
     .splitEntryChunks()
@@ -21,6 +28,14 @@ Encore
         options.postcssOptions = {
             config: './postcss.config.js'
         };
+    })
+
+    .addAliases({
+        '@': path.resolve(__dirname, 'assets/'),
+        '@app': path.resolve(__dirname, 'assets/app/'),
+        '@components': path.resolve(__dirname, 'assets/components/'),
+        '@lib': path.resolve(__dirname, 'assets/lib/'),
+        '@hooks': path.resolve(__dirname, 'assets/hooks/')
     })
 
     // .addRule({

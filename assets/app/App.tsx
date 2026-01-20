@@ -1,11 +1,8 @@
 import React, {FC} from 'react';
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import AuthLayout from "../components/layouts/AuthLayout";
-import SignInPage from "../pages/auth/SignInPage";
-import SignUpPage from "../pages/auth/SignUpPage";
+import SignInPage from "./pages/auth/SignInPage";
+import SignUpPage from "./pages/auth/SignUpPage";
 
 const router = createBrowserRouter([
     {
