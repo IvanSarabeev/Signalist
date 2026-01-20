@@ -17,6 +17,8 @@
         "@/lib": "assets/lib",
         "@/lib/utils": "assets/lib/utils",
         "@/hooks": "assets/hooks",
+        "utils": "assets/utils",
+        "components": "assets/components"
     },
     "iconLibrary": "lucide"
 }
