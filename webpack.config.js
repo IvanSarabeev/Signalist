@@ -1,5 +1,9 @@
-const Encore = require('@symfony/webpack-encore');
-const path = require("node:path");
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+import Encore from '@symfony/webpack-encore';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
@@ -26,16 +30,16 @@ Encore
 
     .enablePostCssLoader(options => {
         options.postcssOptions = {
-            config: './postcss.config.js'
+            config: './postcss.config.cjs'
         };
     })
 
     .addAliases({
-        '@': path.resolve(__dirname, 'assets/'),
-        '@app': path.resolve(__dirname, 'assets/app/'),
-        '@components': path.resolve(__dirname, 'assets/components/'),
-        '@lib': path.resolve(__dirname, 'assets/lib/'),
-        '@hooks': path.resolve(__dirname, 'assets/hooks/')
+        '@': resolve(__dirname, 'assets/'),
+        '@app': resolve(__dirname, 'assets/app/'),
+        '@components': resolve(__dirname, 'assets/components/'),
+        '@lib': resolve(__dirname, 'assets/lib/'),
+        '@hooks': resolve(__dirname, 'assets/hooks/')
     })
 
     // .addRule({
@@ -74,4 +78,4 @@ if (Encore.isProduction()) {
     Encore.cleanupOutputBeforeBuild();
 }
 
-module.exports = Encore.getWebpackConfig();
+export default Encore.getWebpackConfig();

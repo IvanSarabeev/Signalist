@@ -13,7 +13,9 @@
             "@/components/*": ["components/*"],
             "@/lib/*": ["lib/*"],
             "@/hooks/*": ["hooks/*"]
-        }
+        },
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": ["assets/app/types", "**/*.ts", "**/*.tsx"]
 }
