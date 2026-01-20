@@ -5,28 +5,58 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 }
 
 Encore
-    // directory where compiled assets will be stored
     .setOutputPath('public/build/')
-    // public path used by the web server to access the output path
     .setPublicPath('/build')
+
     .addEntry('app', './assets/app.js')
+
     .enableReactPreset()
     .enableTypeScriptLoader()
-    .enablePostCssLoader((options) => {
+    .enableForkedTypeScriptTypesChecking()
+
+    .enableSingleRuntimeChunk()
+    .splitEntryChunks()
+
+    .enablePostCssLoader(options => {
         options.postcssOptions = {
             config: './postcss.config.js'
         };
     })
-    // Additional Type Checking
-    // .enableForkedTypeScriptTypesChecking()
-    .enableSingleRuntimeChunk()
-    .cleanupOutputBeforeBuild()
-    .splitEntryChunks()
+
+    // .addRule({
+    //     test: /\.svg$/i,
+    //     issuer: /\.[jt]sx?$/, // JS/TS files only
+    //     use: ['@svgr/webpack'],
+    // })
+
+    // .copyFiles({
+    //     from: './assets/public',
+    //     to: '[path][name].[ext]'
+    // })
+
     .configureDevServerOptions(options => {
-        options.hot = true;
+        options.hot = false;
         options.port = 8080;
-        options.allowedHosts = 'all';
-        // options.headers = { 'Access-Control-Allow-Origin': '*' };
+        options.static = false;
+        options.client = {
+            overlay: false
+        }
+        options.liveReload = false;
+        options.historyApiFallback = false;
+        options.watchFiles = {
+            paths: ['assets/**/*'],
+            options: {
+                ignored: [
+                    '**/node_modules/**',
+                    '**/public/build/**',
+                    '**/var/**'
+                ]
+            }
+        };
     });
+
+if (Encore.isProduction()) {
+    Encore.cleanupOutputBeforeBuild();
+}
 
 module.exports = Encore.getWebpackConfig();

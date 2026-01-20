@@ -1,9 +1,7 @@
+import {FieldError, UseFormRegister} from "react-hook-form";
+
 declare global {
     type Control = {
-        id: string;
-    }
-
-    type FieldError = {
         id: string;
     }
 
@@ -25,7 +23,7 @@ declare global {
     type CountrySelectProps = {
         name: string;
         label: string;
-        control: Control;
+        control: Control<any>;
         error?: FieldError;
         required?: boolean;
     };
@@ -35,7 +33,7 @@ declare global {
         label: string;
         placeholder: string;
         type?: string;
-        // register: UseFormRegister;
+        register: UseFormRegister;
         error?: FieldError;
         validation?: RegistrationOptions;
         disabled?: boolean;
@@ -52,7 +50,7 @@ declare global {
         label: string;
         placeholder: string;
         options: readonly Option[];
-        control: Control;
+        control: Control<any>;
         error?: FieldError;
         required?: boolean;
     };

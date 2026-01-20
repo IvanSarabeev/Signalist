@@ -1,7 +1,8 @@
-react_app:
-    path: /app/{reactRouting}
+react_spa:
+    path: /{reactRouting}
     controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
     defaults:
         template: base.html.twig
+        reactRouting: null
     requirements:
-        reactRouting: '.+'
+        reactRouting: "^(?!api|build).*"

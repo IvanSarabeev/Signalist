@@ -30,9 +30,7 @@ const router = createBrowserRouter([
         path: '*',
         element: (<div>404 - Page Not Found. Error Boundary To be added</div>),
     }
-], {
-    basename: "/git-projects/stock-market/public"
-});
+]);
 
 const App: FC = () => <RouterProvider router={router} />;
 

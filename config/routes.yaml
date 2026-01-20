@@ -7,8 +7,7 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-index:
-    path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
-    defaults:
-        template: base.html.twig
+api_controllers:
+    resource: ../src/Controller/Api/
+    type: attribute
+    prefix: /api/v1
