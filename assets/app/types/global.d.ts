@@ -1,10 +1,6 @@
-import {FieldError, UseFormRegister} from "react-hook-form";
+import {Control, FieldError, UseFormRegister, RegisterOptions} from "react-hook-form";
 
 declare global {
-    type Control = {
-        id: string;
-    }
-
     type SignInFormData = {
         email: string;
         password: string;
@@ -33,9 +29,10 @@ declare global {
         label: string;
         placeholder: string;
         type?: string;
+        // @ts-ignore
         register: UseFormRegister;
         error?: FieldError;
-        validation?: RegistrationOptions;
+        validation?: RegisterOptions;
         disabled?: boolean;
         value?: string;
     };

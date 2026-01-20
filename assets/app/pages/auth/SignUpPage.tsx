@@ -5,6 +5,7 @@ import InputField from "@/components/forms/InputField";
 import SelectField from "@/components/forms/SelectField";
 import {INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
 import CountrySelectField from "@/components/forms/CountrySelectField";
+import FooterLink from "@/components/forms/FooterLink";
 
 const defaultValues = {
     fullName: '',
@@ -44,33 +45,33 @@ const SignUpPage = () => {
             </h1>
 
             <form onSubmit={handleSubmit(onSubmit)} method='POST' className="space-y-5">
-                {/*<InputField*/}
-                {/*    name="fullName"*/}
-                {/*    label="Full Name"*/}
-                {/*    placeholder="John Doe"*/}
-                {/*    register={register}*/}
-                {/*    error={errors.fullName}*/}
-                {/*    validation={{required: true, minLength: 2}}*/}
-                {/*/>*/}
+                <InputField
+                    name="fullName"
+                    label="Full Name"
+                    placeholder="John Doe"
+                    register={register}
+                    error={errors.fullName}
+                    validation={{required: true, minLength: 2}}
+                />
 
-                {/*<InputField*/}
-                {/*    name="email"*/}
-                {/*    label="Email"*/}
-                {/*    placeholder="contact@signalist.com"*/}
-                {/*    register={register}*/}
-                {/*    error={errors.email}*/}
-                {/*    validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, message: 'Email address is required'}}*/}
-                {/*/>*/}
+                <InputField
+                    name="email"
+                    label="Email"
+                    placeholder="contact@signalist.com"
+                    register={register}
+                    error={errors.email}
+                    validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
+                />
 
-                {/*<InputField*/}
-                {/*    type="password"*/}
-                {/*    name="password"*/}
-                {/*    label="Password"*/}
-                {/*    placeholder="Enter a strong password"*/}
-                {/*    register={register}*/}
-                {/*    error={errors.password}*/}
-                {/*    validation={{required: 'Password is required', minLength: 6}}*/}
-                {/*/>*/}
+                <InputField
+                    type="password"
+                    name="password"
+                    label="Password"
+                    placeholder="Enter a strong password"
+                    register={register}
+                    error={errors.password}
+                    validation={{required: 'Password is required', minLength: 6}}
+                />
 
                 <CountrySelectField
                     name="country"
@@ -113,6 +114,12 @@ const SignUpPage = () => {
                 <Button type="submit" disabled={isBtnDisabled} className="yellow-btn w-full mt-5">
                     {isSubmitting ? "Creating Account" : "Start Your Investing Journey"}
                 </Button>
+
+                <FooterLink
+                    text='Already have an account ?'
+                    linkText='Log in'
+                    href={'/sign-in'}
+                />
             </form>
         </Fragment>
     )
