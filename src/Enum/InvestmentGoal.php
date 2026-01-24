@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum InvestmentGoal: string
+use InvalidArgumentException;
+
+enum InvestmentGoal: string implements BaseEnumInterface
 {
     case GROWTH = 'growth';
     case INCOME = 'income';
@@ -12,15 +14,17 @@ enum InvestmentGoal: string
     case CONSERVATIVE = 'conservative';
 
     /**
-     * @return string
+     * @param string $label
+     * @return InvestmentGoal
      */
-    public function toLabel(): string
+    public static function fromLabel(string $label): InvestmentGoal
     {
-        return match ($this) {
-            self::GROWTH => 'Growth',
-            self::INCOME => 'Income',
-            self::BALANCED => 'Balanced',
-            self::CONSERVATIVE => 'Conservative',
+        return match ($label) {
+            'Growth' => self::GROWTH,
+            'Income' => self::INCOME,
+            'Balanced' => self::BALANCED,
+            'Conservative' => self::CONSERVATIVE,
+            default => throw new InvalidArgumentException('Invalid label')
         };
     }
 

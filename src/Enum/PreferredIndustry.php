@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum PreferredIndustry: string
+use InvalidArgumentException;
+
+enum PreferredIndustry: string implements BaseEnumInterface
 {
     case TECHNOLOGY = 'technology';
     case HEALTHCARE = 'healthcare';
@@ -13,16 +15,18 @@ enum PreferredIndustry: string
     case CONSUMER_GOODS = 'consumerGoods';
 
     /**
-     * @return string
+     * @param string $label
+     * @return PreferredIndustry
      */
-    public function toLabel(): string
+    public static function fromLabel(string $label): PreferredIndustry
     {
-        return match ($this) {
-            self::TECHNOLOGY => 'Technology',
-            self::HEALTHCARE => 'Healthcare',
-            self::FINANCE => 'Finance',
-            self::ENERGY => 'Energy',
-            self::CONSUMER_GOODS => 'Consumers Goods',
+        return match($label) {
+            'Technology' => self::TECHNOLOGY,
+            'Healthcare' => self::HEALTHCARE,
+            'Finance' => self::FINANCE,
+            'Energy' => self::ENERGY,
+            'Consumers Goods' => self::CONSUMER_GOODS,
+            default => throw new InvalidArgumentException('Invalid label')
         };
     }
 
