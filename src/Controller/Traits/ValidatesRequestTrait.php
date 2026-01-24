@@ -55,4 +55,30 @@ trait ValidatesRequestTrait
 
         return ['status' => false, 'errors' => $messages, 'invalid_fields' => $invalidFields];
     }
+
+    protected function normalizeEnumFields(object $dto, array $map): void
+    {
+        $reflection = new \ReflectionObject($dto);
+
+        foreach ($map as $property => $enumClass) {
+            if (!$reflection->hasProperty($property)) {
+                continue;
+            }
+
+            $prop = $reflection->getProperty($property);
+            $prop->setAccessible(true);
+
+            $value = $prop->getValue($dto);
+
+            if (!is_string($value) || $value === '') {
+                continue;
+            }
+
+            try {
+                $prop->setValue($dto, $enumClass::fromLabel($value)->value);
+            } catch (\InvalidArgumentException) {
+                // leave as-is; validator will handle invalid value
+            }
+        }
+    }
 }

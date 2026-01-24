@@ -16,29 +16,34 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
         main:
             lazy: true
             provider: app_user_provider
+
+        login:
+            pattern: ^/api/authentication/login
+            stateless: true
+            json_login:
+                check_path: /api/authentication/login
+                username_path: email
+                password_path: password
+
+        api:
+            pattern: ^/api
+            stateless: true
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-#        api:
-#            pattern: ^/api/
-#            stateless: true
-#            provider: app_user_provider
-#            json_login:
-#                check_path: /api/v1/authentication/login
-#                username_path: email
-#                password_path: password
-
-    # Note: Only the *first* matching rule is applied
     access_control:
+        # PUBLIC
+        - { path: ^/api/v1/authentication/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/authentication/register, roles: PUBLIC_ACCESS }
 
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # EVERYTHING ELSE
+        - { path: ^/api/v1, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -5,6 +5,9 @@ namespace App\Controller\Api;
 use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
+use App\Enum\InvestmentGoal;
+use App\Enum\PreferredIndustry;
+use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Exception\Security\EmailExistsException;
 use App\Exception\Security\InvalidCredentialsException;
@@ -44,7 +47,7 @@ final class AuthenticationController extends AbstractController
     public function authenticateUser(Request $request): JsonResponse
     {
         try {
-            $dto = $this->serializer->deserialize(
+            $parameters = $this->serializer->deserialize(
                 $request->getContent(),
                 SignInDTO::class,
                 SerializerFormat::JSON->value
@@ -56,13 +59,13 @@ final class AuthenticationController extends AbstractController
             );
         }
 
-        $errors = $this->validateConstraints($dto);
-        if (!empty($errors)) {
-            return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        $constraintValidation = $this->validateConstraints($parameters);
+        if (!empty($constraintValidation)) {
+            return $this->json($constraintValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-            $user = $this->authentication->authenticateUser($dto);
+            $user = $this->authentication->authenticateUser($parameters);
 
             $this->session->setAuthenticationSettings([
                 'id' => $user->getId(),
@@ -72,7 +75,7 @@ final class AuthenticationController extends AbstractController
                 'roles' => $user->getRoles(),
             ]);
 
-            return $this->json(['status' => true]);
+            return $this->json(['status' => true], Response::HTTP_ACCEPTED);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],
@@ -91,7 +94,7 @@ final class AuthenticationController extends AbstractController
     public function registerUser(Request $request): JsonResponse
     {
         try {
-            $dtoParameters = $this->serializer->deserialize(
+            $parameters = $this->serializer->deserialize(
                 $request->getContent(),
                 RegisterDTO::class,
                 SerializerFormat::JSON->value
@@ -103,15 +106,19 @@ final class AuthenticationController extends AbstractController
             );
         }
 
-        $constraintValidation = $this->validateConstraints($dtoParameters);
+        $this->normalizeEnumFields($parameters, [
+            'investmentGoals'    => InvestmentGoal::class,
+            'riskTolerance'     => RiskTolerance::class,
+            'preferredIndustry' => PreferredIndustry::class,
+        ]);
+
+        $constraintValidation = $this->validateConstraints($parameters);
         if (!empty($constraintValidation)) {
             return $this->json($constraintValidation, Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            $this->authentication->persistUserRegistration($dtoParameters);
-
-            $this->session->setAuthenticationSettings(...$dtoParameters);
+            $this->authentication->persistUserRegistration($parameters);
 
             return $this->json(['status' => true], Response::HTTP_CREATED);
         } catch (EmailExistsException|UserAlreadyExistsException $existsException) {
@@ -119,7 +126,7 @@ final class AuthenticationController extends AbstractController
                 ['status' => false, 'message' => $existsException->getMessage()],
                 Response::HTTP_CONFLICT
             );
-        }catch (UserRegistrationFailedException|Exception $exception) {
+        } catch (UserRegistrationFailedException|Exception $exception) {
             return $this->json(
                 ['status' => false, 'message' => $exception->getMessage()],
                 Response::HTTP_INTERNAL_SERVER_ERROR

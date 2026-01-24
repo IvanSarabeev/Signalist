@@ -3,6 +3,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import InputField from "@/components/forms/InputField";
 import {Button} from "@/components/ui/button";
 import FooterLink from "@/components/forms/FooterLink";
+import {authLogin} from "@/app/api/auth";
 
 const defaultValues = {
     email: '',
@@ -22,7 +23,8 @@ const SignInPage = () => {
 
     const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
         try {
-            console.log('Data: ', data);
+            const authResponse = await authLogin(data);
+            console.log('Data: ', authResponse, data);
         } catch (e) {
             console.log('Error: ', e);
         }
@@ -36,15 +38,17 @@ const SignInPage = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} method='POST' className='space-y-5'>
                 <InputField
+                    type='email'
                     name='email'
                     label='Email'
                     placeholder='Enter your email'
                     register={register}
                     error={errors.email}
-                    validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
+                    // validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
                 />
 
                 <InputField
+                    type='password'
                     name='password'
                     label='Password'
                     placeholder='Enter a strong password'

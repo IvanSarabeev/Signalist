@@ -7,6 +7,7 @@ namespace App\DTO\Auth;
 use App\Enum\InvestmentGoal;
 use App\Enum\PreferredIndustry;
 use App\Enum\RiskTolerance;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class RegisterDTO
@@ -34,13 +35,16 @@ final class RegisterDTO
 
     #[Assert\NotBlank(message: 'The investment goal is required.')]
     #[Assert\Choice(callback: [InvestmentGoal::class, 'getValues'], message: 'The investment goal is required.')]
-    public string $investmentGoal;
+    #[SerializedName('investmentGoals')]
+    public string $investmentGoals;
 
     #[Assert\NotBlank(message: 'The risk tolerance is required.')]
     #[Assert\Choice(callback: [RiskTolerance::class, 'getValues'], message: 'The risk tolerance is required.')]
+    #[SerializedName('riskTolerance')]
     public string $riskTolerance;
 
     #[Assert\NotBlank(message: 'The preferred industry is required.')]
     #[Assert\Choice(callback: [PreferredIndustry::class, 'getValues'], message: 'The preferred industry is required.')]
+    #[SerializedName('preferredIndustry')]
     public string $preferredIndustry;
 }

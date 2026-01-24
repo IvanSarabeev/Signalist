@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final readonly class Session
 {
+//    TODO: Implement a Interface - CRUD.. get, set, has, clear
     public const AUTHENTICATION_SETTINGS = 'authentication_settings';
 
     public function __construct(private RequestStack $requestStack)
@@ -17,6 +18,7 @@ final readonly class Session
 
     /**
      * @return SessionInterface
+     * @throws RuntimeException
      */
     public function getSession(): SessionInterface
     {
@@ -72,6 +74,11 @@ final readonly class Session
         }
 
         $this->getSession()->set(self::AUTHENTICATION_SETTINGS, $parameters);
+    }
+
+    public function hasAuthenticationSettings(): bool
+    {
+        return $this->getSession()->has(self::AUTHENTICATION_SETTINGS);
     }
 
     /**

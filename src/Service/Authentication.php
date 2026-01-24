@@ -59,7 +59,7 @@ final readonly class Authentication
             $this->passwordHasher->hashPassword($user, $dto->password)
         );
         $user->setCountry($dto->country);
-        $user->setInvestmentGoal(InvestmentGoal::from($dto->investmentGoal));
+        $user->setInvestmentGoal(InvestmentGoal::from($dto->investmentGoals));
         $user->setRiskTolerance(RiskTolerance::from($dto->riskTolerance));
         $user->setPreferredIndustry(PreferredIndustry::from($dto->preferredIndustry));
 
@@ -67,7 +67,7 @@ final readonly class Authentication
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            $this->notificationDispatcher->notify(NotificationType::USER_REGISTERED, $user);
+//            $this->notificationDispatcher->notify(NotificationType::USER_REGISTERED, $user);
         } catch (UserAlreadyExistsException $exception) {
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: duplicated email', [
                 'email' => $dto->email,
