@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React, {Fragment, useState} from 'react'
 import {SubmitHandler, useForm} from "react-hook-form";
 import {Button} from "@/components/ui/button";
 import InputField from "@/components/forms/InputField";
@@ -6,11 +6,12 @@ import SelectField from "@/components/forms/SelectField";
 import {INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
 import CountrySelectField from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
+import {authRegister} from "@/app/api/auth";
 
 const defaultValues = {
-    fullName: '',
-    email: '',
-    password: '',
+    fullName: 'John Ali',
+    email: 'test@example.com',
+    password: 'Test123.',
     country: 'BG',
     investmentGoals: 'Growth',
     riskTolerance: 'Medium',
@@ -18,6 +19,8 @@ const defaultValues = {
 };
 
 const SignUpPage = () => {
+    const [viewPassword, setViewPassword] = useState(false);
+
     const {
         register,
         handleSubmit,
@@ -30,7 +33,10 @@ const SignUpPage = () => {
 
     const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
-            console.log(data);
+            console.log('Request Data: ', data);
+            const authenticationResponse = await authRegister(data);
+
+            console.log('Authentication Response: ', authenticationResponse);
         } catch (e) {
             console.log('Error: ', e);
         }
@@ -55,16 +61,17 @@ const SignUpPage = () => {
                 />
 
                 <InputField
+                    type='email'
                     name="email"
                     label="Email"
                     placeholder="contact@signalist.com"
                     register={register}
                     error={errors.email}
-                    validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
+                    // validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
                 />
 
                 <InputField
-                    type="password"
+                    type={viewPassword ? "text" : "password"}
                     name="password"
                     label="Password"
                     placeholder="Enter a strong password"
@@ -72,6 +79,8 @@ const SignUpPage = () => {
                     error={errors.password}
                     validation={{required: 'Password is required', minLength: 6}}
                 />
+
+                <Button type='button' onClick={() => setViewPassword((prevState) => !prevState)}>View Password</Button>
 
                 <CountrySelectField
                     name="country"
