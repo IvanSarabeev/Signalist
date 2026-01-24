@@ -14,13 +14,12 @@ use App\Exception\Security\InvalidCredentialsException;
 use App\Exception\Security\UserAlreadyExistsException;
 use App\Exception\Security\UserRegistrationFailedException;
 use App\Service\Authentication;
-use App\Service\Session;
+use App\Service\Session\Session;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -67,7 +66,7 @@ final class AuthenticationController extends AbstractController
         try {
             $user = $this->authentication->authenticateUser($parameters);
 
-            $this->session->setAuthenticationSettings([
+            $this->session->setAuthentication([
                 'id' => $user->getId(),
                 'fullName' => $user->getFullName(),
                 'email' => $user->getUserIdentifier(),
@@ -135,13 +134,12 @@ final class AuthenticationController extends AbstractController
     }
 
     #[Route(path: '/logout', name: 'logout', methods: 'POST')]
-    public function signOut(Request $request): Response
+    public function signOut(): Response
     {
-        if ($request->getSession()->has('login_settings')) {
-            $request->getSession()->remove('login_settings');
-            return new Response(null, Response::HTTP_NO_CONTENT);
-        }
+       if ($this->session->hasAuthentication()) {
+           $this->session->clearAuthentication();
+       }
 
-        throw new AccessDeniedHttpException('Access denied!');
+       return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

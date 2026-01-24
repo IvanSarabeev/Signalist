@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Session;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final readonly class Session
+final readonly class Session implements BaseSessionInterface, AuthSessionInterface
 {
-//    TODO: Implement a Interface - CRUD.. get, set, has, clear
-    public const AUTHENTICATION_SETTINGS = 'authentication_settings';
-
     public function __construct(private RequestStack $requestStack)
     { }
 
@@ -48,54 +45,30 @@ final readonly class Session
         return $session->get($key);
     }
 
-    /**
-     * Get authentication settings
-     *
-     * @return array
-     * @throws RuntimeException - User hasn't been authenticated through the system
-     */
-    public function getAuthenticationSettings(): array
+    public function set(string $key, array $parameters = []): void
     {
-        if ($this->getSession()->has(self::AUTHENTICATION_SETTINGS)) {
-            return $this->get(self::AUTHENTICATION_SETTINGS);
+        if (empty($key) || empty($parameters)) {
+            throw new InvalidArgumentException('Session parameters are empty.');
         }
 
-        throw new RuntimeException('No active session available.');
+        $session = $this->getSession();
+        $session->set($key, $parameters);
     }
 
-    /**
-     * @param array $parameters
-     * @return void
-     */
-    public function setAuthenticationSettings(array $parameters): void
+    public function has(string $key): bool
     {
-        if ($parameters === []) {
-            throw new InvalidArgumentException('Authentication settings cannot be empty.');
-        }
-
-        $this->getSession()->set(self::AUTHENTICATION_SETTINGS, $parameters);
-    }
-
-    public function hasAuthenticationSettings(): bool
-    {
-        return $this->getSession()->has(self::AUTHENTICATION_SETTINGS);
+        return $this->getSession()->has($key);
     }
 
     /**
      * Remove a specific session by its key
      *
      * @param string $key - Key of the Session
-     * @return bool
+     * @return void
      */
-    public function remove(string $key): bool
+    public function remove(string $key): void
     {
-        $isRemoved = $this->getSession()->remove($key);
-
-        if ($isRemoved !== null) {
-            return true;
-        }
-
-        return false;
+       $this->getSession()->remove($key);
     }
 
     /**
@@ -116,12 +89,36 @@ final readonly class Session
     }
 
     /**
-     * Clear all sessions
+     * Get authentication settings
      *
+     * @return array
+     * @throws RuntimeException - User hasn't been authenticated through the system
+     */
+    public function getAuthentication(): array
+    {
+        return $this->getSession()->get(self::AUTHENTICATION_KEY);
+    }
+
+    /**
+     * @param array $parameters
      * @return void
      */
-    public function clear(): void
+    public function setAuthentication(array $parameters = []): void
     {
-        $this->getSession()->clear();
+        if (empty($parameters)) {
+            throw new InvalidArgumentException('Authentication settings cannot be empty.');
+        }
+
+        $this->getSession()->set(self::AUTHENTICATION_KEY, $parameters);
+    }
+
+    public function hasAuthentication(): bool
+    {
+        return $this->getSession()->has(self::AUTHENTICATION_KEY);
+    }
+
+    public function clearAuthentication(): void
+    {
+        $this->remove(self::AUTHENTICATION_KEY);
     }
 }
