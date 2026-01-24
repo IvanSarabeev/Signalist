@@ -68,7 +68,8 @@ Encore
                 ignored: [
                     '**/node_modules/**',
                     '**/public/build/**',
-                    '**/var/**'
+                    '**/var/**',
+                    '/node_modules'
                 ]
             }
         };
