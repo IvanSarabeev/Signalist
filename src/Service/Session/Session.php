@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final readonly class Session implements BaseSessionInterface, AuthSessionInterface
 {
+    private const AUTHENTICATION_KEY = 'authentication_settings';
+
     public function __construct(private RequestStack $requestStack)
     { }
 
@@ -19,13 +21,11 @@ final readonly class Session implements BaseSessionInterface, AuthSessionInterfa
      */
     public function getSession(): SessionInterface
     {
-        $session = $this->requestStack->getSession();
-
-        if ($session instanceof SessionNotFoundException) {
-            throw new RuntimeException('No active session available.');
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException $exception) {
+            throw new RuntimeException('No active session found.' . PHP_EOL . $exception->getMessage());
         }
-
-        return $session;
     }
 
     /**
@@ -86,6 +86,11 @@ final readonly class Session implements BaseSessionInterface, AuthSessionInterfa
 
             $this->getSession()->remove($key);
         }
+    }
+
+    public function regenerate(): void
+    {
+        $this->getSession()->migrate(true);
     }
 
     /**

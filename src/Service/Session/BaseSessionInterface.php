@@ -15,4 +15,6 @@ interface BaseSessionInterface
     public function has(string $key): bool;
 
     public function remove(string $key): void;
+
+    public function regenerate(): void;
 }
