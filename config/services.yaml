@@ -19,11 +19,10 @@ services:
     # Region Subscriber
     App\EventSubscriber\RateLimitSubscriber:
         arguments:
-            $rateLimiters:
-                login: '@rate_limiter.login'
-                login_ip: '@rate_limiter.login_ip'
-                register: '@rate_limiter.register'
-                general_api: '@rate_limiter.general_api'
+            $loginLimiter: '@limiter.login'
+            $loginIpLimiter: '@limiter.login_ip'
+            $registerLimiter: '@limiter.register'
+            $generalApiLimiter: '@limiter.general_api'
         tags:
             - { name: 'kernel.event_subscriber' }
     # End of Region Subscriber

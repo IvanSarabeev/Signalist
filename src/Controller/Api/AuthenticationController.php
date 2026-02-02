@@ -2,11 +2,13 @@
 
 namespace App\Controller\Api;
 
+use App\Attribute\RateLimit;
 use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
 use App\Enum\PreferredIndustry;
+use App\Enum\RateLimiterTypes;
 use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Exception\Security\EmailExistsException;
@@ -42,6 +44,8 @@ final class AuthenticationController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[RateLimit(RateLimiterTypes::LOGIN_IP)]
+    #[RateLimit(RateLimiterTypes::LOGIN, identifierField: 'email')]
     #[Route(path: '/login', name: 'login', methods: 'POST')]
     public function authenticateUser(Request $request): JsonResponse
     {
@@ -66,12 +70,12 @@ final class AuthenticationController extends AbstractController
         try {
             $user = $this->authentication->authenticateUser($parameters);
 
+            // Prevent session fixation
+            $this->session->regenerate();
             $this->session->setAuthentication([
                 'id' => $user->getId(),
                 'fullName' => $user->getFullName(),
                 'email' => $user->getUserIdentifier(),
-                'country' => $user->getCountry(),
-                'roles' => $user->getRoles(),
             ]);
 
             return $this->json(['status' => true], Response::HTTP_ACCEPTED);
@@ -89,6 +93,7 @@ final class AuthenticationController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
+    #[RateLimit(RateLimiterTypes::REGISTER)]
     #[Route(path: '/register', name: 'register', methods: 'POST')]
     public function registerUser(Request $request): JsonResponse
     {
@@ -138,6 +143,7 @@ final class AuthenticationController extends AbstractController
     {
        if ($this->session->hasAuthentication()) {
            $this->session->clearAuthentication();
+           $this->session->regenerate();
        }
 
        return new Response(null, Response::HTTP_NO_CONTENT);

@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Service\Attribute;
+namespace App\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD)]
-#[Attribute(Attribute::IS_REPEATABLE)]
-final class RateLimit
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+final readonly class RateLimit
 {
     public function __construct(
-        public readonly string $limiter,
-        public readonly bool $byIpAddress = true,
-        public readonly ?string $identifierField = null,
+        public string  $limiter,
+        public bool    $byIpAddress = true,
+        public ?string $identifierField = null,
     ) { }
 }
