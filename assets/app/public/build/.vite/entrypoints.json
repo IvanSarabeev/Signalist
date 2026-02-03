@@ -1,0 +1,349 @@
+{
+  "base": "/build/",
+  "entryPoints": {
+    "0": {
+      "js": [
+        "http://localhost:5173/build/D"
+      ]
+    },
+    "1": {
+      "js": [
+        "http://localhost:5173/build/:"
+      ]
+    },
+    "2": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "3": {
+      "js": [
+        "http://localhost:5173/build/l"
+      ]
+    },
+    "4": {
+      "js": [
+        "http://localhost:5173/build/o"
+      ]
+    },
+    "5": {
+      "js": [
+        "http://localhost:5173/build/c"
+      ]
+    },
+    "6": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "7": {
+      "js": [
+        "http://localhost:5173/build/l"
+      ]
+    },
+    "8": {
+      "js": [
+        "http://localhost:5173/build/-"
+      ]
+    },
+    "9": {
+      "js": [
+        "http://localhost:5173/build/x"
+      ]
+    },
+    "10": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "11": {
+      "js": [
+        "http://localhost:5173/build/m"
+      ]
+    },
+    "12": {
+      "js": [
+        "http://localhost:5173/build/p"
+      ]
+    },
+    "13": {
+      "js": [
+        "http://localhost:5173/build/p"
+      ]
+    },
+    "14": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "15": {
+      "js": [
+        "http://localhost:5173/build/h"
+      ]
+    },
+    "16": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "17": {
+      "js": [
+        "http://localhost:5173/build/d"
+      ]
+    },
+    "18": {
+      "js": [
+        "http://localhost:5173/build/o"
+      ]
+    },
+    "19": {
+      "js": [
+        "http://localhost:5173/build/c"
+      ]
+    },
+    "20": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "21": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "22": {
+      "js": [
+        "http://localhost:5173/build/g"
+      ]
+    },
+    "23": {
+      "js": [
+        "http://localhost:5173/build/i"
+      ]
+    },
+    "24": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "25": {
+      "js": [
+        "http://localhost:5173/build/-"
+      ]
+    },
+    "26": {
+      "js": [
+        "http://localhost:5173/build/p"
+      ]
+    },
+    "27": {
+      "js": [
+        "http://localhost:5173/build/r"
+      ]
+    },
+    "28": {
+      "js": [
+        "http://localhost:5173/build/o"
+      ]
+    },
+    "29": {
+      "js": [
+        "http://localhost:5173/build/j"
+      ]
+    },
+    "30": {
+      "js": [
+        "http://localhost:5173/build/e"
+      ]
+    },
+    "31": {
+      "js": [
+        "http://localhost:5173/build/c"
+      ]
+    },
+    "32": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "33": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "34": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "35": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "36": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "37": {
+      "js": [
+        "http://localhost:5173/build/o"
+      ]
+    },
+    "38": {
+      "js": [
+        "http://localhost:5173/build/c"
+      ]
+    },
+    "39": {
+      "js": [
+        "http://localhost:5173/build/k"
+      ]
+    },
+    "40": {
+      "js": [
+        "http://localhost:5173/build/-"
+      ]
+    },
+    "41": {
+      "js": [
+        "http://localhost:5173/build/m"
+      ]
+    },
+    "42": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "43": {
+      "js": [
+        "http://localhost:5173/build/r"
+      ]
+    },
+    "44": {
+      "js": [
+        "http://localhost:5173/build/k"
+      ]
+    },
+    "45": {
+      "js": [
+        "http://localhost:5173/build/e"
+      ]
+    },
+    "46": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "47": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "48": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "49": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "50": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "51": {
+      "js": [
+        "http://localhost:5173/build/e"
+      ]
+    },
+    "52": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "53": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "54": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "55": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "56": {
+      "js": [
+        "http://localhost:5173/build/p"
+      ]
+    },
+    "57": {
+      "js": [
+        "http://localhost:5173/build/p"
+      ]
+    },
+    "58": {
+      "js": [
+        "http://localhost:5173/build/../../../../../.."
+      ]
+    },
+    "59": {
+      "js": [
+        "http://localhost:5173/build/m"
+      ]
+    },
+    "60": {
+      "js": [
+        "http://localhost:5173/build/a"
+      ]
+    },
+    "61": {
+      "js": [
+        "http://localhost:5173/build/i"
+      ]
+    },
+    "62": {
+      "js": [
+        "http://localhost:5173/build/n"
+      ]
+    },
+    "63": {
+      "js": [
+        "http://localhost:5173/build/."
+      ]
+    },
+    "64": {
+      "js": [
+        "http://localhost:5173/build/t"
+      ]
+    },
+    "65": {
+      "js": [
+        "http://localhost:5173/build/s"
+      ]
+    },
+    "66": {
+      "js": [
+        "http://localhost:5173/build/x"
+      ]
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "8.2.3",
+    8,
+    2,
+    3
+  ],
+  "viteServer": "http://localhost:5173"
+}

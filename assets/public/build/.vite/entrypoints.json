@@ -1,0 +1,13 @@
+{
+  "base": "/build/",
+  "entryPoints": {},
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "8.2.3",
+    8,
+    2,
+    3
+  ],
+  "viteServer": "http://[::1]:5173"
+}

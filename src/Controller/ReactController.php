@@ -9,10 +9,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReactController extends AbstractController
 {
     #[Route(
-        '/{reactRouting}',
+        '/{path}',
         name: 'app_react',
-        requirements: ['reactRouting' => '^(?!api).*'],
-        defaults: ['reactRouting' => null]
+        requirements: [
+            'path' => '^(?!api|_profiler|_wdt|build).*'
+        ],
+        defaults: ['path' => null],
+        priority: -1000,
     )]
     public function index(): Response
     {

@@ -6,8 +6,18 @@
 
 # To list all registered routes, run the following command:
 #   bin/console debug:router
-
 api_controllers:
     resource: ../src/Controller/Api/
     type: attribute
     prefix: /api/v1
+    methods: GET|POST|DELETE
+
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+kernel:
+    resource: App\Kernel
+    type: attribute

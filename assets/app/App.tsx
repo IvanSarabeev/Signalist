@@ -15,14 +15,6 @@ const router = createBrowserRouter([
             { path: 'sign-up', Component: SignUpPage },
         ],
     },
-    // {
-    //     path: '/dashboard',
-    //     element: <ProtectedRoute></ProtectedRoute>,
-    //     children: [
-    //         { index: true, Component: DashboardPage },
-    //         { path: 'watchlist', Component: WatchlistPage}
-    //     ]
-    // },
     {
         path: '*',
         element: (<div>404 - Page Not Found. Error Boundary To be added</div>),
