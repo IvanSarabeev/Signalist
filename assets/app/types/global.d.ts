@@ -1,6 +1,8 @@
 import {Control, FieldError, UseFormRegister, RegisterOptions} from "react-hook-form";
 
 declare global {
+    type InputFieldType = "text" | "email" | "password" | "checkbox";
+
     type SignInFormData = {
         email: string;
         password: string;
@@ -28,7 +30,7 @@ declare global {
         name: string;
         label: string;
         placeholder: string;
-        type?: string;
+        type?: InputFieldType;
         // @ts-ignore
         register: UseFormRegister;
         error?: FieldError;
@@ -218,6 +220,11 @@ declare global {
         threshold: number;
         changePercent?: number;
     };
+
+    type ApiError = {
+        response: Record<string, any>;
+        message: string;
+    }
 }
 
 export {};

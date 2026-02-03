@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 
 const api = axios.create({
     baseURL: '/api/v1',
@@ -9,17 +9,12 @@ const api = axios.create({
 });
 
 api.interceptors.response.use((response) => {
-    return response;
-}, (error) => {
-    if (error.response) {
-        return Promise.reject({
-            response: error.response.data,
-            message: error.response.data?.message || 'Communication Error',
-        });
-    }
-
+    return response?.data;
+}, (error: AxiosError<any>) => {
     return Promise.reject({
-        message: error.message || 'Unexpected Error',
+        status: error.response?.status,
+        response: error.response?.data ?? {},
+        message: error.response?.data?.message ?? "Communication Error"
     });
 });
 
