@@ -23,9 +23,13 @@ final class RegisterDTO
 
     #[Assert\Type('string')]
     #[Assert\NotBlank(message: 'The password is required.')]
-    #[Assert\PasswordStrength(
-        minScore: Assert\PasswordStrength::STRENGTH_MEDIUM,
-        message: 'The password must be at least 6 characters long.'
+//    #[Assert\PasswordStrength(
+//        minScore: Assert\PasswordStrength::STRENGTH_WEAK,
+//        message: 'The password must contain at least special'
+//    )]
+    #[Assert\Length(
+        min: 6,
+        minMessage: 'The password must be at least 6 characters long.',
     )]
     public string $password;
 

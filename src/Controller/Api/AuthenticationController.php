@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route(path: '/authentication', name: 'api_authentication_')]
+#[Route(path: '/api/v1/authentication', name: 'api_authentication_')]
 final class AuthenticationController extends AbstractController
 {
     use ValidatesRequestTrait;

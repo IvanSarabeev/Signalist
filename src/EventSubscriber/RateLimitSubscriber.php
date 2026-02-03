@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Attribute\RateLimit;
+use ReflectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -41,6 +42,11 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param ControllerEvent $event
+     * @return void
+     * @throws ReflectionException
+     */
     public function onController(ControllerEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
@@ -73,12 +79,12 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
             }
 
             $identifier = $this->resolveIdentifier($rateLimit, $request);
-            $limiter = $this->limiters[$rateLimit->limiter]->create($identifier ?? '');
+            $limiter = $this->limiters[$rateLimit->limiter]->create($identifier);
             $limit = $limiter->consume();
 
             if (!$limit->isAccepted()) {
                 throw new RateLimitExceedException(
-                    $limit->getRetryAfter()?->getTimestamp() !== null
+                    $limit->getRetryAfter()->getTimestamp() !== null
                         ? max(0, $limit->getRetryAfter()->getTimestamp() - time())
                         : null
                 );
@@ -86,6 +92,11 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param RateLimit $rateLimit
+     * @param Request $request
+     * @return string
+     */
     private function resolveIdentifier(RateLimit $rateLimit, Request $request): string
     {
         if ($rateLimit->identifierField !== null) {

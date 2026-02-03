@@ -10,36 +10,17 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class RateLimitExceedException extends RuntimeException
 {
-    public static function getSubscribedEvents(): array
+    private ?int $retryAfter;
+
+    public function __construct(?int $retryAfter = null)
     {
-        return [
-            KernelEvents::EXCEPTION => 'onException',
-        ];
+        $this->retryAfter = $retryAfter;
+        $message = $retryAfter !== null ? (string)$retryAfter : '';
+        parent::__construct($message);
     }
 
-    public function onException(ExceptionEvent $event): void
+    public function getRetryAfter(): ?int
     {
-        $exception = $event->getThrowable();
-
-        if (!$exception instanceof RateLimitExceedException) {
-            return;
-        }
-
-        $response = new JsonResponse(
-            [
-                'status' => false,
-                'message' => $exception->getMessage(),
-            ],
-            Response::HTTP_TOO_MANY_REQUESTS
-        );
-
-//        if ($exception->getRetryAfter() !== null) {
-//            $response->headers->set(
-//                'Retry-After',
-//                (string) $exception->getRetryAfter()
-//            );
-//        }
-
-        $event->setResponse($response);
+        return $this->retryAfter;
     }
 }

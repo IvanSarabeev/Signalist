@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import symfony from "vite-plugin-symfony";
 import { resolve } from "path";
 
 export default defineConfig({
