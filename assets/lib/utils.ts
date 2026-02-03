@@ -25,7 +25,7 @@ const defaultToastStyles = {
     info: "bg-blue-500 text-white rounded-lg px-4 py-2 shadow-md font-semibold",
 } as const;
 
-export function addNotification({type, message, description, duration, icons, className}: NotificationOptions) {
+export function addNotification({type, message, description, duration = 3000, icons, className}: NotificationOptions) {
     const toastFn: Record<NotificationType, (msg: ReactNode, opts?: ExternalToast) => string | number> = {
         success: toast.success,
         error: toast.error,

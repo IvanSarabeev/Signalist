@@ -4,6 +4,8 @@ import InputField from "@/components/forms/InputField";
 import {Button} from "@/components/ui/button";
 import FooterLink from "@/components/forms/FooterLink";
 import {authLogin} from "@/app/api/auth";
+import {addNotification} from "@/lib/utils";
+import {useNavigate} from "react-router";
 
 const defaultValues = {
     email: '',
@@ -11,10 +13,10 @@ const defaultValues = {
 };
 
 const SignInPage = () => {
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
-        control,
         formState: {errors, isSubmitting, isLoading}
     } = useForm<SignInFormData>({
         defaultValues,
@@ -24,9 +26,25 @@ const SignInPage = () => {
     const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
         try {
             const authResponse = await authLogin(data);
-            console.log('Data: ', authResponse, data);
-        } catch (e) {
-            console.log('Error: ', e);
+            if (authResponse?.status) {
+                addNotification({
+                    type: "success",
+                    message: "Logged in successfully!",
+                    description: "Welcome back, you are being redirected.",
+                    duration: 4000
+                });
+                // TODO: Change the URL to the protected account/dashboard Page.
+                navigate("/sign-up");
+                return;
+            }
+        } catch (error: unknown) {
+            const apiError = error as ApiError;
+
+            addNotification({
+                type: "error",
+                message: "Authentication Error!",
+                description: apiError.message,
+            });
         }
     };
 

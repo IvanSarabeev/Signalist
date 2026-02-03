@@ -13,6 +13,10 @@ final class SignInDTO
     public string $email;
 
     #[Assert\NotBlank(message: 'Please enter your password')]
-    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
+    #[Assert\Length(
+        min: 6,
+        minMessage: 'The password must be at least 6 characters long.',
+    )]
+//    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
     public string $password;
 }
