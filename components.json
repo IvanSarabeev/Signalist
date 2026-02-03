@@ -12,8 +12,8 @@
     },
     "aliases": {
         "@": "assets",
-        "@/components": "assets/components",
-        "@/components/ui": "assets/components/ui",
+        "@/components": "/components",
+        "@/components/ui": "/components/ui",
         "@/lib": "assets/lib",
         "@/lib/utils": "assets/lib/utils",
         "@/hooks": "assets/hooks",

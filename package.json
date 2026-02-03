@@ -2,7 +2,7 @@
     "name": "stock-market",
     "version": "1.0.0",
     "description": "Stock Market app for tracking live stock market updates",
-    "main": "assets/index.tsx",
+    "main": "assets/main.tsx",
     "type": "module",
     "directories": {
         "test": "tests"
@@ -28,11 +28,13 @@
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
         "lucide-react": "^0.562.0",
+        "next-themes": "^0.4.6",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-hook-form": "^7.71.1",
         "react-router-dom": "^7.11.0",
         "react-select-country-list": "^2.2.3",
+        "sonner": "^2.0.7",
         "tailwind-merge": "^3.4.0",
         "tw-animate-css": "^1.4.0"
     },
@@ -56,10 +58,6 @@
         "tailwindcss": "^4.1.18",
         "ts-loader": "^9.5.4",
         "typescript": "^5.9.3",
-        "vite-plugin-symfony": "^8.2.3",
-        "webpack": "^5.104.1",
-        "webpack-cli": "^6.0.1",
-        "webpack-dev-server": "^5.2.2",
-        "webpack-notifier": "^1.15.0"
+        "vite-plugin-symfony": "^8.2.3"
     }
 }
