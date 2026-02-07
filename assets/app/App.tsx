@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import AuthLayout from "../components/layouts/AuthLayout";
 import SignInPage from "./pages/auth/SignInPage";
 import SignUpPage from "./pages/auth/SignUpPage";
+import AccountLayout from "@/components/layouts/AccountLayout";
 
 const router = createBrowserRouter([
     {
@@ -14,6 +15,13 @@ const router = createBrowserRouter([
             { path: 'sign-in', Component: SignInPage },
             { path: 'sign-up', Component: SignUpPage },
         ],
+    },
+    {
+        path: '/account',
+        element: <AccountLayout />,
+        children: [
+            { index: true, element: <div>Alibaba</div>}
+        ]
     },
     {
         path: '*',

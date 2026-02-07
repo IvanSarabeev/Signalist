@@ -1,14 +1,14 @@
 import React, {FC, Fragment} from 'react';
-import { Link, Outlet } from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 import LogoImage from "../../icons/logo.svg";
 import StarSvg from "../../icons/star.svg";
 import DashboardImage from '../../images/dashboard.png';
-import { Toaster } from "sonner";
+import {Toaster} from "sonner";
 
-const AuthLayout: FC= () => {
+const AuthLayout: FC = () => {
     return (
         <Fragment>
-            <Toaster />
+            <Toaster/>
 
             <main className="auth-layout bg-red-500">
                 <section className="auth-left-section scrollbar-hide-default">
@@ -25,7 +25,7 @@ const AuthLayout: FC= () => {
                     </Link>
 
                     <div className="pb-6 lg:pb-8 flex-1">
-                        <Outlet />
+                        <Outlet/>
                     </div>
                 </section>
 
