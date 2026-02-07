@@ -1,6 +1,7 @@
 import React, {FC} from 'react'
 import {Link} from "react-router-dom";
 import LogoImage from "../icons/logo.svg";
+import NavItems from "@/components/NavItems";
 import UserDropdown from "@/components/UserDropdown";
 
 const Header: FC = () => {

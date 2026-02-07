@@ -4,6 +4,7 @@ import AuthLayout from "../components/layouts/AuthLayout";
 import SignInPage from "./pages/auth/SignInPage";
 import SignUpPage from "./pages/auth/SignUpPage";
 import AccountLayout from "@/components/layouts/AccountLayout";
+import Home from "@/app/pages/root/Home";
 
 const router = createBrowserRouter([
     {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
         path: '/account',
         element: <AccountLayout />,
         children: [
-            { index: true, element: <div>Alibaba</div>}
+            { index: true, element: <Home />}
         ]
     },
     {

@@ -34,7 +34,7 @@ const SignInPage = () => {
                     duration: 4000
                 });
                 // TODO: Change the URL to the protected account/dashboard Page.
-                navigate("/sign-up");
+                navigate("/account");
                 return;
             }
         } catch (error: unknown) {

@@ -16,7 +16,7 @@ const NavItems: FC<{ initialStocks: StockWithWatchlistStatus[] }> = ({initialSto
     return (
         <ul className="flex flex-col sm:flex-row p2 gap-3 sm:gap-10 font-medium">
             {NAV_ITEMS.map(({href, label}) => {
-                if (href === '/search') return (
+                if (href === '/account/search') return (
                     <li key='search-trigger'>
                         <SearchCommand
                             renderAs="text"
@@ -28,8 +28,7 @@ const NavItems: FC<{ initialStocks: StockWithWatchlistStatus[] }> = ({initialSto
 
                 return (
                     <li key={href}>
-                        <Link to={href}
-                              className={`hover:text-yellow-500 transition-colors ${isActive(href) && 'text-gray-100'}`}>
+                        <Link to={href} className={`hover:text-yellow-500 transition-colors ${isActive(href) && 'text-gray-100'}`}>
                             {label}
                         </Link>
                     </li>

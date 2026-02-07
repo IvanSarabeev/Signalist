@@ -1,7 +1,7 @@
 export const NAV_ITEMS = [
-    { href: '/', label: 'Dashboard' },
-    { href: '/search', label: 'Search' },
-    // { href: '/watchlist', label: 'Watchlist' },
+    { href: '/account', label: 'Dashboard' },
+    { href: '/account/search', label: 'Search' },
+    { href: '/account/watchlist', label: 'Watchlist' },
 ];
 
 // Sign-up form select options
@@ -337,3 +337,5 @@ export const WATCHLIST_TABLE_HEADER = [
     'Alert',
     'Action',
 ];
+
+export const ADVANCED_TRADING_VIEW_WIDGET = "https://s3.tradingview.com/external-embedding/embed-widget-" as const;
