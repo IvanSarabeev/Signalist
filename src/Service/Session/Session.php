@@ -38,7 +38,7 @@ final readonly class Session implements BaseSessionInterface, AuthSessionInterfa
     {
         $session = $this->getSession();
 
-        if ($session->has($key)) {
+        if (!$session->has($key)) {
             throw new RuntimeException(sprintf('Session key %s not found.', $key));
         }
 

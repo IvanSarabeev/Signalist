@@ -78,7 +78,7 @@ final class AuthenticationController extends AbstractController
                 'email' => $user->getUserIdentifier(),
             ]);
 
-            return $this->json(['status' => true], Response::HTTP_ACCEPTED);
+            return $this->json(['status' => true, 'user_id' => $user->getId()], Response::HTTP_ACCEPTED);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],
