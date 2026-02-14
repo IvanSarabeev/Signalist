@@ -7,6 +7,7 @@ use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
+use App\Enum\NotificationType;
 use App\Enum\PreferredIndustry;
 use App\Enum\RateLimiterTypes;
 use App\Enum\RiskTolerance;
@@ -15,6 +16,7 @@ use App\Exception\Security\EmailExistsException;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Exception\Security\UserAlreadyExistsException;
 use App\Exception\Security\UserRegistrationFailedException;
+use App\Notification\NotificationDispatcher;
 use App\Service\Authentication;
 use App\Service\Session\Session;
 use Exception;
@@ -32,9 +34,10 @@ final class AuthenticationController extends AbstractController
     use ValidatesRequestTrait;
 
     public function __construct(
-        private readonly Authentication      $authentication,
-        private readonly SerializerInterface $serializer,
-        private readonly Session             $session,
+        private readonly Authentication         $authentication,
+        private readonly SerializerInterface    $serializer,
+        private readonly Session                $session,
+        private readonly NotificationDispatcher $notificationDispatcher,
     ) {
     }
 
@@ -78,7 +81,12 @@ final class AuthenticationController extends AbstractController
                 'email' => $user->getUserIdentifier(),
             ]);
 
-            return $this->json(['status' => true, 'user_id' => $user->getId()], Response::HTTP_ACCEPTED);
+            $this->notificationDispatcher->notify(
+                NotificationType::LOGIN_OTP,
+                $user
+            );
+
+            return $this->json(['status' => true, 'is_otp_required' => true, 'user_id' => $user->getId()]);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],

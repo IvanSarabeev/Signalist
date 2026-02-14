@@ -69,7 +69,7 @@ final readonly class Authentication
                 'exception' => $exception,
             ]);
 
-            throw new UserAlreadyExistsException('Email already registered.');
+            throw new UserAlreadyExistsException('EmailService already registered.');
         } catch (Throwable $throwable) {
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: ', [
                 'exception' => $throwable,

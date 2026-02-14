@@ -56,6 +56,19 @@
             "ref": "3a6673f248f8fc1dd364dadfef4c5b381d1efab6"
         }
     },
+    "scheb/2fa-bundle": {
+        "version": "7.13",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.0",
+            "ref": "1e6f68089146853a790b5da9946fc5974f6fcd49"
+        },
+        "files": [
+            "./config/packages/scheb_2fa.yaml",
+            "./config/routes/scheb_2fa.yaml"
+        ]
+    },
     "symfony/console": {
         "version": "7.4",
         "recipe": {
@@ -112,6 +125,15 @@
         "files": [
             "./config/packages/mailer.yaml"
         ]
+    },
+    "symfony/mailtrap-mailer": {
+        "version": "7.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.2",
+            "ref": "e1d25e0fab8778b977233aff6762d3791eab3155"
+        }
     },
     "symfony/maker-bundle": {
         "version": "1.65",
@@ -209,5 +231,8 @@
             "./config/packages/web_profiler.yaml",
             "./config/routes/web_profiler.yaml"
         ]
+    },
+    "twig/extra-bundle": {
+        "version": "v3.23.0"
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Message\Handler\Auth;
 
 use App\Message\Auth\SendOtpMessage;
-use App\Message\Auth\SendWelcomeEmailMessage;
 use App\Repository\UserRepository;
 use App\Service\Mailer\EmailFactory;
 use App\Service\Mailer\EmailService;
@@ -17,7 +16,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 #[AsMessageHandler]
-final readonly class SendWelcomeEmailMessageHandler
+final readonly class SendOtpMessageHandler
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -27,25 +26,25 @@ final readonly class SendWelcomeEmailMessageHandler
     ) { }
 
     /**
-     * @param SendWelcomeEmailMessage $message
+     * Check the User existence then send an Email OTP
+     * @param SendOtpMessage $message
      * @return void
-     * @throws Throwable
      * @throws TransportExceptionInterface
+     * @throws Throwable
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function __invoke(SendWelcomeEmailMessage $message): void
+    public function __invoke(SendOtpMessage $message): void
     {
         try {
-
             $user = $this->userRepository->find($message->userId);
 
             if (!$user) {
                 throw new UserNotFoundException();
             }
 
-            $email = $this->emailFactory->createWelcomeEmail($user->getEmail());
+            $email = $this->emailFactory->createOtpMail($user->getEmail(), $message->otp);
             $this->emailService->send($email);
         } catch (Throwable $exception) {
             $this->logger->error('Failed to proceed ' . SendOtpMessage::class, [

@@ -34,6 +34,13 @@ services:
         autowire: true
         autoconfigure: true
     # End of Region Controller
+
+    # Region Notification
+    App\Notification\:
+        resource: '../src/Notification'
+        tags:
+            - { name: 'app.notification', priority: 10 }
+    # End of Region Notification
     App\:
         resource: '../src/'
 

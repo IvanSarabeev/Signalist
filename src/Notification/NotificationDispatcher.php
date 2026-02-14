@@ -5,24 +5,32 @@ namespace App\Notification;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Exception\Notification\NotificationTypeNotSupportedException;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class NotificationDispatcher
 {
+    /**
+     * @param iterable<NotificationInterface> $notifications
+     */
     public function __construct(
-        private NotificationInterface $notifications,
-        private EntityManagerInterface $entityManager,
-    ) {
-    }
+        #[AutowireIterator('app.notification')]
+        private iterable $notifications
+    )
+    { }
 
     public function notify(NotificationType $type, User $user): void
     {
+        $handled = false;
+
         foreach ($this->notifications as $notification) {
             if ($notification->supports($type)) {
                 $notification->notify($user);
+                $handled = true;
             }
         }
 
-        throw new NotificationTypeNotSupportedException();
+        if (!$handled) {
+           throw new NotificationTypeNotSupportedException();
+        }
     }
 }

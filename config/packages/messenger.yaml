@@ -13,6 +13,7 @@ framework:
                     max_retries: 3
                     delay: 1000
                     multiplier: 2
+                    max_delay: 10000
 
             failed:
                 dsn: 'doctrine://default?queue_name=failed'
@@ -20,6 +21,7 @@ framework:
         routing:
             # Route your messages to the transports
             'App\Message\Auth\SendWelcomeEmailMessage': async
+            'App\Message\Auth\SendOtpMessage': async
 
 # when@test:
 #    framework:

@@ -58,6 +58,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $updatedAt;
 
+    #[ORM\Column(length: 6, nullable: true)]
+    private ?string $otpHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $otpExpiresAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -221,5 +227,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function onPreUpdate(): void
     {
         $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function getOtpHash(): ?string
+    {
+        return $this->otpHash;
+    }
+
+    public function setOtpHash(?string $otpHash): static
+    {
+        $this->otpHash = $otpHash;
+
+        return $this;
+    }
+
+    public function getOtpExpiresAt(): ?DateTimeImmutable
+    {
+        return $this->otpExpiresAt;
+    }
+
+    public function setOtpExpiresAt(?DateTimeImmutable $otpExpiresAt): static
+    {
+        $this->otpExpiresAt = $otpExpiresAt;
+
+        return $this;
+    }
+
+    public function clearOtp(): void
+    {
+        $this->setOtpHash(null);
+        $this->setOtpExpiresAt(null);
     }
 }
