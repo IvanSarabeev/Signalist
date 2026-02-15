@@ -16,21 +16,22 @@ final readonly class EmailFactory
     { }
 
     /**
-     * @param string $to
+     * @param string $email
      * @param string $otp
      * @return Email
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function createOtpMail(string $to, string $otp): Email
+    public function createOtpMail(string $email, string $otp): Email
     {
         return (new Email())
             ->from(self::FROM_MAIL)
-            ->to($to)
+            ->to($email)
             ->subject('Your Authentication Code')
             ->html(
                 $this->twig->render('emails/auth/otp.html.twig', [
+                    'email' => $email,
                     'otp' => $otp
                 ])
             );

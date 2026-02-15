@@ -9,6 +9,8 @@ use App\Notification\NotificationInterface;
 use App\Security\OtpGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Random\RandomException;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 final readonly class LoginNotification implements NotificationInterface
@@ -24,6 +26,12 @@ final readonly class LoginNotification implements NotificationInterface
         return $type === NotificationType::LOGIN_OTP;
     }
 
+    /**
+     * @param User $user
+     * @return void
+     * @throws RandomException
+     * @throws ExceptionInterface
+     */
     public function notify(User $user): void
     {
         $otp = $this->otpGenerator->generate();
@@ -33,9 +41,7 @@ final readonly class LoginNotification implements NotificationInterface
 
         $this->entityManager->flush();
 
-        $this->bus->dispatch(
-            new SendOtpMessage($user->getId(), $otp)
-        );
+        $this->bus->dispatch(new SendOtpMessage($user->getId(), $otp));
     }
 
 }

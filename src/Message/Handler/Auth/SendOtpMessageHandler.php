@@ -44,7 +44,10 @@ final readonly class SendOtpMessageHandler
                 throw new UserNotFoundException();
             }
 
-            $email = $this->emailFactory->createOtpMail($user->getEmail(), $message->otp);
+            $email = $this->emailFactory->createOtpMail(
+                $user->getEmail(),
+                $message->otp
+            );
             $this->emailService->send($email);
         } catch (Throwable $exception) {
             $this->logger->error('Failed to proceed ' . SendOtpMessage::class, [
