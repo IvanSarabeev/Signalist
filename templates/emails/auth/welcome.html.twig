@@ -114,11 +114,13 @@
 
                         <!-- Welcome Heading -->
                         <h1 class="mobile-title dark-text" style="margin: 0 0 30px 0; font-size: 24px; font-weight: 600; color: #FDD458; line-height: 1.2;">
-                            Welcome aboard {{name}}
+                            Welcome aboard {{ name|default('Guest') }}
                         </h1>
 
                         <!-- Intro Text -->
-                        {{intro}}
+                        <p class="mobile-title dark-text-secondary" style="margin: 0 0 15px 0; font-size: 18px; line-height: 1.6; color: #FDD458; font-weight: 600;">
+                            {{ intro|default('Thanks for joining Signalist. You now have the tools to track markets and make smarter moves.') }}
+                        </p>
 
                         <!-- Feature List Label -->
                         <p class="mobile-text dark-text-secondary" style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6; color: #CCDADC; font-weight: 600;">

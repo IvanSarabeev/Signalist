@@ -30,27 +30,31 @@ final readonly class EmailFactory
             ->to($to)
             ->subject('Your Authentication Code')
             ->html(
-                $this->twig->render('emails/otp.html.twig', [
+                $this->twig->render('emails/auth/otp.html.twig', [
                     'otp' => $otp
                 ])
             );
     }
 
     /**
-     * @param string $to
+     * @param string $email
+     * @param string $name
      * @return Email
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function createWelcomeEmail(string $to): Email
+    public function createWelcomeEmail(string $email, string $name): Email
     {
         return (new Email())
             ->from(self::FROM_MAIL)
-            ->to($to)
+            ->to($email)
             ->subject('Welcome')
             ->html(
-                $this->twig->render('emails/welcome.html.twig')
+                $this->twig->render('emails/auth/welcome.html.twig', [
+                    'name' => $name ?: 'Guest',
+                    'intro' => 'Thanks for joining Signalist. You now have the tools to track markets and make smarter moves.'
+                ])
             );
     }
 }

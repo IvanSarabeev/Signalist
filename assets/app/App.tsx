@@ -5,6 +5,7 @@ import SignInPage from "./pages/auth/SignInPage";
 import SignUpPage from "./pages/auth/SignUpPage";
 import AccountLayout from "@/components/layouts/AccountLayout";
 import Home from "@/app/pages/root/Home";
+import SecurePage from "@/app/pages/auth/SecurePage";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
             { index: true, Component: SignInPage },
             { path: 'sign-in', Component: SignInPage },
             { path: 'sign-up', Component: SignUpPage },
+            { path: 'secure', Component: SecurePage }
         ],
     },
     {

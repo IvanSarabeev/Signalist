@@ -20,17 +20,13 @@ final readonly class NotificationDispatcher
 
     public function notify(NotificationType $type, User $user): void
     {
-        $handled = false;
-
         foreach ($this->notifications as $notification) {
             if ($notification->supports($type)) {
                 $notification->notify($user);
-                $handled = true;
+                return;
             }
         }
 
-        if (!$handled) {
-           throw new NotificationTypeNotSupportedException();
-        }
+       throw new NotificationTypeNotSupportedException();
     }
 }

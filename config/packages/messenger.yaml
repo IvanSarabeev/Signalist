@@ -10,7 +10,7 @@ framework:
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 retry_strategy:
-                    max_retries: 3
+                    max_retries: '%env(int:MESSENGER_MAX_RETRIES)%'
                     delay: 1000
                     multiplier: 2
                     max_delay: 10000

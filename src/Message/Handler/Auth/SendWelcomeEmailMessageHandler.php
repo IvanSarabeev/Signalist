@@ -2,7 +2,6 @@
 
 namespace App\Message\Handler\Auth;
 
-use App\Message\Auth\SendOtpMessage;
 use App\Message\Auth\SendWelcomeEmailMessage;
 use App\Repository\UserRepository;
 use App\Service\Mailer\EmailFactory;
@@ -45,10 +44,13 @@ final readonly class SendWelcomeEmailMessageHandler
                 throw new UserNotFoundException();
             }
 
-            $email = $this->emailFactory->createWelcomeEmail($user->getEmail());
+            $email = $this->emailFactory->createWelcomeEmail(
+                $user->getEmail(),
+                $user->getFullName()
+            );
             $this->emailService->send($email);
         } catch (Throwable $exception) {
-            $this->logger->error('Failed to proceed ' . SendOtpMessage::class, [
+            $this->logger->error('Failed to proceed ' . SendWelcomeEmailMessage::class, [
                 'userId' => $message->userId,
                 'message' => $exception->getMessage(),
             ]);

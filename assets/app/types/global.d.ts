@@ -18,6 +18,11 @@ declare global {
         preferredIndustry: string;
     };
 
+    type VerifyOtpData = {
+        userId: string;
+        otp: string;
+    };
+
     type CountrySelectProps = {
         name: string;
         label: string;

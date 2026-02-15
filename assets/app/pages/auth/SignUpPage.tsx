@@ -81,7 +81,7 @@ const SignUpPage = () => {
                     placeholder="contact@signalist.com"
                     register={register}
                     error={errors.email}
-                    // validation={{required: 'Email is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
+                    // validation={{required: 'EmailService is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
                 />
 
                 <InputField

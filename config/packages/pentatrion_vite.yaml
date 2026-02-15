@@ -1,7 +1,7 @@
 pentatrion_vite:
-    default_build: 'app'
+    default_config: 'app'
     # Build
     public_directory: 'public'
     build_directory: 'public/build'
-    builds:
+    configs:
         app: ~
