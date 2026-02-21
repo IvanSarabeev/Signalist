@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Message\Auth\SendOtpMessage;
 use App\Notification\NotificationInterface;
-use App\Security\OtpGenerator;
+use App\Security\Otp\OtpGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;

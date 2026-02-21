@@ -29,12 +29,13 @@ const SignInPage = () => {
             if (authResponse?.status) {
                 addNotification({
                     type: "success",
-                    message: "Logged in successfully!",
-                    description: "Welcome back, you are being redirected.",
+                    message: "Successful!",
+                    description: "Welcome back, you are being redirected to verify your identity.",
                     duration: 4000
                 });
-                // TODO: Change the URL to the protected account/dashboard Page.
-                navigate("/account");
+                navigate("/secure", {
+                    state: { userId: authResponse?.user_id }
+                });
                 return;
             }
         } catch (error: unknown) {
@@ -62,7 +63,6 @@ const SignInPage = () => {
                     placeholder='Enter your email'
                     register={register}
                     error={errors.email}
-                    // validation={{required: 'EmailService is required', pattern: /^\w+@\.\w+$/, minLength: 4, maxLength: 55}}
                 />
 
                 <InputField

@@ -31,6 +31,7 @@ const InputField = ({
                     placeholder={placeholder}
                     disabled={disabled}
                     value={value}
+                    maxLength={name === 'otp' && 4}
                     className={cn('form-input', {'opacity-50 cursor-not-allowed': disabled})}
                     {...register(name as any, validation as any)}
                 />
