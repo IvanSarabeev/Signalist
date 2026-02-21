@@ -17,10 +17,12 @@ use App\Exception\Security\UserAlreadyExistsException;
 use App\Exception\Security\UserRegistrationFailedException;
 use App\Notification\NotificationDispatcher;
 use App\Repository\UserRepository;
+use App\Security\Api\TokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Throwable;
 
 final readonly class Authentication
@@ -33,6 +35,7 @@ final readonly class Authentication
         private UserPasswordHasherInterface $passwordHasher,
         private LoggerInterface             $logger,
         private NotificationDispatcher      $notificationDispatcher,
+        private TokenGenerator              $tokenGenerator,
     ) {
     }
 
@@ -105,5 +108,18 @@ final readonly class Authentication
         }
 
         return $user;
+    }
+
+    /**
+     * @param int|null $userId - The User id for whom the token will be generated
+     * @return string
+     */
+    public function generateApiToken(?int $userId): string
+    {
+        if (!$userId) {
+            throw new UserNotFoundException();
+        }
+
+        return $this->tokenGenerator->generate($userId);
     }
 }

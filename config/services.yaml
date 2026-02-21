@@ -22,6 +22,15 @@ services:
             - '../src/Entity/'
             - '../src/Enum/'
 
+    App\Security\ApiKeyAuthenticator:
+        arguments:
+            $jwtSecret: '%env(JWT_SECRET)%'
+
+    App\Security\Api\TokenGenerator:
+        arguments:
+            $jwtSecret: '%env(JWT_SECRET)%'
+            $ttl: '%env(JWT_TTL)%'
+
     # Region Subscriber
     App\EventSubscriber\RateLimitSubscriber:
         arguments:

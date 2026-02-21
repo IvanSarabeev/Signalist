@@ -2,51 +2,33 @@
 
 namespace App\Security\Otp;
 
+use App\DTO\Otp\VerifyOtpRequest;
 use App\Exception\Security\ExpiredOtpException;
-use App\Exception\Security\InvalidOtpCredentialsException;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 final readonly class OtpService
 {
     public function __construct(
-        private RequestStack $requestStack,
         private UserRepository $userRepository,
         private EntityManagerInterface $entityManager,
     ) { }
 
     /**
+     * @param VerifyOtpRequest $dto
      * @return void
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
-    public function validateVerificationCode(): void
+    public function validateVerificationCode(VerifyOtpRequest $dto): void
     {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if ($request->request->has('otp') && empty($request->request->getString('otp'))) {
-            throw new InvalidOtpCredentialsException();
-        }
-
-        if ($request->request->has('user_id') && empty($request->request->getInt('user_id'))) {
-            throw new InvalidOtpCredentialsException();
-        }
-
-        $userId = $request->request->getInt('user_id');
-        $otp = $request->request->getString('otp');
-
-        $user = $this->userRepository->findOneBy(['id' => $userId]);
+        $user = $this->userRepository->findOneBy(['id' => $dto->userId]);
 
         if (!$user) {
             throw new UserNotFoundException();
         }
 
-        if ($user->getOtpHash() !== $otp || $user->getExpiredAt() < new DateTimeImmutable()) {
+        if ($user->getOtpHash() !== $dto->otp || $user->getExpiredAt() < new DateTimeImmutable()) {
             throw new ExpiredOtpException();
         }
 

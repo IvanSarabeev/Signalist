@@ -86,7 +86,9 @@ final class AuthenticationController extends AbstractController
                 $user
             );
 
-            return $this->json(['status' => true, 'is_otp_required' => true, 'user_id' => $user->getId()]);
+            $token = $this->authentication->generateApiToken($user->getId());
+
+            return $this->json(['status' => true, 'is_otp_required' => true, 'token' => $token]);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],

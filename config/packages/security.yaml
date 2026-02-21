@@ -20,6 +20,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
 
         login:
             pattern: ^/api/authentication/login

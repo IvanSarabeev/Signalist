@@ -13,6 +13,6 @@ final class VerifyOtpRequest
     public string $otp;
 
     #[Assert\NotBlank]
-    #[Assert\Positive]
-    public int $userId;
+    #[Assert\Type('string')]
+    public int $token;
 }
