@@ -61,13 +61,13 @@ final class AuthenticationController extends AbstractController
         } catch (ExceptionInterface) {
             return $this->json(
                 ['status' => false, 'message' => 'Invalid JSON payload'],
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
         $constraintValidation = $this->validateConstraints($parameters);
         if (!empty($constraintValidation)) {
-            return $this->json($constraintValidation, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->json($constraintValidation, Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -114,7 +114,7 @@ final class AuthenticationController extends AbstractController
         } catch (ExceptionInterface) {
             return $this->json(
                 ['status' => false, 'message' => 'Invalid JSON payload'],
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 

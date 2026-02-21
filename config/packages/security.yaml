@@ -41,6 +41,7 @@ security:
         # PUBLIC
         - { path: ^/api/v1/authentication/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/authentication/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/otp/verify, roles: PUBLIC_ACCESS }
 
         # EVERYTHING ELSE
         - { path: ^/api/v1, roles: IS_AUTHENTICATED_FULLY }

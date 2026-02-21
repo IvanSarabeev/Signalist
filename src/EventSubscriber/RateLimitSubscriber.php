@@ -24,12 +24,14 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
         RateLimiterFactoryInterface $loginLimiter,
         RateLimiterFactoryInterface $loginIpLimiter,
         RateLimiterFactoryInterface $registerLimiter,
+        RateLimiterFactoryInterface $otpLimiter,
         RateLimiterFactoryInterface $generalApiLimiter,
     ) {
         $this->limiters = [
             'login' => $loginLimiter,
             'login_ip' => $loginIpLimiter,
             'register' => $registerLimiter,
+            'otp' => $otpLimiter,
             'general_api' => $generalApiLimiter,
         ];
     }
