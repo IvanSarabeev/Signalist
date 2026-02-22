@@ -26,10 +26,11 @@ services:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
 
-    App\Security\Api\TokenGenerator:
+    App\Security\TokenGenerator:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
-            $ttl: '%env(JWT_TTL)%'
+            $accessTtl: '%env(JWT_ACCESS_TTL)%'
+            $refreshTtl: '%env(JWT_REFRESH_TTL)%'
 
     # Region Subscriber
     App\EventSubscriber\RateLimitSubscriber:
