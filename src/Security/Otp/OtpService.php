@@ -3,17 +3,18 @@
 namespace App\Security\Otp;
 
 use App\DTO\Otp\VerifyOtpRequest;
+use App\Entity\User;
 use App\Exception\Security\ExpiredOtpException;
-use App\Repository\UserRepository;
+use App\Exception\Security\UserNotFoundException;
+use App\Security\TokenGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 final readonly class OtpService
 {
     public function __construct(
-        private UserRepository $userRepository,
         private EntityManagerInterface $entityManager,
+        private TokenGenerator $tokenGenerator,
     ) { }
 
     /**
@@ -22,13 +23,22 @@ final readonly class OtpService
      */
     public function validateVerificationCode(VerifyOtpRequest $dto): void
     {
-        $user = $this->userRepository->findOneBy(['id' => $dto->userId]);
+        $token = $this->tokenGenerator->validateToken($dto->token);
 
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['id' => $token->getUserId()]);
         if (!$user) {
             throw new UserNotFoundException();
         }
 
-        if ($user->getOtpHash() !== $dto->otp || $user->getExpiredAt() < new DateTimeImmutable()) {
+        if (
+            $user->getOtpExpiresAt() === null ||
+            $user->getOtpExpiresAt() < new DateTimeImmutable()
+        ) {
+            throw new ExpiredOtpException();
+        }
+
+        if (!hash_equals($user->getOtpHash(), $dto->otp)) {
             throw new ExpiredOtpException();
         }
 

@@ -17,7 +17,8 @@ use App\Exception\Security\InvalidCredentialsException;
 use App\Exception\Security\UserAlreadyExistsException;
 use App\Exception\Security\UserRegistrationFailedException;
 use App\Notification\NotificationDispatcher;
-use App\Service\Authentication;
+use App\Security\Authentication;
+use App\Security\TokenGenerator;
 use App\Service\Session\Session;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +39,7 @@ final class AuthenticationController extends AbstractController
         private readonly SerializerInterface    $serializer,
         private readonly Session                $session,
         private readonly NotificationDispatcher $notificationDispatcher,
+        private readonly TokenGenerator         $tokenGenerator,
     ) {
     }
 
@@ -86,7 +88,7 @@ final class AuthenticationController extends AbstractController
                 $user
             );
 
-            $token = $this->authentication->generateApiToken($user->getId());
+            $token = $this->tokenGenerator->generateAccessToken($user->getId());
 
             return $this->json(['status' => true, 'is_otp_required' => true, 'token' => $token]);
         } catch (InvalidCredentialsException $credentialsException) {

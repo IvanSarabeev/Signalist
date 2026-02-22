@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Security\Api;
+namespace App\Security;
 
 use App\Entity\RefreshTokens;
+use App\Exception\Token\TokenNotFoundException;
+use App\Exception\Token\UnexpectedTokenException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
 use Random\RandomException;
-use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Exception\UnexpectedTokenException;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 
 class TokenGenerator
 {
