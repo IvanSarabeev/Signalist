@@ -5,7 +5,7 @@ namespace App\Exception\Security;
 use App\Exception\DomainException;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ExpiredOtpException extends DomainException
+final class InvalidOtpException extends DomainException
 {
     public function getStatusCode(): int
     {

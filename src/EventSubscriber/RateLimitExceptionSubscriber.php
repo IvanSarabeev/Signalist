@@ -25,10 +25,7 @@ final class RateLimitExceptionSubscriber implements EventSubscriberInterface
         }
 
         $response = new JsonResponse(
-            [
-                'status' => false,
-                'message' => 'Too many request attempts, please try again later.',
-            ],
+            ['status' => false, 'message' => 'Too many request attempts, please try again later.'],
             Response::HTTP_TOO_MANY_REQUESTS
         );
 

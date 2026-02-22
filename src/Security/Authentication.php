@@ -120,6 +120,6 @@ final readonly class Authentication
             throw new UserNotFoundException();
         }
 
-        return $this->tokenGenerator->generate($userId);
+        return $this->tokenGenerator->generateAccessToken($userId);
     }
 }
