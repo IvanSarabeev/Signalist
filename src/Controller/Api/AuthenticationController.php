@@ -12,10 +12,7 @@ use App\Enum\PreferredIndustry;
 use App\Enum\RateLimiterTypes;
 use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
-use App\Exception\Security\EmailExistsException;
 use App\Exception\Security\InvalidCredentialsException;
-use App\Exception\Security\UserAlreadyExistsException;
-use App\Exception\Security\UserRegistrationFailedException;
 use App\Notification\NotificationDispatcher;
 use App\Security\Authentication;
 use App\Security\TokenGenerator;
@@ -137,12 +134,7 @@ final class AuthenticationController extends AbstractController
             $this->authentication->persistUserRegistration($parameters);
 
             return $this->json(['status' => true], Response::HTTP_CREATED);
-        } catch (EmailExistsException|UserAlreadyExistsException $existsException) {
-            return $this->json(
-                ['status' => false, 'message' => $existsException->getMessage()],
-                Response::HTTP_CONFLICT
-            );
-        } catch (UserRegistrationFailedException|Exception $exception) {
+        } catch (Exception $exception) {
             return $this->json(
                 ['status' => false, 'message' => $exception->getMessage()],
                 Response::HTTP_INTERNAL_SERVER_ERROR

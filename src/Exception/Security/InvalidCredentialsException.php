@@ -2,13 +2,18 @@
 
 namespace App\Exception\Security;
 
-use RuntimeException;
-use Throwable;
+use App\Exception\DomainException;
+use Symfony\Component\HttpFoundation\Response;
 
-final class InvalidCredentialsException extends RuntimeException
+final class InvalidCredentialsException extends DomainException
 {
-    public function __construct(string $message = 'Invalid credentials.', int $code = 0, ?Throwable $previous = null)
+    public function getStatusCode(): int
     {
-        parent::__construct($message, $code, $previous);
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorMessage(): string
+    {
+        return 'Invalid credentials.';
     }
 }

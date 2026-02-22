@@ -13,15 +13,13 @@ use App\Enum\PreferredIndustry;
 use App\Enum\RiskTolerance;
 use App\Exception\Security\EmailExistsException;
 use App\Exception\Security\InvalidCredentialsException;
-use App\Exception\Security\UserAlreadyExistsException;
-use App\Exception\Security\UserRegistrationFailedException;
+use App\Exception\Security\UserRegistrationException;
 use App\Notification\NotificationDispatcher;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Throwable;
 
 final readonly class Authentication
 {
@@ -33,7 +31,6 @@ final readonly class Authentication
         private UserPasswordHasherInterface $passwordHasher,
         private LoggerInterface             $logger,
         private NotificationDispatcher      $notificationDispatcher,
-        private TokenGenerator              $tokenGenerator,
     ) {
     }
 
@@ -72,19 +69,13 @@ final readonly class Authentication
                 NotificationType::USER_REGISTERED,
                 $user
             );
-        } catch (UserAlreadyExistsException $exception) {
-            $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: duplicated email', [
-                'email' => $dto->email,
-                'exception' => $exception,
-            ]);
-
-            throw new UserAlreadyExistsException('EmailService already registered.');
-        } catch (Throwable $throwable) {
+        } catch (Exception $exception) {
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: ', [
-                'exception' => $throwable,
+                'message' => $exception->getMessage(),
+                'code' => $exception->getCode(),
             ]);
 
-            throw new UserRegistrationFailedException('Unable to register user.');
+            throw new UserRegistrationException();
         }
 
         return $user;
