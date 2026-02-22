@@ -3,11 +3,8 @@
 namespace App\EventListener;
 
 use App\Exception\DomainException;
-use App\Exception\Security\ExpiredOtpException;
-use App\Exception\Security\InvalidOtpException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 #[AsEventListener(event: 'kernel.exception')]

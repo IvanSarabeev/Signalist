@@ -42,7 +42,7 @@ final readonly class EmailService
 
             throw $transportException;
         } catch (Throwable $throwable) {
-            $this->logger->critical(self::EMAIL_PREFIX . 'Unexpected failure', [
+            $this->logger->critical(self::EMAIL_PREFIX . 'unexpected failure', [
                 'message' => $throwable->getMessage(),
             ]);
 

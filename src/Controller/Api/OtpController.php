@@ -7,15 +7,12 @@ use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Otp\VerifyOtpRequest;
 use App\Enum\RateLimiterTypes;
 use App\Enum\SerializerFormat;
-use App\Exception\Security\ExpiredOtpException;
 use App\Security\Otp\OtpService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
