@@ -1,22 +1,14 @@
 import api from "@/lib/axiosApi";
+import {type AuthLoginResponse, type AuthRegisterResponse} from "@/app/types/security";
 
-export async function authRegister(data: SignUpFormData) {
+export async function authRegister(data: SignUpFormData): Promise<AuthRegisterResponse> {
     return await api.post('authentication/register', data);
 }
 
-type ApiAuthLogin = {
-    status: boolean;
-    is_otp_required?: boolean;
-    user_id?: number;
-    message?: string;
-    errors?: string[];
-    invalid_fields?: string[];
-}
-
-export async function authLogin(data: SignInFormData): Promise<ApiAuthLogin> {
+export async function authLogin(data: SignInFormData): Promise<AuthLoginResponse> {
     return await api.post('authentication/login', data);
 }
 
-export async function authLogout() {
+export async function authLogout(): Promise<void> {
     return await api.post('authentication/logout');
 }

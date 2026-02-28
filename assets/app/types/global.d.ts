@@ -19,7 +19,7 @@ declare global {
     };
 
     type VerifyOtpData = {
-        userId: number;
+        user_id: number;
         otp: string;
     };
 
