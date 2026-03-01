@@ -11,8 +11,4 @@ final class VerifyOtpRequest
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 4)]
     public string $otp;
-
-    #[Assert\NotBlank]
-    #[Assert\Type('string')]
-    public int $token;
 }

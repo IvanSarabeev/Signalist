@@ -18,11 +18,6 @@ declare global {
         preferredIndustry: string;
     };
 
-    type VerifyOtpData = {
-        user_id: number;
-        otp: string;
-    };
-
     type CountrySelectProps = {
         name: string;
         label: string;
@@ -227,6 +222,7 @@ declare global {
     };
 
     type ApiError = {
+        status: boolean;
         response: Record<string, any>;
         message: string;
     }

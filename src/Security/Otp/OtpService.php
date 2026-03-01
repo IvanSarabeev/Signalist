@@ -9,12 +9,14 @@ use App\Exception\Security\UserNotFoundException;
 use App\Security\TokenGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 final readonly class OtpService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TokenGenerator $tokenGenerator,
+        private RequestStack $requestStack,
     ) { }
 
     /**
@@ -23,7 +25,13 @@ final readonly class OtpService
      */
     public function validateVerificationCode(VerifyOtpRequest $dto): void
     {
-        $token = $this->tokenGenerator->validateToken($dto->token);
+        $request = $this->requestStack->getCurrentRequest();
+        $authToken = $request->headers->get('X-Auth-Token');
+        if (!$authToken) {
+            throw new ExpiredOtpException();
+        }
+
+        $token = $this->tokenGenerator->validateToken($authToken);
 
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['id' => $token->getUserId()]);

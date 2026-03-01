@@ -3,9 +3,9 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import InputField from "@/components/forms/InputField";
 import {Button} from "@/components/ui/button";
 import FooterLink from "@/components/forms/FooterLink";
-import {authLogin} from "@/app/api/auth";
 import {addNotification} from "@/lib/utils";
 import {useNavigate} from "react-router";
+import {useAuth} from "@/hooks/useAuth";
 
 const defaultValues = {
     email: '',
@@ -13,6 +13,7 @@ const defaultValues = {
 };
 
 const SignInPage = () => {
+    const {authenticate} = useAuth();
     const navigate = useNavigate();
     const {
         register,
@@ -25,27 +26,21 @@ const SignInPage = () => {
 
     const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
         try {
-            const authResponse = await authLogin(data);
-            if (authResponse?.status) {
+            const authenticateResponse = await authenticate(data);
+            console.log('Ath Response: ', authenticateResponse);
+            if (authenticateResponse.status) {
                 addNotification({
                     type: "success",
                     message: "Successful!",
-                    description: "Welcome back, you are being redirected to verify your identity.",
+                    description: "Welcome back, you are being redirected.",
                     duration: 4000
                 });
-                navigate("/secure", {
-                    state: { userId: authResponse?.user_id }
-                });
+                navigate("/secure");
                 return;
             }
-        } catch (error: unknown) {
-            const apiError = error as ApiError;
-
-            addNotification({
-                type: "error",
-                message: "Authentication Error!",
-                description: apiError.message,
-            });
+        } finally {
+            /* TODO: Create a loading bar animation for better UX */
+            console.log('Authentication loaded', data);
         }
     };
 

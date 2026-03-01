@@ -1,39 +1,62 @@
-import {createContext, FC, ReactNode, useContext, useState} from "react";
-import {setAuthToken} from "@/lib/axiosApi";
+import {createContext, ReactNode, useEffect, useMemo, useState} from "react";
 import {authLogin} from "@/app/api/auth";
 import {addNotification} from "@/lib/utils";
 import {verifyOtp} from "@/app/api/otp";
+import {setupInterceptors} from "@/lib/axiosApi";
 
 interface AuthState {
-    user: any | null; // TODO: Create the base User model
-    token: string | null;
+    accessToken: string | null;
+    refreshToken: string | null;
     isAuthenticated: boolean;
 }
 
 interface AuthContextType extends AuthState {
-    login: (parameters: SignInFormData) => Promise<void>;
-    verifyOtp: (otp: string) => Promise<void>;
+    authenticate: (data: SignInFormData) => Promise<{ status: boolean }>;
+    otpVerification: (otp: string) => Promise<void>;
     logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-type AuthProviderProps = {children: ReactNode};
+type AuthProviderProps = { children: ReactNode };
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [auth, setAuth] = useState<AuthState>({
-        user: null,
-        token: null,
+        accessToken: null,
+        refreshToken: null,
         isAuthenticated: false
     });
 
-    const authenticate = async (data: SignInFormData) => {
-        try {
-            const {status, token} = await authLogin(data);
+    useEffect(() => {
+        const handleLogout = () => logout();
+        window.addEventListener('logout', handleLogout);
+        return () => window.removeEventListener('logout', handleLogout);
+    }, []);
 
-            if (status && token) {
-                setAuth((prevState) => ({...prevState, token}));
-            }
+    useEffect(() => {
+        setupInterceptors(
+            () => auth.accessToken,
+            () => auth.refreshToken,
+            (access, refresh) =>
+                setAuth({
+                    accessToken: access,
+                    refreshToken: refresh,
+                    isAuthenticated: true
+                }),
+            logout
+        );
+    }, [auth.accessToken, auth.refreshToken]);
+
+    const authenticate = async (data: SignInFormData): Promise<{ status: boolean }> => {
+        try {
+            const authenticationResponse = await authLogin(data);
+            const {status, token} = authenticationResponse;
+
+            if (!token) return { status };
+
+            setAuth((prevState) => ({...prevState, accessToken: token}));
+
+            return { status };
         } catch (error: unknown) {
             const err = error as ApiError;
             addNotification({
@@ -41,23 +64,14 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 message: "Authentication Error!",
                 description: err.message,
             });
+
+            return { status: false };
         }
     };
 
     const otpVerification = async (otp: string) => {
         try {
-            const {status, data: {user, token}} = await verifyOtp(otp);
-            if (status) {
-                const finalToken = token;
-
-                setAuth({
-                    user,
-                    token: finalToken,
-                    isAuthenticated: true
-                });
-
-                setAuthToken(finalToken);
-            }
+            return await verifyOtp(otp);
         } catch (error: unknown) {
             const err = error as ApiError;
             addNotification({
@@ -69,23 +83,20 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     };
 
     const logout = () => {
-        setAuthToken(undefined);
         setAuth({
-            user: null,
-            token: null,
+            accessToken: null,
+            refreshToken: null,
             isAuthenticated: false
         });
     };
 
+    const providerValues = useMemo(() => ({
+        ...auth, authenticate, otpVerification, logout
+    }), []);
+
     return (
-        <AuthContext.Provider value={{ ...auth, authenticate, otpVerification, logout}}>
+        <AuthContext.Provider value={providerValues}>
             {children}
         </AuthContext.Provider>
     );
-};
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used inside an AuthProvider!");
-    return context;
 };

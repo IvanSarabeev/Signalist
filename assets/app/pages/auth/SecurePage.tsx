@@ -1,46 +1,23 @@
-import React, {FC, useEffect} from 'react'
+import React, {FC} from 'react'
 import {Button} from "@/components/ui/button";
-import {verifyOtp} from "@/app/api/otp";
 import InputField from "@/components/forms/InputField";
-import {useLocation, useNavigate} from "react-router";
 import {SubmitHandler, useForm} from "react-hook-form";
 import FooterLink from "@/components/forms/FooterLink";
 import {addNotification} from "@/lib/utils";
 
-type SecureRouteState = {userId: number}
+type SecurePageData = {otp: string};
 
 const SecurePage: FC = () => {
-    const location = useLocation() as { state: SecureRouteState | null };
-    const navigate = useNavigate();
-
-    const userId = location.state?.userId ?? null;
-
-    useEffect(() => {
-        if (!userId) {
-            navigate("/");
-            addNotification({
-                type: "warning",
-                message: 'Unauthorized access!',
-                duration: 2500
-            });
-        }
-    }, [userId, navigate]);
-
     const {
         register,
         handleSubmit,
         formState: {errors, isSubmitting, isLoading},
-    } = useForm<VerifyOtpData>({
-        defaultValues: {
-            user_id: userId ?? 0,
-            otp: '',
-        },
+    } = useForm<SecurePageData>({
+        defaultValues: {otp: ''},
         mode: 'onBlur'
     });
 
-    if (userId === null) return null;
-
-    const onSubmit: SubmitHandler<VerifyOtpData> = async (data) => {
+    const onSubmit: SubmitHandler<SecurePageData> = async (data) => {
         if (data.otp.length < 4) {
             addNotification({
                 type: 'error',
@@ -51,21 +28,21 @@ const SecurePage: FC = () => {
         }
 
         try {
-            const otpResponse = await verifyOtp(data);
-            console.log('OTP Response: ', otpResponse);
-            if (otpResponse?.status) {
-                addNotification({
-                    type: "success",
-                    message: "Successfully Authenticated!",
-                    description: "Welcome back",
-                    duration: 4000
-                });
-                navigate("/account");
-                return;
-            }
+            console.log("Verify OTP: ", data);
+            // const otpResponse = await verifyOtp(data);
+            // console.log('OTP Response: ', otpResponse);
+            // if (otpResponse?.status) {
+            //     addNotification({
+            //         type: "success",
+            //         message: "Successfully Authenticated!",
+            //         description: "Welcome back",
+            //         duration: 4000
+            //     });
+            //     navigate("/account");
+            //     return;
+            // }
         } catch (error: unknown) {
             const apiError = error as ApiError;
-
             addNotification({
                 type: 'error',
                 message: 'Authentication Error!',
@@ -75,8 +52,6 @@ const SecurePage: FC = () => {
     };
 
     const isBtnDisabled = isSubmitting || isLoading;
-
-    console.log('Btn Is Disabled:', isBtnDisabled);
 
     return (
         <div className='h-full flex flex-col justify-center'>
