@@ -25,22 +25,15 @@ const SignInPage = () => {
     });
 
     const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
-        try {
-            const authenticateResponse = await authenticate(data);
-            console.log('Ath Response: ', authenticateResponse);
-            if (authenticateResponse.status) {
-                addNotification({
-                    type: "success",
-                    message: "Successful!",
-                    description: "Welcome back, you are being redirected.",
-                    duration: 4000
-                });
-                navigate("/secure");
-                return;
-            }
-        } finally {
-            /* TODO: Create a loading bar animation for better UX */
-            console.log('Authentication loaded', data);
+        const {status} = await authenticate(data);
+        if (status) {
+            addNotification({
+                type: "success",
+                message: "Successful!",
+                description: "Welcome back, you are being redirected.",
+                duration: 4000
+            });
+            navigate("/secure");
         }
     };
 

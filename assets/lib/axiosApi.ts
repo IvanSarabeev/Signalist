@@ -1,5 +1,6 @@
 import axios from "axios";
 import {tokenRefresh} from "@/app/api/token";
+import {hideWaveLoader, showWaveLoader} from "@/components/waveLoader";
 
 const api = axios.create({
     baseURL: '/api/v1',
@@ -28,6 +29,7 @@ export const setupInterceptors = (
     logout: () => void
 ) => {
     api.interceptors.request.use((config) => {
+        showWaveLoader();
         const token = getAccessToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -37,9 +39,11 @@ export const setupInterceptors = (
 
     api.interceptors.response.use(
         (response) => {
+            hideWaveLoader();
             return response.data ?? response;
         },
         async (error) => {
+            hideWaveLoader();
             const currentMainRequest = error.config;
 
             if (error.response?.status !== 401) {

@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Signalist</title>
     <script type="module" src="main.tsx"></script>
 </head>
 <body>
     <div id="app"></div>
+    <div id="wave-loader" class="fixed top-0 left-0 w-full h-1 z-[9999] opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="wave-track relative w-full h-full overflow-hidden">
+            <div class="wave absolute top-0 left-[-50%] w-[200%] h-full bg-linear-to-b from-yellow-400 to-yellow-500"></div>
+        </div>
+    </div>
 </body>
 </html>

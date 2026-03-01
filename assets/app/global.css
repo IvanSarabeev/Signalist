@@ -144,7 +144,7 @@
         @apply mx-auto max-w-screen-2xl px-4 md:px-6 lg:px-8;
     }
     .yellow-btn {
-        @apply h-12 cursor-pointer bg-gradient-to-b from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-gray-950 font-medium text-base rounded-lg shadow-lg disabled:opacity-50;
+        @apply h-12 cursor-pointer bg-linear-to-b from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-gray-950 font-medium text-base rounded-lg shadow-lg disabled:opacity-50;
     }
     .home-wrapper {
         @apply text-gray-400 flex-col gap-4 md:gap-10 items-center sm:items-start;
@@ -484,4 +484,42 @@
 
 .scrollbar-hide-default::-webkit-scrollbar-thumb:hover {
     background-color: #9095A1;
+}
+
+@keyframes waveMoveMotion {
+    0% {transform: translateX(0%)}
+    100% {transform: translateX(50%)}
+}
+
+#wave-loader {
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
+}
+
+.wave {
+    animation: waveMoveMotion 1.2s linear infinite;
+    clip-path: polygon(
+        0% 50%,
+        5% 40%,
+        10% 50%,
+        15% 40%,
+        20% 50%,
+        25% 40%,
+        30% 50%,
+        35% 40%,
+        40% 50%,
+        45% 40%,
+        50% 50%,
+        55% 40%,
+        60% 50%,
+        65% 40%,
+        70% 50%,
+        75% 40%,
+        80% 50%,
+        85% 40%,
+        90% 50%,
+        95% 40%,
+        100% 50%,
+        100% 100%,
+        0% 100%
+    );
 }
