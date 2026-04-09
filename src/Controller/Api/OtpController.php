@@ -1,29 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Attribute\RateLimit;
-use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Otp\VerifyOtpRequest;
 use App\Enum\RateLimiterTypes;
 use App\Enum\SerializerFormat;
 use App\Security\Otp\OtpService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/otp', name: 'api_otp_')]
 final class OtpController extends AbstractController
 {
-    use ValidatesRequestTrait;
-
     public function __construct(
         private readonly OtpService $otpService,
         private readonly SerializerInterface $serializer,
+        private readonly ValidatorInterface $validator,
     ) { }
 
     #[RateLimit(RateLimiterTypes::OTP)]
@@ -43,9 +43,10 @@ final class OtpController extends AbstractController
             );
         }
 
-        $constraintValidation = $this->validateConstraints($parameters);
-        if (!empty($constraintValidation)) {
-            return $this->json($constraintValidation, Response::HTTP_BAD_REQUEST);
+        $violations = $this->validator->validate($parameters);
+        $constraintViolation = $this->constraintViolationJsonResponse($violations);
+        if ($constraintViolation !== null) {
+            return $constraintViolation;
         }
 
         $this->otpService->validateVerificationCode($parameters);

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Attribute\RateLimit;
-use App\Controller\Traits\ValidatesRequestTrait;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
@@ -18,25 +19,24 @@ use App\Security\Authentication;
 use App\Security\TokenManager;
 use App\Service\Session\Session;
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/authentication', name: 'api_authentication_')]
 final class AuthenticationController extends AbstractController
 {
-    use ValidatesRequestTrait;
-
     public function __construct(
         private readonly Authentication         $authentication,
         private readonly SerializerInterface    $serializer,
         private readonly Session                $session,
         private readonly NotificationDispatcher $notificationDispatcher,
         private readonly TokenManager           $tokenGenerator,
+        private readonly ValidatorInterface     $validator,
     )
     { }
 
@@ -64,9 +64,10 @@ final class AuthenticationController extends AbstractController
             );
         }
 
-        $constraintValidation = $this->validateConstraints($parameters);
-        if (!empty($constraintValidation)) {
-            return $this->json($constraintValidation, Response::HTTP_BAD_REQUEST);
+        $violations = $this->validator->validate($parameters);
+        $constraintViolation = $this->constraintViolationJsonResponse($violations);
+        if ($constraintViolation !== null) {
+            return $constraintViolation;
         }
 
         try {
@@ -122,9 +123,10 @@ final class AuthenticationController extends AbstractController
             'preferredIndustry' => PreferredIndustry::class,
         ]);
 
-        $constraintValidation = $this->validateConstraints($parameters);
-        if (!empty($constraintValidation)) {
-            return $this->json($constraintValidation, Response::HTTP_BAD_REQUEST);
+        $violations = $this->validator->validate($parameters);
+        $constraintViolation = $this->constraintViolationJsonResponse($violations);
+        if ($constraintViolation !== null) {
+            return $constraintViolation;
         }
 
         try {
