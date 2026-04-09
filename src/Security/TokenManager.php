@@ -71,7 +71,7 @@ final readonly class TokenManager
      */
     public function validateToken(string $token): ?RefreshTokens
     {
-        if ($token) {
+        if (!$token) {
             throw new TokenNotFoundException();
         }
 

@@ -55,7 +55,7 @@ services:
     App\Notification\:
         resource: '../src/Notification'
         exclude:
-            - '../src/Notification/NotificationDIspatcher.php'
+            - '../src/Notification/NotificationDispatcher.php'
             - '../src/Notification/NotificationInterface.php'
         tags: ['app.notification']
 
