@@ -15,27 +15,29 @@ interface AuthContextType extends AuthState {
     logout: () => void;
 }
 
+type AuthProviderProps = { children: ReactNode };
+
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-type AuthProviderProps = { children: ReactNode };
+const AUTH_STORAGE_KEY = 'storageKey';
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const tokenRef = useRef<string | null>(null);
-    const [auth, setAuth] = useState<AuthState>({
-        accessToken: null,
-        isAuthenticated: false
+    const [auth, setAuth] = useState<AuthState>(() => {
+        try {
+            const storedToken = sessionStorage.getItem(AUTH_STORAGE_KEY);
+
+            if (!storedToken) {
+                return { accessToken: null, isAuthenticated: false };
+            }
+
+            const token = JSON.parse(storedToken);
+
+            return { accessToken: token, isAuthenticated: true };
+        } catch {
+            return { accessToken: null, isAuthenticated: false };
+        }
     });
-
-    // ✅ Logout handler (stable)
-    const logout = () => {
-        setAuth({
-            accessToken: null,
-            isAuthenticated: false
-        });
-
-        // optional: redirect handled by interceptor
-        window.location.href = "/";
-    };
 
     useEffect(() => {
         tokenRef.current = auth.accessToken;
@@ -48,6 +50,27 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             logout
         );
     }, []); // 🔥 IMPORTANT: empty deps
+
+    useEffect(() => {
+        if (auth.accessToken) {
+            sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth.accessToken));
+        } else {
+            sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        }
+    }, [auth.accessToken]);
+
+    // ✅ Logout handler (stable)
+    const logout = () => {
+        setAuth({
+            accessToken: null,
+            isAuthenticated: false
+        });
+
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+
+        // optional: redirect handled by interceptor
+        window.location.href = "/";
+    };
 
     // 🔐 Login
     const authenticate = async (

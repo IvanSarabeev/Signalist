@@ -26,9 +26,14 @@ final readonly class OtpService
     public function validateVerificationCode(VerifyOtpRequest $dto): void
     {
         $request = $this->requestStack->getCurrentRequest();
-        $authToken = $request->headers->get('X-Auth-Token');
+        $authToken = $request->headers->get('AUTHORIZATION');
         if (!$authToken) {
             throw new ExpiredOtpException();
+        }
+
+        if ($authToken !== '') {
+            // TODO: Remove this continue and use the actual validateToken metohd.
+            return;
         }
 
         $token = $this->tokenGenerator->validateToken($authToken);
