@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Authentication;
 
 use App\Attribute\RateLimit;
+use App\Controller\Api\AbstractController;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
@@ -16,8 +17,8 @@ use App\Enum\SerializerFormat;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Notification\NotificationDispatcher;
 use App\Security\Authentication;
+use App\Security\Session\Session;
 use App\Security\TokenManager;
-use App\Service\Session\Session;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

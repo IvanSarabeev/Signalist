@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Authentication;
 
 use App\Attribute\RateLimit;
+use App\Controller\Api\AbstractController;
 use App\DTO\Otp\VerifyOtpRequest;
 use App\Enum\RateLimiterTypes;
 use App\Enum\SerializerFormat;

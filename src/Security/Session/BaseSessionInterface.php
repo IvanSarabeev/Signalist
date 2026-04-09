@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Session;
+namespace App\Security\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
