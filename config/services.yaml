@@ -26,7 +26,7 @@ services:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
 
-    App\Security\TokenGenerator:
+    App\Security\TokenManager:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
             $accessTtl: '%env(JWT_ACCESS_TTL)%'

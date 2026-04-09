@@ -4,10 +4,14 @@ import InputField from "@/components/forms/InputField";
 import {SubmitHandler, useForm} from "react-hook-form";
 import FooterLink from "@/components/forms/FooterLink";
 import {addNotification} from "@/lib/utils";
+import {useNavigate} from "react-router";
+import {useAuth} from "@/hooks/useAuth";
 
 type SecurePageData = {otp: string};
 
 const SecurePage: FC = () => {
+    const {otpVerification} = useAuth();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -28,19 +32,18 @@ const SecurePage: FC = () => {
         }
 
         try {
-            console.log("Verify OTP: ", data);
-            // const otpResponse = await verifyOtp(data);
-            // console.log('OTP Response: ', otpResponse);
-            // if (otpResponse?.status) {
-            //     addNotification({
-            //         type: "success",
-            //         message: "Successfully Authenticated!",
-            //         description: "Welcome back",
-            //         duration: 4000
-            //     });
-            //     navigate("/account");
-            //     return;
-            // }
+            const otpResponse = await otpVerification(data.otp);
+
+            if (otpResponse.status) {
+                addNotification({
+                    type: "success",
+                    message: "Successfully Authenticated!",
+                    description: "Welcome back",
+                    duration: 4000
+                });
+                navigate("/account");
+                return;
+            }
         } catch (error: unknown) {
             const apiError = error as ApiError;
             addNotification({

@@ -10,5 +10,6 @@ final class VerifyOtpRequest
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 4)]
+    #[Assert\Type('string')]
     public string $otp;
 }

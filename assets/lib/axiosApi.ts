@@ -1,6 +1,6 @@
 import axios from "axios";
-import {tokenRefresh} from "@/app/api/token";
-import {hideWaveLoader, showWaveLoader} from "@/components/waveLoader";
+// import { tokenRefresh } from "@/app/api/token";
+import { hideWaveLoader, showWaveLoader } from "@/components/waveLoader";
 
 const api = axios.create({
     baseURL: '/api/v1',
@@ -10,6 +10,8 @@ const api = axios.create({
     }
 });
 
+// 🔒 REFRESH TOKEN LOGIC (DISABLED FOR NOW)
+/*
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
@@ -21,19 +23,24 @@ const onRefreshed = (token: string) => {
     refreshSubscribers.forEach((cb) => cb(token));
     refreshSubscribers = [];
 };
+*/
 
 export const setupInterceptors = (
     getAccessToken: () => string | null,
-    getRefreshToken: () => string | null,
-    setTokens: (access: string, refresh: string) => void,
+    // getRefreshToken: () => string | null,
+    // setTokens: (access: string, refresh: string) => void,
     logout: () => void
 ) => {
     api.interceptors.request.use((config) => {
         showWaveLoader();
+
         const token = getAccessToken();
+
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers = config.headers || {};
+            config.headers["Authorization"] = `Bearer ${token}`;
         }
+
         return config;
     });
 
@@ -44,12 +51,23 @@ export const setupInterceptors = (
         },
         async (error) => {
             hideWaveLoader();
-            const currentMainRequest = error.config;
 
+            // const currentMainRequest = error.config;
+
+            // ❌ Not an auth error → just throw
             if (error.response?.status !== 401) {
-                throw error;
+                return Promise.reject(error);
             }
 
+            if (error.response?.status === 401) {
+                logout();
+            }
+
+            // 🔥 SIMPLE STRATEGY (NO REFRESH TOKEN)
+            return Promise.reject(error);
+
+            // 🔒 REFRESH TOKEN FLOW (DISABLED FOR NOW)
+            /*
             if (currentMainRequest._retry) {
                 logout();
                 throw error;
@@ -72,23 +90,25 @@ export const setupInterceptors = (
 
                 if (!refreshToken) throw new Error('Missing refresh token');
 
-                const {message, access_token, refresh_token} = await tokenRefresh(refreshToken);
+                const { message, access_token, refresh_token } = await tokenRefresh(refreshToken);
 
                 if (!access_token || !refresh_token) throw new Error(message);
 
                 setTokens(access_token, refresh_token);
                 onRefreshed(access_token);
+
+                currentMainRequest.headers.Authorization = `Bearer ${access_token}`;
                 return api(currentMainRequest);
+
             } catch (refreshError: unknown) {
-                // Any refresh failure invalidates authentication state.
                 logout();
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;
             }
-
+            */
         }
-    )
-}
+    );
+};
 
 export default api;

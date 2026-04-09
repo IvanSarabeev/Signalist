@@ -36,7 +36,7 @@ final class AuthenticationController extends AbstractController
         private readonly SerializerInterface    $serializer,
         private readonly Session                $session,
         private readonly NotificationDispatcher $notificationDispatcher,
-        private readonly TokenManager           $tokenGenerator,
+        private readonly TokenManager           $tokenManager,
         private readonly ValidatorInterface     $validator,
     )
     { }
@@ -84,7 +84,7 @@ final class AuthenticationController extends AbstractController
 
             $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
-            $token = $this->tokenGenerator->generateAccessToken($user->getId());
+            $token = $this->tokenManager->generateAccessToken($user->getId());
 
             return $this->json(['status' => true, 'token' => $token]);
         } catch (InvalidCredentialsException $credentialsException) {

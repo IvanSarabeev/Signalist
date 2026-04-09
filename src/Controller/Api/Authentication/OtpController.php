@@ -52,7 +52,7 @@ final class OtpController extends AbstractController
 
         $this->otpService->validateVerificationCode($parameters);
 
-        return $this->json(['status' => true]);
+        return $this->json(['status' => true], Response::HTTP_ACCEPTED);
     }
 
     #[Route(path: '/resend', name: 'resend', methods: 'POST')]

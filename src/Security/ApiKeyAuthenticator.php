@@ -28,19 +28,31 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        $path = $request->getPathInfo();
+
+        if (str_starts_with($path, '/api/v1/authentication')) {
+            return false;
+        }
+
+        if (str_starts_with($path, '/api/v1/otp/verify')) {
+            return false;
+        }
+
+        return $request->headers->has('AUTHORIZATION');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $token = $request->headers->get('X-AUTH-TOKEN');
+        $token = $request->headers->get('AUTHORIZATION');
 
         if (!$token) {
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
+        $extractToken = str_replace('Bearer ', '', $token);
+
         try {
-            $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
+            $decoded = JWT::decode($extractToken, new Key($this->jwtSecret, 'HS256'));
 
             $userIdentifier = $decoded->sub ?? null;
 
@@ -63,6 +75,7 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
+            'status' => false,
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
         ];
 

@@ -65,10 +65,7 @@ final readonly class Authentication
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            $this->notificationDispatcher->notify(
-                NotificationType::USER_REGISTERED,
-                $user
-            );
+            $this->notificationDispatcher->notify(NotificationType::USER_REGISTERED, $user);
         } catch (Exception $exception) {
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: ', [
                 'message' => $exception->getMessage(),

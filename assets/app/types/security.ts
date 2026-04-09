@@ -18,3 +18,7 @@ export interface TokenRefreshResponse {
     access_token?: string;
     refresh_token?: string;
 }
+
+export interface OtpVerifyResponse {
+    status: boolean;
+}
