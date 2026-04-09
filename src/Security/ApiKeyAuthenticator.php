@@ -16,17 +16,10 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class ApiKeyAuthenticator extends AbstractAuthenticator
+final class ApiKeyAuthenticator extends AbstractAuthenticator
 {
-    private string $jwtSecret;
-
-    /**
-     * @param string $jwtSecret
-     */
-    public function __construct(string $jwtSecret)
-    {
-        $this->jwtSecret = $jwtSecret;
-    }
+    public function __construct(private readonly string $jwtSecret)
+    { }
 
     /**
      * Called on every request to decide if this authenticator should be
@@ -35,7 +28,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-         return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('X-AUTH-TOKEN');
     }
 
     public function authenticate(Request $request): Passport
@@ -55,7 +48,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
                 throw new CustomUserMessageAuthenticationException('Invalid token: Missing User id' . $token);
             }
         } catch (Exception $exception) {
-            throw new CustomUserMessageAuthenticationException('Invalid or expired token: '. $exception->getMessage());
+            throw new CustomUserMessageAuthenticationException('Invalid or expired token: ' . $exception->getMessage());
         }
 
         return new SelfValidatingPassport(new UserBadge($userIdentifier));

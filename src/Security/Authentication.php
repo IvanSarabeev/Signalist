@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Security;
 
@@ -31,8 +31,8 @@ final readonly class Authentication
         private UserPasswordHasherInterface $passwordHasher,
         private LoggerInterface             $logger,
         private NotificationDispatcher      $notificationDispatcher,
-    ) {
-    }
+    )
+    { }
 
     /**
      * Persist the User to the system

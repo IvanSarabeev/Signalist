@@ -15,7 +15,7 @@ use App\Enum\SerializerFormat;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Notification\NotificationDispatcher;
 use App\Security\Authentication;
-use App\Security\TokenGenerator;
+use App\Security\TokenManager;
 use App\Service\Session\Session;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,9 +36,9 @@ final class AuthenticationController extends AbstractController
         private readonly SerializerInterface    $serializer,
         private readonly Session                $session,
         private readonly NotificationDispatcher $notificationDispatcher,
-        private readonly TokenGenerator         $tokenGenerator,
-    ) {
-    }
+        private readonly TokenManager           $tokenGenerator,
+    )
+    { }
 
     /**
      * Authenticate if the User is existing in the system
@@ -75,15 +75,12 @@ final class AuthenticationController extends AbstractController
             // Prevent session fixation
             $this->session->regenerate();
             $this->session->setAuthentication([
-                'id' => $user->getId(),
+                'id'       => $user->getId(),
                 'fullName' => $user->getFullName(),
-                'email' => $user->getUserIdentifier(),
+                'email'    => $user->getUserIdentifier(),
             ]);
 
-            $this->notificationDispatcher->notify(
-                NotificationType::LOGIN_OTP,
-                $user
-            );
+            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
             $token = $this->tokenGenerator->generateAccessToken($user->getId());
 
@@ -120,7 +117,7 @@ final class AuthenticationController extends AbstractController
         }
 
         $this->normalizeEnumFields($parameters, [
-            'investmentGoals'    => InvestmentGoal::class,
+            'investmentGoals'   => InvestmentGoal::class,
             'riskTolerance'     => RiskTolerance::class,
             'preferredIndustry' => PreferredIndustry::class,
         ]);
@@ -145,11 +142,11 @@ final class AuthenticationController extends AbstractController
     #[Route(path: '/logout', name: 'logout', methods: 'POST')]
     public function signOut(): Response
     {
-       if ($this->session->hasAuthentication()) {
-           $this->session->clearAuthentication();
-           $this->session->regenerate();
-       }
+        if ($this->session->hasAuthentication()) {
+            $this->session->clearAuthentication();
+            $this->session->regenerate();
+        }
 
-       return new Response(null, Response::HTTP_NO_CONTENT);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

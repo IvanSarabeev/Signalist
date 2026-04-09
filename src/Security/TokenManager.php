@@ -12,25 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
 use Random\RandomException;
 
-class TokenGenerator
+final readonly class TokenManager
 {
-    private string $jwtSecret;
-    private int $accessTtl;
-    private int $refreshTtl;
-    private EntityManagerInterface $entityManager;
-
     public function __construct(
-        string $jwtSecret,
-        int $accessTtl,
-        int $refreshTtl,
-        EntityManagerInterface $entityManager
+        private string $jwtSecret,
+        private int $accessTtl,
+        private int $refreshTtl,
+        private EntityManagerInterface $entityManager
     )
-    {
-        $this->jwtSecret = $jwtSecret;
-        $this->accessTtl = $accessTtl;
-        $this->refreshTtl = $refreshTtl;
-        $this->entityManager = $entityManager;
-    }
+    {}
 
     /**
      * @param int $userId

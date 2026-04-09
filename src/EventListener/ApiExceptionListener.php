@@ -29,7 +29,6 @@ final class ApiExceptionListener
         }
     }
 
-
     private function isApiRequest(ExceptionEvent $event): bool
     {
         return str_starts_with(

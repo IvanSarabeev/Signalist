@@ -6,7 +6,7 @@ use App\DTO\Otp\VerifyOtpRequest;
 use App\Entity\User;
 use App\Exception\Security\ExpiredOtpException;
 use App\Exception\Security\UserNotFoundException;
-use App\Security\TokenGenerator;
+use App\Security\TokenManager;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,8 +15,8 @@ final readonly class OtpService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private TokenGenerator $tokenGenerator,
-        private RequestStack $requestStack,
+        private TokenManager           $tokenGenerator,
+        private RequestStack           $requestStack,
     ) { }
 
     /**
