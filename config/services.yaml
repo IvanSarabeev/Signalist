@@ -1,4 +1,7 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+parameters:
+    finnhub.base_url: '%env(string:FINNHUB_BASE_URL)%'
+    finnhub.token: '%env(string:FINNHUB_TOKEN)%'
 
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
@@ -58,8 +61,20 @@ services:
             - '../src/Notification/NotificationDispatcher.php'
             - '../src/Notification/NotificationInterface.php'
         tags: ['app.notification']
-
     # End of Region Notification
+
+    # Region Services
+    App\Service\Finnhub\:
+        resource: '../src/Service/Finnhub/'
+
+    App\Service\Finnhub\Provider\FinnhubClient:
+        arguments:
+            $baseUrl: '%finnhub.base_url%'
+            $token: '%finnhub.token%'
+
+    App\Service\Finnhub\Provider\FinnhubClientInterface:
+        alias: App\Service\Finnhub\Provider\FinnhubClient
+    # End of Region Services
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

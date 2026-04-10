@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Finhub\Provider;
+namespace App\Service\Finnhub\Provider;
 
+use JsonException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -32,19 +32,21 @@ abstract readonly class AbstractFinnhubClient
      * @param array $query
      * @return array
      * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
     protected function requestGet(string $endpoint, array $query = []): array
     {
-        $query['token'] = $this->token;
+        $query = array_merge($query, ['token' => $this->token]);
 
         $response = $this->httpClient->request(
             Request::METHOD_GET,
             rtrim($this->baseUrl, '/') . $endpoint,
-            ['query' => $query]
+            [
+                'query' => $query,
+                'timeout' => 5,
+            ]
         );
 
         return $this->handleResponse($response);
@@ -54,9 +56,8 @@ abstract readonly class AbstractFinnhubClient
      * Handle the Response and convert it to an array.
      *
      * @param ResponseInterface $response
-     * @return array
+     * @return mixed
      * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
@@ -64,13 +65,33 @@ abstract readonly class AbstractFinnhubClient
     private function handleResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
+        $content = $response->getContent(false);
 
         if ($statusCode >= Response::HTTP_BAD_REQUEST) {
             throw new RuntimeException(
-                sprintf('Finnhub API error: %s', $response->getContent(false))
+                sprintf('Finnhub API error (%d): %s', $statusCode, $content)
             );
         }
 
-        return $response->toArray(false);
+        if (empty($content)) {
+            throw new RuntimeException(
+                'Empty response from Finnhub API (invalid token or bad request)'
+            );
+        }
+
+        try {
+            $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            if (isset($data['error'])) {
+                throw new RuntimeException(
+                    sprintf('Finnhub error: %s', $data['error'])
+                );
+            }
+
+            return $data;
+        } catch (JsonException $exception) {
+            throw new RuntimeException(
+                sprintf('Invalid JSON response: %s | %s', $content, $exception->getMessage())
+            );
+        }
     }
 }

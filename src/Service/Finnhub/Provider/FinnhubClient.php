@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Finhub\Provider;
+namespace App\Service\Finnhub\Provider;
 
 use DateTimeInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -21,7 +20,6 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
      * @param DateTimeInterface $to
      * @return array
      * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
@@ -41,15 +39,12 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
      * @param string $symbol
      * @return array
      * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
     public function getCompanyProfile(string $symbol): array
     {
-        return $this->requestGet(self::GET_STOCK_PROFILE, [
-            'symbol' => $symbol
-        ]);
+        return $this->requestGet(self::GET_STOCK_PROFILE, ['symbol' => $symbol]);
     }
 }

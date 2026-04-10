@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Finhub\Provider;
+namespace App\Service\Finnhub\Provider;
 
 use DateTimeInterface;
 
