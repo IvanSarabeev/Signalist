@@ -30,23 +30,21 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
     {
         $path = $request->getPathInfo();
 
+        // Allow ONLY authentication routes to bypass auth
         if (str_starts_with($path, '/api/v1/authentication')) {
             return false;
         }
 
-        if (str_starts_with($path, '/api/v1/otp/verify')) {
-            return false;
-        }
-
-        return $request->headers->has('AUTHORIZATION');
+        // Everything else under /api/v1 MUST be authenticated
+        return str_starts_with($path, '/api/v1');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $token = $request->headers->get('AUTHORIZATION');
+        $token = $request->headers->get('Authorization');
 
         if (!$token) {
-            throw new CustomUserMessageAuthenticationException('No API token provided');
+            throw new CustomUserMessageAuthenticationException('Missing Authorization header.');
         }
 
         $extractToken = str_replace('Bearer ', '', $token);
@@ -54,16 +52,16 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
         try {
             $decoded = JWT::decode($extractToken, new Key($this->jwtSecret, 'HS256'));
 
-            $userIdentifier = $decoded->sub ?? null;
-
-            if (!$userIdentifier) {
-                throw new CustomUserMessageAuthenticationException('Invalid token: Missing User id' . $token);
+            if (!isset($decoded->sub)) {
+                throw new CustomUserMessageAuthenticationException('Token missing "sub" claim.');
             }
         } catch (Exception $exception) {
             throw new CustomUserMessageAuthenticationException('Invalid or expired token: ' . $exception->getMessage());
         }
 
-        return new SelfValidatingPassport(new UserBadge($userIdentifier));
+        return new SelfValidatingPassport(
+            new UserBadge((string) $decoded->sub)
+        );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response

@@ -84,7 +84,7 @@ final class AuthenticationController extends AbstractController
 
             $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
-            $token = $this->tokenManager->generateAccessToken($user->getId());
+            $token = $this->tokenManager->generateAccessToken($user);
 
             return $this->json(['status' => true, 'token' => $token]);
         } catch (InvalidCredentialsException $credentialsException) {

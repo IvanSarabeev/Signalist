@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Entity\RefreshTokens;
+use App\Entity\User;
 use App\Exception\Token\TokenNotFoundException;
 use App\Exception\Token\UnexpectedTokenException;
 use DateTimeImmutable;
@@ -23,17 +24,18 @@ final readonly class TokenManager
     {}
 
     /**
-     * @param int $userId
+     * @param User $user
      * @param array $additionalClaims
      * @return string
      */
-    public function generateAccessToken(int $userId, array $additionalClaims = []): string
+    public function generateAccessToken(User $user, array $additionalClaims = []): string
     {
         $now = time();
         $payload = array_merge($additionalClaims, [
-            'sub' => $userId,           // User identifier
-            'iat' => $now,              // Issued at
-            'exp' => $now + $this->accessTtl, // Expiration Time
+            'sub'   => $user->getUserIdentifier(), // User identifier
+            'roles' => $user->getRoles(),
+            'iat'   => $now, // Issued at
+            'exp'   => $now + $this->accessTtl, // Expiration Time
         ]);
 
         return JWT::encode($payload, $this->jwtSecret, 'HS256');
