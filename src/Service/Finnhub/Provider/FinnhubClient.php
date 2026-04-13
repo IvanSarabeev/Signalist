@@ -36,14 +36,14 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
     /**
      * Get company profile information.
      *
-     * @param string $symbol
+     * @param string|null $symbol
      * @return array
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function getCompanyProfile(string $symbol): array
+    public function getCompanyProfile(?string $symbol): array
     {
         return $this->requestGet(self::GET_STOCK_PROFILE, ['symbol' => $symbol]);
     }

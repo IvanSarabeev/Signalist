@@ -9,6 +9,7 @@
 /.idea
 /.env.dev
 /.env.prod
+/.env.*
 /node_modules
 ###< symfony/framework-bundle ###
 

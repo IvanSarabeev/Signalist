@@ -2,9 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Response\ApiResponse;
 use App\Service\Finnhub\FinnhubService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,22 +19,27 @@ final class StockController extends AbstractController
     /**
      * Symbol
      *
-     * @param string $symbol
+     * @param Request $request
      * @return JsonResponse
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/{symbol}/profile', name: 'profile', methods: 'GET')]
-    public function profile(string $symbol): JsonResponse
+    #[Route(path: '', name: 'list', methods: 'GET')]
+    public function list(Request $request): JsonResponse
     {
-        $this->handleInvalidSymbol($symbol);
+        $query = trim($request->query->getString('symbol'));
 
-        $result = $this->finnhubService->getCompanyProfile($symbol);
-
-        if (empty($result)) {
-            return $this->json(null, Response::HTTP_NO_CONTENT);
+        if ($query !== '') {
+            $this->handleInvalidSymbol($query);
+            $result = $this->finnhubService->getCompanyProfile($query);
+        } else {
+            $result = $this->finnhubService->getPopularStocks();
         }
 
-        return $this->json($result);
+        if (empty($result)) {
+            return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
+        }
+
+        return ApiResponse::success($result);
     }
 
     /**
