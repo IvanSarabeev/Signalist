@@ -1,7 +1,5 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 parameters:
-    finnhub.base_url: '%env(string:FINNHUB_BASE_URL)%'
-    finnhub.token: '%env(string:FINNHUB_TOKEN)%'
 
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
@@ -74,6 +72,10 @@ services:
 
     App\Service\Finnhub\Provider\FinnhubClientInterface:
         alias: App\Service\Finnhub\Provider\FinnhubClient
+
+    App\Service\Finnhub\FinnhubConfig:
+        arguments:
+            $popularSymbols: '%finnhub.popular_symbols%'
     # End of Region Services
 
     # add more service definitions when explicit configuration is needed
