@@ -33,6 +33,35 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Finds a User entity by its unique identifier.
+     *
+     * This method uses a QueryBuilder to retrieve a single User entity
+     * matching the provided ID. If no user is found, it returns null.
+     *
+     * @param int $id The unique identifier of the user.
+     *
+     * @return User|null The User entity if found, otherwise null.
+     */
+    public function findOneById(int $id): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Finds a User entity by its email address.
+     *
+     * This method leverages Doctrine's built-in finder to retrieve
+     * a single User entity matching the given email.
+     *
+     * @param string $email The email address of the user.
+     *
+     * @return User|null The User entity if found, otherwise null.
+     */
     public function findOneByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);
