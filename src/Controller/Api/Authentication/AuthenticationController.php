@@ -17,6 +17,7 @@ use App\Enum\SerializerFormat;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Notification\NotificationDispatcher;
 use App\Security\Authentication;
+use App\Security\Otp\OtpGenerator;
 use App\Security\Session\Session;
 use App\Security\TokenManager;
 use Exception;
@@ -38,6 +39,7 @@ final class AuthenticationController extends AbstractController
         private readonly NotificationDispatcher $notificationDispatcher,
         private readonly TokenManager           $tokenManager,
         private readonly ValidatorInterface     $validator,
+        private readonly OtpGenerator           $otpGenerator,
     )
     { }
 
@@ -82,11 +84,14 @@ final class AuthenticationController extends AbstractController
                 'email'    => $user->getUserIdentifier(),
             ]);
 
-            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
+            // Commented out due to low service limit
+//            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
             $token = $this->tokenManager->generateAccessToken($user);
 
-            return $this->json(['status' => true, 'token' => $token]);
+            $otpCode = $this->otpGenerator->generate();
+
+            return $this->json(['status' => true, 'token' => $token, 'code' => $otpCode]);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],
