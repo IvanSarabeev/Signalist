@@ -1,5 +1,4 @@
-import React, {FC} from 'react'
-import {authLogout} from "@/app/api/auth";
+import React, {FC, memo} from 'react'
 import {useNavigate} from "react-router";
 import {
     DropdownMenu,
@@ -11,59 +10,57 @@ import {Button} from "@/components/ui/button";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {LogOut} from "lucide-react";
 import NavItems from "@/components/NavItems";
+import {useAuth} from "@/hooks/useAuth";
 
 type UserDropdownProps = {
     user: User,
-    initialStocks: StockWithWatchlistStatus[]
+    initialStocks: Stocks[]
 }
 
 const UserDropdown: FC<UserDropdownProps> = ({user, initialStocks}) => {
+    const {logout} = useAuth();
     const navigate = useNavigate();
 
     const onSignOut = async () => {
-        return await authLogout()
+        return await logout()
             .finally(() => {
-                navigate('/sign-in');
+                navigate('/');
             });
     };
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant='ghost' className='flex items-center gap-3 text-gray-400 hover:text-yellow-500'>
+                <Button variant='ghost' className='flex items-center gap-3 text-gray-400 hover:text-yellow-500 hover:bg-gray-900 cursor-pointer'>
                     <Avatar className='size-8'>
                         <AvatarImage src="https://avatars.githubusercontent.com/u/153423955?s=280&v=4" />
                         <AvatarFallback className='bg-yellow-500 text-yellow-900 text-sm font-bold'>
-                            {/*{user.name[0]}*/}
-                            Alibaba
+                            {user.fullName}
                         </AvatarFallback>
                     </Avatar>
                     <div className="hidden md:flex flex-col items-start">
                         <span className="text-base font-medium text-gray-400">
-                            {/*{user.name}*/}
+                            {user.fullName}
                         </span>
                     </div>
                 </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className='bg-gray-400'>
+            <DropdownMenuContent className='text-gray-400 bg-gray-800'>
                 <DropdownMenuLabel>
                     <div className="flex relative items-center gap-3 py-2">
                         <Avatar className="size-10">
                             <AvatarImage src="https://avatars.githubusercontent.com/u/153423955?s=280&v=4" />
                             <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
-                                {/*{user.name[0]}*/}
-                                Alibaba
+                                {user.fullName}
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
                             <span className='text-base font-medium text-gray-400'>
-                                {/*{user.name}*/}
-                                John Johnson
+                                {user.fullName}
                             </span>
                             <span className="text-sm text-gray-500">
-                                {/*{user.email}*/}
-                                john_johnson@gmail.com
+                                {user.email}
                             </span>
                         </div>
                     </div>
@@ -86,4 +83,4 @@ const UserDropdown: FC<UserDropdownProps> = ({user, initialStocks}) => {
     )
 }
 
-export default UserDropdown
+export default memo(UserDropdown);

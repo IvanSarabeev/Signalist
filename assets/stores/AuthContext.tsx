@@ -1,18 +1,21 @@
 import {createContext, ReactNode, useEffect, useMemo, useRef, useState} from "react";
-import {authLogin} from "@/app/api/auth";
+import {authLogin, authLogout} from "@/app/api/auth";
 import {addNotification} from "@/lib/utils";
 import {verifyOtp} from "@/app/api/otp";
 import {setupInterceptors} from "@/lib/axiosApi";
+import {getCurrentUser} from "@/app/api/user";
 
 interface AuthState {
     accessToken: string | null;
     isAuthenticated: boolean;
+    user: User | null;
+    isLoadingUser: boolean;
 }
 
 interface AuthContextType extends AuthState {
     authenticate: (data: SignInFormData) => Promise<{ status: boolean; message?: string }>;
     otpVerification: (otp: string) => Promise<{ status: boolean; message?: string; }>;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 type AuthProviderProps = { children: ReactNode };
@@ -28,14 +31,14 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             const storedToken = sessionStorage.getItem(AUTH_STORAGE_KEY);
 
             if (!storedToken) {
-                return { accessToken: null, isAuthenticated: false };
+                return { accessToken: null, isAuthenticated: false, user: null, isLoadingUser: false };
             }
 
             const token = JSON.parse(storedToken);
 
-            return { accessToken: token, isAuthenticated: true };
+            return { accessToken: token, isAuthenticated: true, user: null, isLoadingUser: true };
         } catch {
-            return { accessToken: null, isAuthenticated: false };
+            return { accessToken: null, isAuthenticated: false, user: null, isLoadingUser: false };
         }
     });
 
@@ -59,17 +62,43 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     }, [auth.accessToken]);
 
+    const fetchUser = async () => {
+        try {
+            const {status, data} = await getCurrentUser();
+
+            setAuth((prevState) => ({
+                ...prevState,
+                user: status && data ? data : null,
+                isLoadingUser: false
+            }));
+        } catch {
+            setAuth((prevState) => ({
+                ...prevState,
+                user: null,
+                isLoadingUser: false
+            }));
+        }
+    };
+
+    useEffect(() => {
+        if (auth.isAuthenticated && !auth.user) {
+            fetchUser();
+        }
+    }, [auth.isAuthenticated]);
+
     // ✅ Logout handler (stable)
-    const logout = () => {
-        setAuth({
-            accessToken: null,
-            isAuthenticated: false
-        });
+    const logout = async (): Promise<void> => {
+        return await authLogout()
+            .finally(() => {
+                setAuth({
+                    accessToken: null,
+                    isAuthenticated: false,
+                    user: null,
+                    isLoadingUser: false,
+                });
 
-        sessionStorage.removeItem(AUTH_STORAGE_KEY);
-
-        // optional: redirect handled by interceptor
-        window.location.href = "/";
+                sessionStorage.removeItem(AUTH_STORAGE_KEY);
+            });
     };
 
     // 🔐 Login
@@ -88,7 +117,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
             setAuth({
                 accessToken: token,
-                isAuthenticated: true
+                isAuthenticated: false,
+                user: null,
+                isLoadingUser: false
             });
 
             return {status: true};
@@ -132,11 +163,13 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         () => ({
             accessToken: auth.accessToken,
             isAuthenticated: auth.isAuthenticated,
+            user: auth.user,
+            isLoadingUser: auth.isLoadingUser,
             authenticate,
             otpVerification,
-            logout
+            logout,
         }),
-        [auth.accessToken, auth.isAuthenticated]
+        [auth.accessToken, auth.isAuthenticated, auth.user, auth.isLoadingUser]
     );
 
     return (
