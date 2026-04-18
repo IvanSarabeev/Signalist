@@ -60,10 +60,19 @@ declare global {
         href: string;
     };
 
+    type ApiResponse<T, E> = {
+        status: boolean;
+        data: T;
+        errors: E;
+        meta: [];
+    }
+
+    type UserResponse = ApiResponse<User | null, []>;
+
     type SearchCommandProps = {
         renderAs?: 'button' | 'text';
         label?: string;
-        initialStocks: StockWithWatchlistStatus[];
+        initialStocks: Stocks[];
     };
 
     type WelcomeEmailData = {
@@ -73,9 +82,17 @@ declare global {
     };
 
     type User = {
-        id: string;
-        name: string;
         email: string;
+        fullName: string;
+        country: string;
+        investmentGoal: string;
+        preferredIndustry: string;
+        riskTolerance: string;
+        createdAt: {
+            date: string;
+            timezone_type: number;
+            timezone: string;
+        }
     };
 
     type Stock = {
@@ -84,6 +101,23 @@ declare global {
         exchange: string;
         type: string;
     };
+
+    interface Stocks extends Stock {
+        country: string;
+        currency: string;
+        finhubIndustry: string;
+        logo: string;
+        shareOutstanding: number;
+        ticker: string;
+        webUrl: string;
+    }
+
+    interface StocksResponse {
+        status: boolean;
+        data: Stocks[] | null;
+        errors: [];
+        meta: [];
+    }
 
     type StockWithWatchlistStatus = Stock & {
         isInWatchlist: boolean;

@@ -7,7 +7,6 @@ use App\Service\Finnhub\FinnhubService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/stocks', name: 'api_stocks_')]
@@ -36,7 +35,7 @@ final class StockController extends AbstractController
         }
 
         if (empty($result)) {
-            return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
+            return ApiResponse::success([]);
         }
 
         return ApiResponse::success($result);
@@ -55,10 +54,10 @@ final class StockController extends AbstractController
         $result = $this->finnhubService->getCompanyNews($symbol);
 
         if (empty($result)) {
-            return $this->json(null, Response::HTTP_NO_CONTENT);
+            return ApiResponse::success([]);
         }
 
-        return $this->json($result);
+        return ApiResponse::success($result);
     }
 
     private function handleInvalidSymbol(string $symbol): void
