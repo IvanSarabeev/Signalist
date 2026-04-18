@@ -1,4 +1,4 @@
-import React, {FC, Fragment} from 'react';
+import React, {FC, Fragment, memo} from 'react';
 import {Link, Outlet} from "react-router-dom";
 import LogoImage from "../../icons/logo.svg";
 import StarSvg from "../../icons/star.svg";
@@ -76,4 +76,4 @@ const AuthLayout: FC = () => {
     )
 }
 
-export default AuthLayout;
+export default memo(AuthLayout);

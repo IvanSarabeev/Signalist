@@ -1,4 +1,4 @@
-import React, {FC, Fragment} from 'react'
+import React, {FC, Fragment, memo} from 'react'
 import {Toaster} from "sonner";
 import Header from "@/components/Header";
 import {Outlet} from "react-router-dom";
@@ -18,4 +18,4 @@ const AccountLayout: FC = () => {
         </Fragment>
     )
 }
-export default AccountLayout
+export default memo(AccountLayout)
