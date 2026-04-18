@@ -12,6 +12,8 @@ type SearchCommandListProps = {
 }
 
 const SearchCommandList: FC<SearchCommandListProps> = ({isLoading, isSearchMode, isEmptyResult, loadedStocks, onStockSelect}) => {
+    const hasSingleStock = loadedStocks.length === 1;
+
     return (
         <CommandList className="search-list">
             {isLoading && (
@@ -30,19 +32,19 @@ const SearchCommandList: FC<SearchCommandListProps> = ({isLoading, isSearchMode,
                     </div>
 
                     {loadedStocks.map((stock, index) => (
-                        <li key={`${stock.symbol}-${index}`} className='group/item search-item'>
+                        <li key={`${stock.ticker}-${index}`} className={`group/item search-item ${!hasSingleStock && 'hover:bg-yellow-400'}`}>
                             <Link
-                                to={`/stocks/${stock.symbol}`}
+                                to={`/stocks/${stock.ticker}`}
                                 onClick={onStockSelect}
                                 className='search-item-link'
                             >
-                                <TrendingUp className="size-4 text-gray-500 group-hover/item:text-slate-500"/>
+                                <TrendingUp className={`size-4 text-gray-500 ${hasSingleStock ? 'group-hover/item:text-yellow-400' : 'group-hover/item:text-slate-500'}`}/>
 
                                 <div className="flex-1">
-                                    <div className="search-item-name group-hover/item:text-gray-800 group-hover/item:font-bold">{stock.name}</div>
+                                    <div className={`search-item-name ${hasSingleStock ? 'group-hover/item:text-yellow-400' : 'group-hover/item:text-gray-800'} group-hover/item:font-bold`}>{stock.name}</div>
 
-                                    <div className="text-sm text-gray-500 group-hover/item:text-gray-600">
-                                        {stock.symbol} | {stock.exchange} | {stock.type}
+                                    <div className={`text-sm text-gray-500 ${hasSingleStock ? 'group-hover/item:text-yellow-200/90' : 'group-hover/item:text-gray-600'}`}>
+                                        {stock.ticker} | {stock.exchange} | {stock.type}
                                     </div>
                                 </div>
 
