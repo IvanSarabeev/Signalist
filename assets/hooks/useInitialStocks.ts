@@ -1,3 +1,4 @@
+import {useMemo} from "react";
 import {useStocksFetch} from "@/hooks/useStocksFetch";
 
 type initialStocksResponse = { initialStocks: Stocks[], apiErrors: [], isLoading: boolean, error: Error | null };
@@ -21,10 +22,11 @@ type initialStocksResponse = { initialStocks: Stocks[], apiErrors: [], isLoading
 export function useInitialStocks(): initialStocksResponse {
     const {response, isLoading, error} = useStocksFetch();
 
-    const initialStocks: Stocks[] =
-        response?.status && Array.isArray(response.data)
+    const initialStocks: Stocks[] = useMemo(() => {
+        return response?.status && Array.isArray(response.data)
             ? response.data
             : [];
+    }, [response?.data])
 
     const apiErrors = response?.errors ?? [];
 

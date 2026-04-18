@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {stocksSearch} from "@/app/api/stock";
+import {addNotification} from "@/lib/utils";
 
 type StocksFetchResult = { response: StocksResponse | null, isLoading: boolean, error: Error | null };
 
@@ -22,6 +23,12 @@ export function useStocksFetch(symbol: string = ''): StocksFetchResult {
             setResponse(response);
         } catch (error) {
             setError(error instanceof Error ? error : new Error('Request failed'));
+            addNotification({
+                type: 'error',
+                message: 'No stocks were found.',
+                description: 'Please try again later or feel free to contact our customer support.',
+                duration: 3000
+            });
         } finally {
             setIsLoading(false);
         }
