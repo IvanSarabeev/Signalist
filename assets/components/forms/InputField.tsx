@@ -24,14 +24,14 @@ const InputField = ({
         <div className="space-y-2">
             <Label htmlFor={name} className="form-label">{label}</Label>
 
-            <div className="relative size-full">
+            <div className="relative size-full mt-2 lg:mt-3">
                 <Input
                     type={inputType}
                     id={name}
                     placeholder={placeholder}
                     disabled={disabled}
                     value={value}
-                    maxLength={name === 'otp' && 4}
+                    maxLength={name === 'otp' ? 4 : undefined}
                     className={cn('form-input', {'opacity-50 cursor-not-allowed': disabled})}
                     {...register(name as any, validation as any)}
                 />
