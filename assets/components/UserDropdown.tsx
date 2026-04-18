@@ -2,7 +2,9 @@ import React, {FC, memo} from 'react'
 import {useNavigate} from "react-router";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
@@ -22,10 +24,8 @@ const UserDropdown: FC<UserDropdownProps> = ({user, initialStocks}) => {
     const navigate = useNavigate();
 
     const onSignOut = async () => {
-        return await logout()
-            .finally(() => {
-                navigate('/');
-            });
+        await logout();
+        navigate('/');
     };
 
     return (

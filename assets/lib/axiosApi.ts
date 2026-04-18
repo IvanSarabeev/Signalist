@@ -29,7 +29,7 @@ export const setupInterceptors = (
     getAccessToken: () => string | null,
     // getRefreshToken: () => string | null,
     // setTokens: (access: string, refresh: string) => void,
-    logout: () => void
+    logout: () => Promise<void>
 ) => {
     api.interceptors.request.use((config) => {
         showWaveLoader();
