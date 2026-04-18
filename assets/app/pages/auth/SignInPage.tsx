@@ -25,8 +25,8 @@ const SignInPage = () => {
     });
 
     const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
-        const {status} = await authenticate(data);
-        if (status) {
+        const authResponse = await authenticate(data);
+        if (authResponse.status) {
             addNotification({
                 type: "success",
                 message: "Successful!",

@@ -35,7 +35,6 @@ const SignUpPage = () => {
     const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
         try {
             const authResponse = await authRegister(data);
-            console.log('Auth Response: ', authResponse);
             if (authResponse.status) {
                 addNotification({
                     type: "success",

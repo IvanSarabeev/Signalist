@@ -10,7 +10,7 @@ import {useAuth} from "@/hooks/useAuth";
 type SecurePageData = {otp: string};
 
 const SecurePage: FC = () => {
-    const {otpVerification} = useAuth();
+    const {accessToken, otpVerification} = useAuth();
     const navigate = useNavigate();
     const {
         register,
@@ -20,6 +20,8 @@ const SecurePage: FC = () => {
         defaultValues: {otp: ''},
         mode: 'onBlur'
     });
+
+    if (!accessToken) navigate('/');
 
     const onSubmit: SubmitHandler<SecurePageData> = async (data) => {
         if (data.otp.length < 4) {
