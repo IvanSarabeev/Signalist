@@ -1,10 +1,10 @@
-import React, {FC} from 'react'
+import React, {FC, memo} from 'react'
 import {useLocation} from "react-router";
 import {NAV_ITEMS} from "@/lib/constants";
 import SearchCommand from "@/components/SearchCommand";
 import {Link} from "react-router-dom";
 
-const NavItems: FC<{ initialStocks: StockWithWatchlistStatus[] }> = ({initialStocks}) => {
+const NavItems: FC<{ initialStocks: Stocks[] }> = ({initialStocks}) => {
     const locationPathname = useLocation();
 
     const isActive = (path: string) => {
@@ -21,7 +21,7 @@ const NavItems: FC<{ initialStocks: StockWithWatchlistStatus[] }> = ({initialSto
                         <SearchCommand
                             renderAs="text"
                             label="Search"
-                            initialStocks={initialStocks}
+                            initialStocks={initialStocks ?? []}
                         />
                     </li>
                 )
@@ -37,4 +37,4 @@ const NavItems: FC<{ initialStocks: StockWithWatchlistStatus[] }> = ({initialSto
         </ul>
     )
 }
-export default NavItems
+export default memo(NavItems);

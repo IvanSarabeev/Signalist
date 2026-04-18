@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {memo} from 'react'
 import {Link} from "react-router-dom";
 
 const FooterLink = ({text, linkText, href}: FooterLinkProps) => {
@@ -14,4 +14,4 @@ const FooterLink = ({text, linkText, href}: FooterLinkProps) => {
         </div>
     )
 }
-export default FooterLink
+export default memo(FooterLink);
