@@ -23,8 +23,8 @@ const UserDropdown: FC<UserDropdownProps> = ({user, initialStocks}) => {
     const {logout} = useAuth();
     const navigate = useNavigate();
 
-    const onSignOut = async () => {
-        await logout();
+    const onSignOut = () => {
+        logout();
         navigate('/');
     };
 

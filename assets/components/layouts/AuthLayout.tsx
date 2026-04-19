@@ -38,7 +38,7 @@ const AuthLayout: FC = () => {
 
                         <div className="flex items-center justify-between">
                             <div>
-                                <cite className="auth-testimonial-author-name">- Ethan R.</cite>
+                                <cite className="auth-testimonial-author">- Ethan R.</cite>
                                 <p className="max-md:text-xs text-gray-500">Retail Investor</p>
                             </div>
 

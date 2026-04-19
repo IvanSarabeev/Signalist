@@ -1,5 +1,5 @@
 import {createContext, ReactNode, useEffect, useMemo, useRef, useState} from "react";
-import {authLogin, authLogout} from "@/app/api/auth";
+import {authLogin} from "@/app/api/auth";
 import {addNotification} from "@/lib/utils";
 import {verifyOtp} from "@/app/api/otp";
 import {setupInterceptors} from "@/lib/axiosApi";
@@ -15,7 +15,7 @@ interface AuthState {
 interface AuthContextType extends AuthState {
     authenticate: (data: SignInFormData) => Promise<{ status: boolean; message?: string }>;
     otpVerification: (otp: string) => Promise<{ status: boolean; message?: string; }>;
-    logout: () => Promise<void>;
+    logout: () => void;
 }
 
 type AuthProviderProps = { children: ReactNode };
@@ -87,18 +87,15 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     }, [auth.isAuthenticated]);
 
     // ✅ Logout handler (stable)
-    const logout = async (): Promise<void> => {
-        return await authLogout()
-            .finally(() => {
-                setAuth({
-                    accessToken: null,
-                    isAuthenticated: false,
-                    user: null,
-                    isLoadingUser: false,
-                });
+    const logout = (): void => {
+        setAuth({
+            accessToken: null,
+            isAuthenticated: false,
+            user: null,
+            isLoadingUser: false,
+        });
 
-                sessionStorage.removeItem(AUTH_STORAGE_KEY);
-            });
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
     };
 
     // 🔐 Login

@@ -8,7 +8,3 @@ export async function authRegister(data: SignUpFormData): Promise<AuthRegisterRe
 export async function authLogin(data: SignInFormData): Promise<AuthLoginResponse> {
     return await api.post('authentication/login', data);
 }
-
-export async function authLogout(): Promise<void> {
-    return await api.post('authentication/logout');
-}
