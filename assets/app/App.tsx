@@ -2,6 +2,7 @@ import React, {FC, lazy} from 'react';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {AuthProvider} from "@/stores/AuthContext";
 import withSuspense from "@/app/routes/withSuspense";
+import ProtectedRoute from "@/app/routes/ProtectedRoute";
 
 const AuthLayout = lazy(() => import('@/components/layouts/AuthLayout'));
 const AccountLayout = lazy(() => import('@/components/layouts/AccountLayout'));
@@ -11,6 +12,7 @@ const SignUpAuthenticationPage = lazy(() => import('@/app/pages/auth/SignUpPage'
 const SecureTokenAuthenticationPage = lazy(() => import('@/app/pages/auth/SecurePage'));
 
 const AccountDashboardPage = lazy(() => import('@/app/pages/root/Home'));
+const StockDetailsPage = lazy(() => import('@/app/pages/root/StockDetailPage'));
 
 const router = createBrowserRouter([
     {
@@ -26,9 +28,14 @@ const router = createBrowserRouter([
     },
     {
         path: '/account',
-        element: withSuspense(AccountLayout),
+        element: (
+            <ProtectedRoute>
+                {withSuspense(AccountLayout)}
+            </ProtectedRoute>
+        ),
         children: [
-            {index: true, element: withSuspense(AccountDashboardPage)}
+            {index: true, element: withSuspense(AccountDashboardPage)},
+            {path: `/account/stocks/symbol`, element: withSuspense(StockDetailsPage)}
         ]
     },
     {
