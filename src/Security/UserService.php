@@ -4,26 +4,20 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\Repository\UserRepository;
-use App\Security\Session\Session;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class UserService
 {
     public function __construct(
-        private UserRepository $userRepository,
-        private Session $sessionService,
+        private Security $security,
     )
     { }
 
-    public function getAuthenticatedUser(): null|User
+    public function getAuthenticatedUser(): ?User
     {
-        $authSession = $this->sessionService->getAuthentication();
+        $user = $this->security->getUser();
 
-        if (!$authSession || !isset($authSession['id'])) {
-            return null;
-        }
-
-        return $this->userRepository->findOneById($authSession['id']);
+        return $user instanceof User ? $user : null;
     }
 }
