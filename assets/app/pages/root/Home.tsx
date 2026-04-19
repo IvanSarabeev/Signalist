@@ -1,4 +1,4 @@
-import React, {FC, memo} from 'react'
+import React, {FC, memo, useMemo} from 'react'
 import TradingViewWidget from "@/components/TradingViewWidget";
 import {
     ADVANCED_TRADING_VIEW_WIDGET,
@@ -9,6 +9,13 @@ import {
 } from "@/lib/constants";
 
 const Home: FC = () => {
+    const configs = useMemo(() => ({
+        overview: MARKET_OVERVIEW_WIDGET_CONFIG,
+        heatmap: HEATMAP_WIDGET_CONFIG,
+        stories: TOP_STORIES_WIDGET_CONFIG,
+        market: MARKET_DATA_WIDGET_CONFIG,
+    }), []);
+
     return (
         <div className="flex min-h-screen home-wrapper">
             <section className="grid w-full gap-8 home-section">
@@ -16,7 +23,7 @@ const Home: FC = () => {
                     <TradingViewWidget
                         title="Market Overview"
                         scriptUrl={`${ADVANCED_TRADING_VIEW_WIDGET}market-overview.js`}
-                        config={MARKET_OVERVIEW_WIDGET_CONFIG}
+                        config={configs.overview}
                         className="custom-chart"
                         height={600}
                     />
@@ -26,7 +33,7 @@ const Home: FC = () => {
                     <TradingViewWidget
                         title="Stock Heatmap"
                         scriptUrl={`${ADVANCED_TRADING_VIEW_WIDGET}stock-heatmap.js`}
-                        config={HEATMAP_WIDGET_CONFIG}
+                        config={configs.heatmap}
                         height={600}
                     />
                 </div>
@@ -36,7 +43,7 @@ const Home: FC = () => {
                 <div className="h-full md:col-span-1 xl:col-span-1">
                     <TradingViewWidget
                         scriptUrl={`${ADVANCED_TRADING_VIEW_WIDGET}timeline.js`}
-                        config={TOP_STORIES_WIDGET_CONFIG}
+                        config={configs.stories}
                         className="custom-chart"
                         height={600}
                     />
@@ -45,7 +52,7 @@ const Home: FC = () => {
                 <div className="h-full md:col-span-1 xl:col-span-2">
                     <TradingViewWidget
                         scriptUrl={`${ADVANCED_TRADING_VIEW_WIDGET}market-quotes.js`}
-                        config={MARKET_DATA_WIDGET_CONFIG}
+                        config={configs.market}
                         height={600}
                     />
                 </div>
