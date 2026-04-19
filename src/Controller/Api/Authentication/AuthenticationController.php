@@ -35,11 +35,9 @@ final class AuthenticationController extends AbstractController
     public function __construct(
         private readonly Authentication         $authentication,
         private readonly SerializerInterface    $serializer,
-        private readonly Session                $session,
         private readonly NotificationDispatcher $notificationDispatcher,
         private readonly TokenManager           $tokenManager,
         private readonly ValidatorInterface     $validator,
-        private readonly OtpGenerator           $otpGenerator,
     )
     { }
 
@@ -76,22 +74,12 @@ final class AuthenticationController extends AbstractController
         try {
             $user = $this->authentication->authenticateUser($parameters);
 
-            // Prevent session fixation
-            $this->session->regenerate();
-            $this->session->setAuthentication([
-                'id'       => $user->getId(),
-                'fullName' => $user->getFullName(),
-                'email'    => $user->getUserIdentifier(),
-            ]);
-
             // Commented out due to low service limit
 //            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
             $token = $this->tokenManager->generateAccessToken($user);
 
-            $otpCode = $this->otpGenerator->generate();
-
-            return $this->json(['status' => true, 'token' => $token, 'code' => $otpCode]);
+            return $this->json(['status' => true, 'token' => $token]);
         } catch (InvalidCredentialsException $credentialsException) {
             return $this->json(
                 ['status' => false, 'message' => $credentialsException->getMessage()],
