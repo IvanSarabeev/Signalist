@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         ),
         children: [
             {index: true, element: withSuspense(AccountDashboardPage)},
-            {path: `/account/stocks/symbol`, element: withSuspense(StockDetailsPage)}
+            {path: '/account/stocks/:symbol', element: withSuspense(StockDetailsPage)}
         ]
     },
     {

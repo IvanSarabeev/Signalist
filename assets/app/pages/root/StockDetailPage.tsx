@@ -9,6 +9,7 @@ import {
     TECHNICAL_ANALYSIS_WIDGET_CONFIG
 } from "@/lib/constants";
 import {useParams} from "react-router";
+import WatchlistButton from "@/components/WatchlistButton";
 
 const StockDetailPage: FC = () => {
     const {symbol} = useParams<{symbol: string}>();
@@ -53,7 +54,11 @@ const StockDetailPage: FC = () => {
 
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
-                        Watchlist Button
+                        <WatchlistButton
+                            symbol={symbol.toUpperCase()}
+                            company={symbol.toUpperCase()}
+                            isInWatchlist={false}
+                        />
                     </div>
 
                     <TradingViewWidget

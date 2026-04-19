@@ -29,7 +29,7 @@ export const setupInterceptors = (
     getAccessToken: () => string | null,
     // getRefreshToken: () => string | null,
     // setTokens: (access: string, refresh: string) => void,
-    logout: () => Promise<void>
+    logout: () => void
 ) => {
     api.interceptors.request.use((config) => {
         showWaveLoader();
@@ -61,6 +61,7 @@ export const setupInterceptors = (
 
             if (error.response?.status === 401) {
                 logout();
+                window.location.href = '/';
             }
 
             // 🔥 SIMPLE STRATEGY (NO REFRESH TOKEN)
