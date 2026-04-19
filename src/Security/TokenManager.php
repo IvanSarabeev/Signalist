@@ -32,7 +32,8 @@ final readonly class TokenManager
     {
         $now = time();
         $payload = array_merge($additionalClaims, [
-            'sub'   => $user->getUserIdentifier(), // User identifier
+            'sub'   => $user->getId(),
+            'email' => $user->getUserIdentifier(),
             'roles' => $user->getRoles(),
             'iat'   => $now, // Issued at
             'exp'   => $now + $this->accessTtl, // Expiration Time

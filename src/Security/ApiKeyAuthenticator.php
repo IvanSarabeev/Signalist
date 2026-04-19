@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -18,7 +19,10 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 final class ApiKeyAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private readonly string $jwtSecret)
+    public function __construct(
+        private readonly string         $jwtSecret,
+        private readonly UserRepository $userRepository,
+    )
     { }
 
     /**
@@ -60,7 +64,15 @@ final class ApiKeyAuthenticator extends AbstractAuthenticator
         }
 
         return new SelfValidatingPassport(
-            new UserBadge((string) $decoded->sub)
+            new UserBadge((string) $decoded->sub, function ($userIdentifier) {
+                $user = $this->userRepository->find($userIdentifier);
+
+                if (!$user) {
+                    throw new CustomUserMessageAuthenticationException('User not found.');
+                }
+
+                return $user;
+            })
         );
     }
 

@@ -146,15 +146,4 @@ final class AuthenticationController extends AbstractController
             );
         }
     }
-
-    #[Route(path: '/logout', name: 'logout', methods: 'POST')]
-    public function signOut(): Response
-    {
-        if ($this->session->hasAuthentication()) {
-            $this->session->clearAuthentication();
-            $this->session->regenerate();
-        }
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
-    }
 }
