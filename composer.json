@@ -21,8 +21,10 @@
         "phpstan/phpdoc-parser": "^2.3",
         "scheb/2fa-email": "^7.13",
         "symfony/asset": "7.4.*",
+        "symfony/browser-kit": "7.4.*",
         "symfony/cache": "7.4.*",
         "symfony/console": "7.4.*",
+        "symfony/css-selector": "7.4.*",
         "symfony/doctrine-messenger": "7.4.*",
         "symfony/dotenv": "7.4.*",
         "symfony/flex": "^2",
@@ -32,6 +34,7 @@
         "symfony/mailer": "7.4.*",
         "symfony/mailtrap-mailer": "7.4.*",
         "symfony/messenger": "7.4.*",
+        "symfony/phpunit-bridge": "^8.0",
         "symfony/property-access": "7.4.*",
         "symfony/property-info": "7.4.*",
         "symfony/rate-limiter": "7.4.*",
@@ -83,7 +86,11 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite Unit",
+        "test:integration": "phpunit --testuite Integration",
+        "test:coverage": "phpunit --coverage-html var/coverage/html --coverage-clover var/coverage/clover.xml"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -95,6 +102,7 @@
         }
     },
     "require-dev": {
+        "phpunit/phpunit": "^11.5",
         "symfony/maker-bundle": "^1.65",
         "symfony/monolog-bundle": "^4.0",
         "symfony/stopwatch": "7.4.*",

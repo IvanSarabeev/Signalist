@@ -1,15 +1,11 @@
 ###> symfony/framework-bundle ###
 /.env
-/.env.local.php
-/.env.*.local
+/.env.test
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
 /.idea
-/.env.dev
-/.env.prod
-/.env.*
 /node_modules
 ###< symfony/framework-bundle ###
 
@@ -24,3 +20,10 @@ yarn-error.log
 Claude.local.md
 .claude/settings.local.json
 ###>Claud
+
+###> phpunit coverage ###
+/html
+.phpunit.result.cache
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit coverage ###
