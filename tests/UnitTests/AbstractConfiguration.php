@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests;
 
+use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -14,4 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 abstract class AbstractConfiguration extends WebTestCase
 {
+    protected static function getKernelClass(): string
+    {
+        return Kernel::class;
+    }
 }
