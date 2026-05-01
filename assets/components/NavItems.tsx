@@ -21,7 +21,7 @@ const NavItems: FC<{ initialStocks: Stocks[] }> = ({initialStocks}) => {
                         <SearchCommand
                             renderAs="text"
                             label="Search"
-                            initialStocks={initialStocks ?? []}
+                            initialStocks={initialStocks}
                         />
                     </li>
                 )

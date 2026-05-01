@@ -34,7 +34,7 @@ const SearchCommandList: FC<SearchCommandListProps> = ({isLoading, isSearchMode,
                     {loadedStocks.map((stock, index) => (
                         <li key={`${stock.ticker}-${index}`} className={`group/item search-item ${!hasSingleStock && 'hover:bg-yellow-400'}`}>
                             <Link
-                                to={`/stocks/${stock.ticker}`}
+                                to={`/account/stocks/${stock.ticker}`}
                                 onClick={onStockSelect}
                                 className='search-item-link'
                             >
