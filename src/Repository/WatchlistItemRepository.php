@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\WatchlistItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
+use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,4 +44,17 @@ class WatchlistItemRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findUserWatchlistItems(User $user, $limit = 10): array
+    {
+        return $this->createQueryBuilder('wi')
+            ->leftJoin('wi.stock', 's')
+            ->addSelect('s')
+            ->andWhere('wi.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('wi.addedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }
