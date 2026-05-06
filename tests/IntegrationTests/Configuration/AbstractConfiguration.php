@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\UnitTests;
+namespace App\Tests\IntegrationTests\Configuration;
 
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
