@@ -47,4 +47,19 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
     {
         return $this->requestGet(self::GET_STOCK_PROFILE, ['symbol' => $symbol]);
     }
+
+    /**
+     * Get real-time stock prices for international markets
+     *
+     * @param string $symbol
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getQuote(string $symbol): array
+    {
+        return $this->requestGet(self::GET_STOCK_QUOTE, ['symbol' => $symbol]);
+    }
 }

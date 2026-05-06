@@ -50,6 +50,9 @@ services:
         tags: ['controller.service_arguments']
         autowire: true
         autoconfigure: true
+
+    App\Presentation\Http\ArgumentResolver\StockListRequestResolver:
+        tags: ['controller.argument_value_resolver']
     # End of Region Controller
 
     # Region Notification

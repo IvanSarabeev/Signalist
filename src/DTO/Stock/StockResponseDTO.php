@@ -13,6 +13,6 @@ final class StockResponseDTO
         public ?string $logo,
         public ?int    $shareOutstanding,
         public ?string $ticker,
-        public ?string $webUrl,
+        public ?string $weburl,
     ) { }
 }

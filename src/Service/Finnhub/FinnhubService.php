@@ -2,6 +2,9 @@
 
 namespace App\Service\Finnhub;
 
+use App\DTO\Stock\QuoteResponseDTO;
+use App\DTO\Stock\StockResponseDTO;
+use App\Mapper\Stock\QuoteMapper;
 use App\Mapper\Stock\StockProfileMapper;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
@@ -35,6 +38,7 @@ final readonly class FinnhubService
         private LoggerInterface        $logger,
         private StockProfileMapper     $stockProfileMapper,
         private FinnhubConfig          $finnhubConfig,
+        private QuoteMapper            $quoteMapper,
     ) { }
 
     /**
@@ -67,12 +71,12 @@ final readonly class FinnhubService
      * Cached for 24 hours due to low update frequency.
      *
      * @param string $symbol Stock ticker symbol
-     * @return array<string, mixed> Company profile data
+     * @return StockResponseDTO Company profile data
      * @throws InvalidArgumentException
      */
-    public function getCompanyProfile(string $symbol): array
+    public function getCompanyProfile(string $symbol): StockResponseDTO
     {
-        return $this->cache->get(
+        $data = $this->cache->get(
             "finnhub.profile.$symbol",
             function (ItemInterface $item) use ($symbol) {
                 $item->expiresAfter(self::COMPANY_PROFILE_TTL);
@@ -80,6 +84,8 @@ final readonly class FinnhubService
                 return $this->finnhubClient->getCompanyProfile($symbol);
             }
         );
+
+        return $this->stockProfileMapper->toDTO($data);
     }
 
     /**
@@ -89,7 +95,7 @@ final readonly class FinnhubService
      * into a StockProfileDTO using StockProfileMapper.
      *
      * @param int $limit Maximum number of stocks to return
-     * @return array<int, mixed> List of StockProfileDTOs
+     * @return StockResponseDTO[] List of StockProfileDTOs
      */
     public function getPopularStocks(int $limit = 10): array
     {
@@ -101,9 +107,7 @@ final readonly class FinnhubService
             try {
                 $profile = $this->getCompanyProfile($symbol);
 
-                if (!empty($profile)) {
-                    $results[] = $this->stockProfileMapper->toDTO($profile);
-                }
+                $results[] = $this->stockProfileMapper->toDTO((array)$profile);
             } catch (Throwable $throwable) {
                 $this->logger->error(self::FINHUB_LOG_PREFIX . $throwable->getMessage());
 
@@ -112,5 +116,24 @@ final readonly class FinnhubService
         }
 
         return $results;
+    }
+
+    /**
+     * @param string $symbol Stock ticker symbol
+     * @return QuoteResponseDTO stock prices for international markets
+     * @throws InvalidArgumentException
+     */
+    public function getQuote(string $symbol): QuoteResponseDTO
+    {
+        $data = $this->cache->get(
+            "finhub.quote.$symbol",
+            function (ItemInterface $item) use ($symbol) {
+                $item->expiresAfter(self::COMPANY_NEWS_TTL);
+
+                return $this->finnhubClient->getQuote($symbol);
+            }
+        );
+
+        return $this->quoteMapper->toDTO($data);
     }
 }

@@ -15,8 +15,9 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 abstract readonly class AbstractFinnhubClient
 {
-    protected const GET_COMPANY_NEWS = '/company-news';
+    protected const GET_COMPANY_NEWS  = '/company-news';
     protected const GET_STOCK_PROFILE = '/stock/profile2';
+    protected const GET_STOCK_QUOTE   = '/quote';
 
     public function __construct(
         protected HttpClientInterface $httpClient,

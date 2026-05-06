@@ -17,7 +17,7 @@ final class StockProfileMapper
             $stockProfile['logo'],
             $stockProfile['shareOutstanding'],
             $stockProfile['ticker'],
-            $stockProfile['weburl'],
+            $stockProfile['weburl'] ?? null,
         );
     }
 }

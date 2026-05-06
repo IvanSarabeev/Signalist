@@ -2,11 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Presentation\Http\Request\Stock\StockListRequest;
 use App\Response\ApiResponse;
 use App\Service\Finnhub\FinnhubService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/stocks', name: 'api_stocks_')]
@@ -18,25 +18,19 @@ final class StockController extends AbstractController
     /**
      * Symbol
      *
-     * @param Request $request
+     * @param StockListRequest $request
      * @return JsonResponse
      * @throws InvalidArgumentException
      */
     #[Route(path: '', name: 'list', methods: 'GET')]
-    public function list(Request $request): JsonResponse
+    public function list(StockListRequest $request): JsonResponse
     {
-        $query = trim($request->query->getString('symbol'));
-
-        if ($query !== '') {
-            $this->handleInvalidSymbol($query);
-            $result = $this->finnhubService->getCompanyProfile($query);
-        } else {
-            $result = $this->finnhubService->getPopularStocks();
+        if ($request->symbol !== null) {
+            $result = $this->finnhubService->getCompanyProfile($request->symbol);
+            return ApiResponse::success($result);
         }
 
-        if (empty($result)) {
-            return ApiResponse::success([]);
-        }
+        $result = $this->finnhubService->getPopularStocks();
 
         return ApiResponse::success($result);
     }

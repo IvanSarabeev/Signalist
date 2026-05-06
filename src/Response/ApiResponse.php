@@ -34,7 +34,7 @@ final readonly class ApiResponse
      * Example:
      *  ApiResponse::success($userDto);
      *
-     * @param mixed|null $data The main response payload (DTO, array, scalar, or null)
+     * @param array<int, mixed>|object|null $data The main response payload (DTO, array, scalar, or null)
      * @param array<string, mixed> $meta Optional metadata (e.g. pagination, filters)
      * @param int $status HTTP status code (default: 200 OK)
      *
@@ -70,7 +70,7 @@ final readonly class ApiResponse
      */
     public static function error(
         string $message,
-        int $status = Response::HTTP_BAD_REQUEST,
+        int $status   = Response::HTTP_BAD_REQUEST,
         array $errors = [],
     ): JsonResponse {
         return new JsonResponse([
@@ -92,11 +92,12 @@ final readonly class ApiResponse
      *  ApiResponse::collection($userDtos);
      *
      * @param array<int, mixed> $data List of items (typically DTOs)
+     * @param array<int, mixed> $meta List of meta data (typically pagination)
      *
      * @return JsonResponse Structured collection response
      */
-    public static function collection(array $data): JsonResponse
+    public static function collection(array $data, array $meta = []): JsonResponse
     {
-        return self::success($data);
+        return self::success($data, $meta);
     }
 }

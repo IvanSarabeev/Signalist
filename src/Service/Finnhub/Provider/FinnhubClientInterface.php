@@ -9,4 +9,6 @@ interface FinnhubClientInterface
     public function getCompanyProfile(string $symbol): array;
 
     public function getCompanyNews(string $symbol, DateTimeInterface $from, DateTimeInterface $to): array;
+
+    public function getQuote(string $symbol): array;
 }
