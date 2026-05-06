@@ -5,13 +5,13 @@ namespace App\DTO\Stock;
 final class QuoteResponseDTO
 {
     public function __construct(
-        private float $currentPrice,
-        private float $change,
-        private float $percentChange,
-        private float $highPriceDay,
-        private float $lowPriceDay,
-        private float $openPriceDay,
-        private float $closePriceDay,
+        public float $currentPrice,
+        public float $change,
+        public float $percentChange,
+        public float $highPriceDay,
+        public float $lowPriceDay,
+        public float $openPriceDay,
+        public float $closePriceDay,
     )
     { }
 }

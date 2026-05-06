@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Presentation\Http\Request\Stock\StockListRequest;
-use App\Response\ApiResponse;
+use App\Presentation\Http\Response\ApiResponse;
 use App\Service\Finnhub\FinnhubService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
