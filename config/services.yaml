@@ -25,6 +25,7 @@ services:
     App\Security\ApiKeyAuthenticator:
         arguments:
             $jwtSecret: '%env(JWT_SECRET)%'
+            $jwtAlgorithm: '%env(JWT_ALGORITHM)%'
 
     App\Security\Token\TokenManager:
         arguments:
