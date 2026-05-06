@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\EventSubscriber;
+namespace App\Presentation\Http\EventSubscriber;
 
-use App\Attribute\RateLimit;
 use App\Exception\Services\RateLimitExceedException;
+use App\Presentation\Http\Attribute\RateLimit;
+use LogicException;
+use ReflectionAttribute;
 use ReflectionException;
+use ReflectionMethod;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,7 +23,7 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
     private array $limiters;
 
     public function __construct(
-        private RequestStack $requestStack,
+        private RequestStack        $requestStack,
         RateLimiterFactoryInterface $loginLimiter,
         RateLimiterFactoryInterface $loginIpLimiter,
         RateLimiterFactoryInterface $registerLimiter,
@@ -62,9 +65,9 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
         }
 
         [$controllerObject, $method] = $controller;
-        $reflection = new \ReflectionMethod($controllerObject, $method);
+        $reflection = new ReflectionMethod($controllerObject, $method);
 
-        $attributes = $reflection->getAttributes(RateLimit::class, \ReflectionAttribute::IS_INSTANCEOF);
+        $attributes = $reflection->getAttributes(RateLimit::class, ReflectionAttribute::IS_INSTANCEOF);
         if (!$attributes) {
             return;
         }
@@ -74,7 +77,7 @@ final readonly class RateLimitSubscriber implements EventSubscriberInterface
             $rateLimit = $attribute->newInstance();
 
             if (!isset($this->limiters[$rateLimit->limiter])) {
-                throw new \LogicException(sprintf(
+                throw new LogicException(sprintf(
                     'Rate limiter "%s" not configured',
                     $rateLimit->limiter,
                 ));

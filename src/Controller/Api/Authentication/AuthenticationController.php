@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Authentication;
 
-use App\Attribute\RateLimit;
 use App\Controller\Api\AbstractController;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
@@ -15,6 +14,7 @@ use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Notification\NotificationDispatcher;
+use App\Presentation\Http\Attribute\RateLimit;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
 use Exception;

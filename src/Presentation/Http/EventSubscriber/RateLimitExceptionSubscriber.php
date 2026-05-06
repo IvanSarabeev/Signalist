@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\Presentation\Http\EventSubscriber;
 
 use App\Exception\Services\RateLimitExceedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
