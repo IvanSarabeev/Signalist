@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Exception\Token;
+namespace App\Presentation\Http\Exception\Token;
 
-use App\Exception\DomainException;
+use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-final class TokenNotFoundException extends DomainException
+class UnexpectedTokenException extends HttpException
 {
     public function getStatusCode(): int
     {
@@ -14,6 +14,6 @@ final class TokenNotFoundException extends DomainException
 
     public function getErrorMessage(): string
     {
-        return "Invalid token.";
+        return 'Token not found or expired';
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Exception;
+namespace App\Presentation\Http\Exception;
 
 use RuntimeException;
 
-abstract class DomainException extends RuntimeException implements DomainExceptionInterface
+abstract class HttpException extends RuntimeException implements HttpExceptionInterface
 {
     abstract public function getStatusCode(): int;
 

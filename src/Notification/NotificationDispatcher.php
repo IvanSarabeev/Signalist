@@ -4,7 +4,7 @@ namespace App\Notification;
 
 use App\Entity\User;
 use App\Enum\NotificationType;
-use App\Exception\Notification\NotificationTypeNotSupportedException;
+use App\Presentation\Http\Exception\Notification\NotificationTypeNotSupportedException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class NotificationDispatcher

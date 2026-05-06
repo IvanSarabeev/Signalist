@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests\Exception;
 
-use App\Exception\Common\InvalidPaginationArgumentException;
-use App\Exception\Services\RateLimitExceedException;
+use App\Presentation\Http\Exception\Common\InvalidPaginationArgumentException;
+use App\Presentation\Http\Exception\Services\RateLimitExceedException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

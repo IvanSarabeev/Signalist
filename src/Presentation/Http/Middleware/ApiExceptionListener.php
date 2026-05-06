@@ -1,8 +1,8 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Presentation\Http\Middleware;
 
-use App\Exception\DomainException;
+use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -19,7 +19,7 @@ final class ApiExceptionListener
             return;
         }
 
-        if ($exception instanceof DomainException) {
+        if ($exception instanceof HttpException) {
             $event->setResponse(
                 new JsonResponse(
                     ['status' => false, 'message' => $exception->getErrorMessage()],

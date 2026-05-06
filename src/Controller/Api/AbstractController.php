@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Exception\Common\InvalidPaginationArgumentException;
+use App\Presentation\Http\Exception\Common\InvalidPaginationArgumentException;
 use InvalidArgumentException;
 use ReflectionObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as BaseController;

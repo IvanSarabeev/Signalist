@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Exception\Common;
+namespace App\Presentation\Http\Exception\Common;
 
-use App\Exception\DomainException;
+use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-class InvalidPaginationArgumentException extends DomainException
+class InvalidPaginationArgumentException extends HttpException
 {
     public function getStatusCode(): int
     {

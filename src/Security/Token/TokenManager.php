@@ -6,8 +6,8 @@ namespace App\Security\Token;
 
 use App\Entity\RefreshTokens;
 use App\Entity\User;
-use App\Exception\Token\TokenNotFoundException;
-use App\Exception\Token\UnexpectedTokenException;
+use App\Presentation\Http\Exception\Token\TokenNotFoundException;
+use App\Presentation\Http\Exception\Token\UnexpectedTokenException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;

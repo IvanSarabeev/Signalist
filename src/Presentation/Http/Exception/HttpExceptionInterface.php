@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exception;
+namespace App\Presentation\Http\Exception;
 
-interface DomainExceptionInterface
+interface HttpExceptionInterface
 {
     /**
      * Get the specified status Code for the Exception::class

@@ -6,7 +6,7 @@ namespace App\Tests\UnitTests\Controller\Api;
 
 use App\Controller\Api\Authentication\AuthenticationController;
 use App\Entity\User;
-use App\Exception\Security\InvalidCredentialsException;
+use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
 use App\Tests\DataProviders\Auth\RegisterDataProvider;

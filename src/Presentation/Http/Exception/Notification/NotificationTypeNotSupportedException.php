@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exception\Notification;
+namespace App\Presentation\Http\Exception\Notification;
 
 use LogicException;
 use Throwable;

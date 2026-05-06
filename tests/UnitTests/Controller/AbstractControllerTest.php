@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\UnitTests\Controller;
 
 use App\Controller\Api\AbstractController;
-use App\Exception\Common\InvalidPaginationArgumentException;
+use App\Presentation\Http\Exception\Common\InvalidPaginationArgumentException;
 use App\Tests\DataProviders\Controller\AbstractControllerDataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

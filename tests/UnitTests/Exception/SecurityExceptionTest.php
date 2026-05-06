@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests\Exception;
 
-use App\Exception\Security\EmailExistsException;
-use App\Exception\Security\ExpiredOtpException;
-use App\Exception\Security\InvalidCredentialsException;
-use App\Exception\Security\InvalidOtpException;
-use App\Exception\Security\UserNotFoundException;
-use App\Exception\Security\UserRegistrationException;
+use App\Presentation\Http\Exception\Security\EmailExistsException;
+use App\Presentation\Http\Exception\Security\ExpiredOtpException;
+use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
+use App\Presentation\Http\Exception\Security\InvalidOtpException;
+use App\Presentation\Http\Exception\Security\UserNotFoundException;
+use App\Presentation\Http\Exception\Security\UserRegistrationException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

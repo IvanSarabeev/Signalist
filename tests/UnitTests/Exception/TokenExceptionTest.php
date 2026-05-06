@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests\Exception;
 
-use App\Exception\Token\TokenNotFoundException;
-use App\Exception\Token\UnexpectedTokenException;
+use App\Presentation\Http\Exception\Token\TokenNotFoundException;
+use App\Presentation\Http\Exception\Token\UnexpectedTokenException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

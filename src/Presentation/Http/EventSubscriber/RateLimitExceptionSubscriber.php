@@ -2,7 +2,7 @@
 
 namespace App\Presentation\Http\EventSubscriber;
 
-use App\Exception\Services\RateLimitExceedException;
+use App\Presentation\Http\Exception\Services\RateLimitExceedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

@@ -4,8 +4,8 @@ namespace App\Security\Otp;
 
 use App\DTO\Otp\VerifyOtpRequest;
 use App\Entity\User;
-use App\Exception\Security\ExpiredOtpException;
-use App\Exception\Security\UserNotFoundException;
+use App\Presentation\Http\Exception\Security\ExpiredOtpException;
+use App\Presentation\Http\Exception\Security\UserNotFoundException;
 use App\Security\Token\TokenManager;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;

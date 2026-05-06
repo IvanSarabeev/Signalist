@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Exception\Security;
+namespace App\Presentation\Http\Exception\Security;
 
-use App\Exception\DomainException;
+use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-final class InvalidCredentialsException extends DomainException
+final class ExpiredOtpException extends HttpException
 {
     public function getStatusCode(): int
     {
@@ -14,6 +14,6 @@ final class InvalidCredentialsException extends DomainException
 
     public function getErrorMessage(): string
     {
-        return 'Invalid credentials.';
+        return 'Invalid or expired verification code.';
     }
 }

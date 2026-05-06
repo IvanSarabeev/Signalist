@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\EventSubscriber;
 
-use App\Exception\Services\RateLimitExceedException;
 use App\Presentation\Http\Attribute\RateLimit;
+use App\Presentation\Http\Exception\Services\RateLimitExceedException;
 use LogicException;
 use ReflectionAttribute;
 use ReflectionException;
