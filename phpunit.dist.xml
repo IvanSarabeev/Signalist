@@ -2,32 +2,29 @@
 
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     colors="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     failOnDeprecation="true"
     failOnNotice="true"
     failOnWarning="true"
     bootstrap="tests/bootstrap.php"
     cacheDirectory=".phpunit.cache"
 >
-    <php>
-        <ini name="display_errors" value="1"/>
-        <ini name="error_reporting" value="-1"/>
-        <server name="APP_ENV" value="test" force="true"/>
-        <server name="APP_DEBUG" value="0" force="true"/>
-        <server name="SHELL_VERBOSITY" value="-1"/>
-        <server name="KERNEL_CLASS" value="App\Kernel" force="true"/>
-        <server name="DEFAULT_URI" value="http://localhost" force="true"/>
-        <server name="APP_ENV" value="test" force="true"/>
-    </php>
-
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory>tests/UnitTests</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/IntegrationTests</directory>
         </testsuite>
     </testsuites>
 
+    <!--
+        Source files for code coverage analysis.
+        Requires Xdebug 3 with XDEBUG_MODE=coverage (already configured in .env.test).
+        HTML report written to /html at the project root — open html/index.html in a browser.
+    -->
     <source
         ignoreSuppressionOfDeprecations="true"
         ignoreIndirectDeprecations="true"
@@ -38,6 +35,7 @@
             <directory>src</directory>
         </include>
         <exclude>
+            <file>src/Kernel.php</file>
             <directory>src/Attribute</directory>
         </exclude>
 
@@ -55,6 +53,15 @@
             <text outputFile="php://stdout"/>
         </report>
     </coverage>
+
+    <php>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="1"/>
+        <server name="APP_ENV" value="test" force="true"/>
+        <server name="APP_DEBUG" value="0" force="true"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <server name="KERNEL_CLASS" value="App\Kernel" force="true"/>
+    </php>
 
     <extensions>
         <bootstrap class="Symfony\Bridge\PhpUnit\SymfonyExtension">
