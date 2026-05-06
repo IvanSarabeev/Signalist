@@ -7,6 +7,9 @@ use App\Enum\PreferredIndustry;
 use App\Enum\RiskTolerance;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
+use Deprecated;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -17,9 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true, index: true)]
@@ -31,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
     /**
@@ -63,6 +64,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $otpExpiresAt = null;
+
+    /**
+     * @var Collection<int, WatchlistItem>
+     */
+    #[ORM\OneToMany(targetEntity: WatchlistItem::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $watchlistItems;
+
+    /**
+     * @var Collection<int, Alert>
+     */
+    #[ORM\OneToMany(targetEntity: Alert::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $alerts;
+
+    public function __construct()
+    {
+        $this->watchlistItems = new ArrayCollection();
+        $this->alerts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -151,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
-    #[\Deprecated]
+    #[Deprecated(message: 'To be removed when upgrading to Symfony 8')]
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
@@ -257,5 +276,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->setOtpHash(null);
         $this->setOtpExpiresAt(null);
+    }
+
+    /**
+     * @return Collection<int, WatchlistItem>
+     */
+    public function getWatchlistItems(): Collection
+    {
+        return $this->watchlistItems;
+    }
+
+    public function addWatchlistItem(WatchlistItem $item): static
+    {
+        if (!$this->watchlistItems->contains($item)) {
+            $this->watchlistItems->add($item);
+            $item->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWatchlistItem(WatchlistItem $item): static
+    {
+        if ($this->watchlistItems->removeElement($item) && $item->getUser() === $this) {
+            // set the owning side to null (unless already changed)
+            $item->setUser(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Alert>
+     */
+    public function getAlerts(): Collection
+    {
+        return $this->alerts;
+    }
+
+    public function addAlert(Alert $alert): static
+    {
+        if (!$this->alerts->contains($alert)) {
+            $this->alerts->add($alert);
+            $alert->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlert(Alert $alert): static
+    {
+        if ($this->alerts->removeElement($alert)) {
+            // set the owning side to null (unless already changed)
+            if ($alert->getUser() === $this) {
+                $alert->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
