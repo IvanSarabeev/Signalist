@@ -4,7 +4,7 @@ namespace App\Controller\Api\Authentication;
 
 use App\Entity\RefreshTokens;
 use App\Repository\UserRepository;
-use App\Security\TokenManager;
+use App\Security\Token\TokenManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Security;
+namespace App\Security\Auth;
 
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Entity\User;
 use App\Enum\InvestmentGoal;
-use App\Enum\NotificationType;
 use App\Enum\PreferredIndustry;
 use App\Enum\RiskTolerance;
 use App\Exception\Security\EmailExistsException;
@@ -21,7 +20,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final readonly class Authentication
+final readonly class Authentication implements AuthenticationInterface
 {
     private const AUTHENTICATION_PREFIX = "Authentication: ";
 

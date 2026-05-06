@@ -6,7 +6,7 @@ use App\DTO\Otp\VerifyOtpRequest;
 use App\Entity\User;
 use App\Exception\Security\ExpiredOtpException;
 use App\Exception\Security\UserNotFoundException;
-use App\Security\TokenManager;
+use App\Security\Token\TokenManager;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;

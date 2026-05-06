@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Security;
+namespace App\Security\Token;
 
 use App\Entity\RefreshTokens;
 use App\Entity\User;
@@ -13,12 +13,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
 use Random\RandomException;
 
-final readonly class TokenManager
+final readonly class TokenManager implements TokenManagerInterface
 {
     public function __construct(
-        private string $jwtSecret,
-        private int $accessTtl,
-        private int $refreshTtl,
+        private string                 $jwtSecret,
+        private int                    $accessTtl,
+        private int                    $refreshTtl,
         private EntityManagerInterface $entityManager
     )
     {}

@@ -9,17 +9,14 @@ use App\Controller\Api\AbstractController;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
-use App\Enum\NotificationType;
 use App\Enum\PreferredIndustry;
 use App\Enum\RateLimiterTypes;
 use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Exception\Security\InvalidCredentialsException;
 use App\Notification\NotificationDispatcher;
-use App\Security\Authentication;
-use App\Security\Otp\OtpGenerator;
-use App\Security\Session\Session;
-use App\Security\TokenManager;
+use App\Security\Auth\AuthenticationInterface;
+use App\Security\Token\TokenManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,11 +30,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class AuthenticationController extends AbstractController
 {
     public function __construct(
-        private readonly Authentication         $authentication,
-        private readonly SerializerInterface    $serializer,
-        private readonly NotificationDispatcher $notificationDispatcher,
-        private readonly TokenManager           $tokenManager,
-        private readonly ValidatorInterface     $validator,
+        private readonly AuthenticationInterface $authentication,
+        private readonly SerializerInterface     $serializer,
+        private readonly NotificationDispatcher  $notificationDispatcher,
+        private readonly TokenManagerInterface   $tokenManager,
+        private readonly ValidatorInterface      $validator,
     )
     { }
 
