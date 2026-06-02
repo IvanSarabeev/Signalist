@@ -45,8 +45,8 @@ services:
     # End of Region Subscriber
 
     # Region Controller
-    App\Controller\:
-        resource: '../src/Controller'
+    App\Presentation\Http\Controller\:
+        resource: '../src/Presentation/Http/Controller'
         tags: ['controller.service_arguments']
         autowire: true
         autoconfigure: true

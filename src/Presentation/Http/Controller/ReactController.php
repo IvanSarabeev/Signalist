@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Presentation\Http\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReactController extends AbstractController
 {
     #[Route(
-        '/{path}',
+        path: '/{path}',
         name: 'app_react',
         requirements: [
             'path' => '^(?!api|_profiler|_wdt|build).*'

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api;
+namespace App\Presentation\Http\Controller\Api;
 
 use App\Presentation\Http\Request\Stock\StockListRequest;
 use App\Presentation\Http\Response\ApiResponse;

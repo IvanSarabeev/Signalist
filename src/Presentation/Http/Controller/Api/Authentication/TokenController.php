@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api\Authentication;
+namespace App\Presentation\Http\Controller\Api\Authentication;
 
 use App\Entity\RefreshTokens;
 use App\Repository\UserRepository;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests\Controller;
 
-use App\Controller\Api\AbstractController;
+use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Presentation\Http\Exception\Common\InvalidPaginationArgumentException;
 use App\Tests\DataProviders\Controller\AbstractControllerDataProvider;
 use PHPUnit\Framework\Attributes\CoversClass;

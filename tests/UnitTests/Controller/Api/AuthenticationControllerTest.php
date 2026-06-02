@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\UnitTests\Controller\Api;
 
-use App\Controller\Api\Authentication\AuthenticationController;
 use App\Entity\User;
+use App\Presentation\Http\Controller\Api\Authentication\AuthenticationController;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;

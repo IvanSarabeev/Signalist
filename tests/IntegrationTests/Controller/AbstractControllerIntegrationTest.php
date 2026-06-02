@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\IntegrationTests\Controller;
 
-use App\Controller\Api\AbstractController;
+use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Tests\DataProviders\Controller\AbstractControllerDataProvider;
 use App\Tests\IntegrationTests\Configuration\AbstractConfiguration;
 use PHPUnit\Framework\Attributes\CoversClass;

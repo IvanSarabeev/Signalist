@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api;
+namespace App\Presentation\Http\Controller\Api;
 
 use App\Entity\User;
 use App\Mapper\User\UserMapper;

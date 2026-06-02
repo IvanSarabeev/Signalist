@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api\Authentication;
+namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\Controller\Api\AbstractController;
 use App\DTO\Otp\VerifyOtpRequest;
 use App\Enum\RateLimiterTypes;
 use App\Enum\SerializerFormat;
 use App\Presentation\Http\Attribute\RateLimit;
+use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Security\Otp\OtpService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

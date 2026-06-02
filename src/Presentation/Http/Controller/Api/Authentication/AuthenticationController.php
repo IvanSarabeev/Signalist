@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api\Authentication;
+namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\Controller\Api\AbstractController;
 use App\DTO\Auth\RegisterDTO;
 use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
@@ -14,6 +13,7 @@ use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Attribute\RateLimit;
+use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
