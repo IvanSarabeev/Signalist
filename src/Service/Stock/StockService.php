@@ -21,6 +21,23 @@ final readonly class StockService
     { }
 
     /**
+     * Finds a stock entity by its symbol.
+     *
+     * @param string $symbol
+     * @return Stock|null
+     */
+    public function findStockBySymbol(string $symbol): ?Stock
+    {
+        $stock = $this->stockRepository->findOneBy(['symbol' => $symbol]);
+
+        if (!$stock) {
+            return null;
+        }
+
+        return $stock;
+    }
+
+    /**
      * @param string $symbol
      * @return Stock
      * @throws InvalidArgumentException
@@ -34,11 +51,12 @@ final readonly class StockService
 
             $stock = new Stock();
             $stock->setSymbol($symbol);
-            $stock->setName($profile['name']);
-            $stock->setExchange($profile['exchange']);
-            $stock->setIndustry($profile['industry']);
-            $stock->setLogoUrl($profile['logoUrl']);
-            $stock->setSymbol($profile['currency']);
+            $stock->setName($profile->name);
+            $stock->setExchange($profile->exchange);
+            $stock->setIndustry($profile->finnhubIndustry);
+            $stock->setLogoUrl($profile->logo);
+            $stock->setSymbol($profile->ticker);
+            $stock->setCurrency($profile->currency);
         }
 
         $quote = $this->finnhub->getQuote($symbol);

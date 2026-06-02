@@ -13,5 +13,5 @@ interface WatchlistInterface
 
     public function addItem(User $user, string $symbol): WatchlistItem;
 
-    public function deleteItem(string $symbol): void;
+    public function deleteItem(User $user, string $symbol): void;
 }

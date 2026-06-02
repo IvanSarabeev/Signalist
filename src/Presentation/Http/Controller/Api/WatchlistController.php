@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Throwable;
 
 #[Route(path: '/api/v1/watchlist', name: 'watchlist_')]
 #[OA\Tag(name: 'Watchlist')]
@@ -27,7 +28,7 @@ final class WatchlistController extends AbstractController
     )
     { }
 
-    #[Route(path: '', name: 'list', methods: 'GET')]
+    #[Route(path: '', name: 'list', methods: ['GET'])]
     public function index(#[CurrentUser] ?User $user): JsonResponse
     {
         $items = $this->watchlist->getItems($user);
@@ -43,28 +44,28 @@ final class WatchlistController extends AbstractController
         path: '/{symbol}',
         name: 'add',
         requirements: ['symbol' => RouteRequirements::SYMBOL_REGEX],
-        methods: 'POST'
+        methods: ['POST']
     )]
     public function addStock(#[CurrentUser] ?User $user, string $symbol): JsonResponse
     {
         $item = $this->watchlist->addItem($user, $symbol);
 
-        return ApiResponse::success(data: $item, status: Response::HTTP_CREATED);
+        return ApiResponse::success(data: $item->toArray(), status: Response::HTTP_CREATED);
     }
 
     #[Route(
         path: '/{symbol}',
         name: 'delete',
         requirements: ['symbol' => RouteRequirements::SYMBOL_REGEX],
-        methods: 'DELETE'
+        methods: ['DELETE']
     )]
-    public function deleteStock(string $symbol): JsonResponse
+    public function deleteStock(#[CurrentUser] ?User $user, string $symbol): JsonResponse
     {
         try {
-            $this->watchlist->deleteItem($symbol);
+            $this->watchlist->deleteItem($user, $symbol);
 
             return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->logger->warning(sprintf(
                 self::WATCHLIST_PREFIX . 'Unable to delete stock: %s',
                 $symbol

@@ -7,11 +7,14 @@ namespace App\Service\Watchlist;
 use App\Entity\User;
 use App\Entity\WatchlistItem;
 use App\Presentation\Http\Exception\Services\StockExistingInWatchlistException;
+use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Exception\Services\WatchlistItemNotFound;
 use App\Repository\WatchlistItemRepository;
 use App\Service\Stock\StockService;
 use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Cache\InvalidArgumentException;
 
 final readonly class WatchlistService implements WatchlistInterface
@@ -39,6 +42,7 @@ final readonly class WatchlistService implements WatchlistInterface
      * @param string $symbol
      * @return WatchlistItem
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function addItem(User $user, string $symbol): WatchlistItem
     {
@@ -56,7 +60,7 @@ final readonly class WatchlistService implements WatchlistInterface
         $item = new WatchlistItem();
         $item->setUser($user);
         $item->setStock($stock);
-        $item->setAddedAt(new DateTimeImmutable());
+        $item->setAddedAt(new DateTimeImmutable(timezone: new DateTimeZone('Europe/Sofia')));
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();
@@ -65,13 +69,24 @@ final readonly class WatchlistService implements WatchlistInterface
     }
 
     /**
-     * Delete a specific watchlist item from the stack
+     * Delete a specific watchlist item for a user by stack symbol
+     *
+     * @param User $user
      * @param string $symbol
      * @return void
+     *
+     * @throws StockNotFound
+     * @throws WatchlistItemNotFound
      */
-    public function deleteItem(string $symbol): void
+    public function deleteItem(User $user, string $symbol): void
     {
-        $item = $this->watchlistItemRepository->findOneBy(['stock' => $symbol]);
+        $stock = $this->stockService->findStockBySymbol($symbol);
+
+        if (!$stock) {
+            throw new StockNotFound();
+        }
+
+        $item = $this->watchlistItemRepository->findUserWatchlistItem($user, $stock);
 
         if (!$item) {
             throw new WatchlistItemNotFound();
