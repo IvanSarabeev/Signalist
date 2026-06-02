@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Signalist
+            description: Stock Market app built for tracking prices, set alerts, explore insights, manage watchlist and automate workflows or notifications and analytics
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
