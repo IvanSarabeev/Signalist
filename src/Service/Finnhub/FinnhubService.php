@@ -19,7 +19,7 @@ use Throwable;
  *
  * Acts as an application-level abstraction over the API client, handling caching, logging, and DTO mapping.
  */
-final readonly class FinnhubService
+final readonly class FinnhubService implements FinnhubServiceInterface
 {
     private const FINHUB_LOG_PREFIX = 'Finnhub :';
 

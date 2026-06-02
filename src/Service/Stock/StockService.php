@@ -6,17 +6,16 @@ namespace App\Service\Stock;
 
 use App\Entity\Stock;
 use App\Repository\StockRepository;
-use App\Service\Finnhub\FinnhubService;
+use App\Service\Finnhub\FinnhubServiceInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\InvalidArgumentException;
 
 final readonly class StockService implements StockServiceInterface
 {
     public function __construct(
-        private FinnhubService         $finnhub,
-        private StockRepository        $stockRepository,
-        private EntityManagerInterface $entityManager,
+        private FinnhubServiceInterface $finnhubService,
+        private StockRepository         $stockRepository,
+        private EntityManagerInterface  $entityManager,
     )
     { }
 
@@ -42,14 +41,13 @@ final readonly class StockService implements StockServiceInterface
      *
      * @param string $symbol
      * @return Stock
-     * @throws InvalidArgumentException
      */
     public function findOrCreateFromFinnhubStock(string $symbol): Stock
     {
         $stock = $this->findStockBySymbol($symbol);
 
         if (!$stock) {
-            $profile = $this->finnhub->getCompanyProfile($symbol);
+            $profile = $this->finnhubService->getCompanyProfile($symbol);
 
             $stock = new Stock();
             $stock->setSymbol($symbol);
@@ -61,7 +59,7 @@ final readonly class StockService implements StockServiceInterface
             $stock->setCurrency($profile->currency);
         }
 
-        $quote = $this->finnhub->getQuote($symbol);
+        $quote = $this->finnhubService->getQuote($symbol);
         $stock->setCachedPrice((string)$quote->currentPrice);
         $stock->setCachedChangePercent((string)$quote->percentChange);
         $stock->setCachedPreviousClose((string)$quote->closePriceDay);

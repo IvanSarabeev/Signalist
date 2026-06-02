@@ -4,9 +4,8 @@ namespace App\Presentation\Http\Controller\Api;
 
 use App\Presentation\Http\Request\Stock\StockListRequest;
 use App\Presentation\Http\Response\ApiResponse;
-use App\Service\Finnhub\FinnhubService;
+use App\Service\Finnhub\FinnhubServiceInterface;
 use OpenApi\Attributes as OA;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[OA\Tag(name: 'Stocks')]
 final class StockController extends AbstractController
 {
-    public function __construct(private readonly FinnhubService $finnhubService)
+    public function __construct(private readonly FinnhubServiceInterface $finnhubService)
     { }
 
     /**
@@ -22,7 +21,6 @@ final class StockController extends AbstractController
      *
      * @param StockListRequest $request
      * @return JsonResponse
-     * @throws InvalidArgumentException
      */
     #[Route(path: '', name: 'list', methods: 'GET')]
     public function list(StockListRequest $request): JsonResponse
@@ -40,7 +38,6 @@ final class StockController extends AbstractController
     /**
      * @param string $symbol
      * @return JsonResponse
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/{symbol}/company-news', name: 'news', methods: 'GET')]
     public function news(string $symbol): JsonResponse
