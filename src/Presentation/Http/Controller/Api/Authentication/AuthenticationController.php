@@ -13,11 +13,13 @@ use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Attribute\RateLimit;
+use App\Presentation\ApiDoc\Auth\LoginDoc;
 use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
 use Exception;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +29,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/authentication', name: 'api_authentication_')]
+#[OA\Tag(name: 'Authentication')]
 final class AuthenticationController extends AbstractController
 {
     public function __construct(

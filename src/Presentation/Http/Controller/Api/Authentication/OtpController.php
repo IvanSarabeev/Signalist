@@ -10,6 +10,7 @@ use App\Enum\SerializerFormat;
 use App\Presentation\Http\Attribute\RateLimit;
 use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Security\Otp\OtpService;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/otp', name: 'api_otp_')]
+#[OA\Tag(name: 'OTP')]
 final class OtpController extends AbstractController
 {
     public function __construct(

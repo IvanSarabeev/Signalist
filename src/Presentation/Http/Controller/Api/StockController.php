@@ -5,11 +5,13 @@ namespace App\Presentation\Http\Controller\Api;
 use App\Presentation\Http\Request\Stock\StockListRequest;
 use App\Presentation\Http\Response\ApiResponse;
 use App\Service\Finnhub\FinnhubService;
+use OpenApi\Attributes as OA;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/stocks', name: 'api_stocks_')]
+#[OA\Tag(name: 'Stocks')]
 final class StockController extends AbstractController
 {
     public function __construct(private readonly FinnhubService $finnhubService)

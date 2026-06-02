@@ -6,6 +6,7 @@ use App\Entity\RefreshTokens;
 use App\Repository\UserRepository;
 use App\Security\Token\TokenManager;
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/token', name: 'api_token_')]
+#[OA\Tag(name: 'Token')]
 final class TokenController extends AbstractController
 {
     public function __construct(
