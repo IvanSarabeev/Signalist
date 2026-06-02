@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 
-final readonly class StockService
+final readonly class StockService implements StockServiceInterface
 {
     public function __construct(
         private FinnhubService         $finnhub,
@@ -38,13 +38,15 @@ final readonly class StockService
     }
 
     /**
+     * Finds a stock entity by its symbol or either create new Stock entity.
+     *
      * @param string $symbol
      * @return Stock
      * @throws InvalidArgumentException
      */
     public function findOrCreateFromFinnhubStock(string $symbol): Stock
     {
-        $stock = $this->stockRepository->find($symbol);
+        $stock = $this->findStockBySymbol($symbol);
 
         if (!$stock) {
             $profile = $this->finnhub->getCompanyProfile($symbol);

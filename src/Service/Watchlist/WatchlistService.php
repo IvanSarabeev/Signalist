@@ -10,17 +10,16 @@ use App\Presentation\Http\Exception\Services\StockExistingInWatchlistException;
 use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Exception\Services\WatchlistItemNotFound;
 use App\Repository\WatchlistItemRepository;
-use App\Service\Stock\StockService;
+use App\Service\Stock\StockServiceInterface;
 use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\Cache\InvalidArgumentException;
 
 final readonly class WatchlistService implements WatchlistInterface
 {
     public function __construct(
-        private StockService            $stockService,
+        private StockServiceInterface   $stockService,
         private EntityManagerInterface  $entityManager,
         private WatchlistItemRepository $watchlistItemRepository,
     )
@@ -41,7 +40,6 @@ final readonly class WatchlistService implements WatchlistInterface
      * @param User $user
      * @param string $symbol
      * @return WatchlistItem
-     * @throws InvalidArgumentException
      * @throws Exception
      */
     public function addItem(User $user, string $symbol): WatchlistItem
