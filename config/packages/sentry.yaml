@@ -14,6 +14,7 @@ when@prod:
             ignore_exceptions:
                 - 'Symfony\Component\ErrorHandler\Error\FatalError'
                 - 'Symfony\Component\Debug\Exception\FatalErrorException'
+                - 'App\Presentation\Http\Exception\HttpException'
 
 when@dev:
     sentry:
