@@ -279,7 +279,7 @@
         @apply lg:col-span-2 space-y-8;
     }
     .watchlist-alerts {
-        @apply items-start gap-6 h-full flex-col w-full lg:col-span-1;
+        @apply items-start gap-6 h-full flex-col w-fit lg:col-span-1;
     }
     .watchlist-icon-btn {
         @apply w-fit cursor-pointer hover:bg-transparent! text-gray-400 hover:text-yellow-500;

@@ -4,6 +4,7 @@ import {Plus} from "lucide-react";
 import WatchlistTable from "@/components/WatchlistTable";
 import AddStockModal from "@/components/modals/AddStockModal";
 import AddAlertModal from "@/components/modals/AddAlertModal";
+import AlertPanel from "@/components/AlertsPanel";
 
 const initialStocks = [
     { id: 1, company: "Apple Inc", symbol: "AAPL", price: 233.16, change: 1.54, marketCap: "$3.56T", peRatio: 35.5, starred: true },
@@ -20,9 +21,16 @@ const initialStocks = [
     { id: 12, company: "Johnson & Johnson", symbol: "JNJ", price: 254.45, change: 2.31, marketCap: "$2.63T", peRatio: 45.9, starred: true },
 ];
 
+const initialAlerts = [
+    { id: 101, stockId: 1, price: "240.60", condition: "above",  frequency: "once_per_day"    },
+    { id: 102, stockId: 5, price: "300.80", condition: "equals", frequency: "once_per_minute" },
+    { id: 103, stockId: 6, price: "700.40", condition: "below",  frequency: "once_per_hour"   },
+    { id: 104, stockId: 2, price: "540.13", condition: "above",  frequency: "once_per_day"    },
+];
+
 const WatchlistPage: FC = () => {
     const [stocks, setStocks] = useState(initialStocks);
-    const [alerts, setAlerts] = useState({});
+    const [alerts, setAlerts] = useState(initialAlerts);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [addStockOpen, setAddStockOpen] = useState(false);
     const [selectedStock, setSelectedStock] = useState(null);
@@ -73,25 +81,30 @@ const WatchlistPage: FC = () => {
         setAddStockOpen(false);
     };
 
-    return (
-        <div className="min-h-screen bg-gray-950 p-6">
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="watchlist-title">Watchlist</h1>
-                <Button
-                    onClick={() => setAddStockOpen(true)}
-                    className="watchlist-btn w-auto! px-5"
-                >
-                    <Plus className="size-4 mr-1.5" />
-                    Add Stock
-                </Button>
-            </div>
+    const openCreateAlert = () => { setAlertDialogOpen(true); };
 
+    const openEditAlert = (alert) => { setAlertDialogOpen(true); };
+
+    const deleteAlert = (id) => {
+        console.log('Deleted an Alert');
+    }
+
+    return (
+        <div className="min-h-screen p-6 flex flex-column-reverse gap-2 items-start">
             <WatchlistTable
                 stocks={stocks}
                 toggleStar={toggleStar}
                 removeStock={removeStock}
                 setAddStockOpen={setAddStockOpen}
                 openAlertDialog={openAlertDialog}
+            />
+
+            <AlertPanel
+                alerts={alerts}
+                stocks={stocks}
+                onCreateAlert={openCreateAlert}
+                onEditAlert={openEditAlert}
+                onDeleteAlert={deleteAlert}
             />
 
             <AddAlertModal
