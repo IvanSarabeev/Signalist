@@ -1,0 +1,28 @@
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        register_error_listener: false   # ← fix the typo from before
+        register_error_handler: false
+        options:
+            enable_logs: true
+            environment: '%kernel.environment%'
+            release: '1.0.0'
+            attach_stacktrace: true
+            send_default_pii: true
+            trace_sample_rate: 1.0
+            profiles_sample_rate: 1.0
+            ignore_exceptions:
+                - 'Symfony\Component\ErrorHandler\Error\FatalError'
+                - 'Symfony\Component\Debug\Exception\FatalErrorException'
+                - 'App\Presentation\Http\Exception\HttpException'
+
+when@dev:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        register_error_listener: false
+        register_error_handler: false
+        options:
+            enable_logs: true
+            environment: '%kernel.environment%'
+            attach_stacktrace: true
+            send_default_pii: true

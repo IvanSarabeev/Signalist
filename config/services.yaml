@@ -81,5 +81,18 @@ services:
             $popularSymbols: '%finnhub.popular_symbols%'
     # End of Region Services
 
+    # Region Sentry - Monolog Service
+    Sentry\Monolog\Handler:
+        arguments:
+            $hub: '@Sentry\State\HubInterface'
+            $level: !php/const Monolog\Logger::ERROR
+            $fillExtraContext: true
+
+    Sentry\Monolog\BreadcrumbHandler:
+        arguments:
+            $hub: '@Sentry\State\HubInterface'
+            $level: !php/const Monolog\Logger::INFO
+    # End of Region Sentry - Monolog Service
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
