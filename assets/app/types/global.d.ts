@@ -174,17 +174,39 @@ declare global {
         watchlist: StockWithData[];
     };
 
+    type WatchlistResponse = {
+        status: boolean;
+        data: StockWithData[];
+        errors: [];
+        meta: [];
+    }
+
     type StockWithData = {
-        userId: string;
-        symbol: string;
-        company: string;
-        addedAt: Date;
-        currentPrice?: number;
-        changePercent?: number;
-        priceFormatted?: string;
-        changeFormatted?: string;
-        marketCap?: string;
-        peRatio?: string;
+        id: number,
+        sortOrder: number,
+        addedAt: {
+            date: string,
+            timezone_type: number,
+            timezone: string
+        },
+        stock: {
+            symbol: string,
+            name: string,
+            exchange: string,
+            industry: string,
+            logoUrl: string,
+            currency: string,
+            cachedPrice: number,
+            cachedChangePercent: number,
+            cachedPreviousClose: number,
+            cachedHigh: number,
+            cachedLow: number,
+            quoteCachedAt: {
+                date: string,
+                timezone_type: number,
+                timezone: string
+            }
+        }
     };
 
     type AlertsListProps = {
@@ -260,6 +282,8 @@ declare global {
         response: Record<string, any>;
         message: string;
     }
+
+
 }
 
 export {};
