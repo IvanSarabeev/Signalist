@@ -1692,6 +1692,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     twig_extra?: TwigExtraConfig,
  *     monolog?: MonologConfig,
  *     nelmio_api_doc?: NelmioApiDocConfig,
+ *     sentry?: SentryConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1708,6 +1709,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         twig_extra?: TwigExtraConfig,
  *         monolog?: MonologConfig,
  *         nelmio_api_doc?: NelmioApiDocConfig,
+ *         sentry?: SentryConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1740,6 +1742,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         twig_extra?: TwigExtraConfig,
  *         monolog?: MonologConfig,
  *         nelmio_api_doc?: NelmioApiDocConfig,
+ *         sentry?: SentryConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

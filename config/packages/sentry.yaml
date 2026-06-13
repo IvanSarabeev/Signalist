@@ -1,52 +1,27 @@
 when@prod:
     sentry:
         dsn: '%env(SENTRY_DSN)%'
-        # Prevents duplicate events
-        register_error_listner: false
-        # Disable base PHP SDK error listener
+        register_error_listener: false   # ← fix the typo from before
         register_error_handler: false
         options:
-            # Enable logs to be sent to Sentry
             enable_logs: true
             environment: '%kernel.environment%'
             release: '1.0.0'
-            # Attach stack traces to log-based events
             attach_stacktrace: true
-            # includes user/session context
             send_default_pii: true
-            # Specify a fixed sample rate
             trace_sample_rate: 1.0
-            # Set a sampling rate for profiling - this is relative to trace_sample_rate
             profiles_sample_rate: 1.0
-            # Add request headers, cookies, IP address and the authenticated user
-            # see https://docs.sentry.io/platforms/php/data-management/data-collected/ for more info
-            # send_default_pii: true
             ignore_exceptions:
                 - 'Symfony\Component\ErrorHandler\Error\FatalError'
                 - 'Symfony\Component\Debug\Exception\FatalErrorException'
-#
-#        # If you are using Monolog, you also need this additional configuration to log the errors correctly:
-#        # https://docs.sentry.io/platforms/php/guides/symfony/integrations/monolog/
-#        register_error_listener: false
-#        register_error_handler: false
-#
-#    monolog:
-#        handlers:
-#            # Use this only if you don't want to use structured logging and instead receive
-#            # certain log levels as errors.
-#            sentry:
-#                type: service
-#                id: Sentry\Monolog\Handler
-#
-#            # Use this for structured log integration
-#            sentry_logs:
-#                type: service
-#                id: Sentry\SentryBundle\Monolog\LogsHandler
-#
-#    # Enable one of the two services below, depending on your choice above
-    services:
-        Sentry\Monolog\Handler:
-            arguments:
-                $hub: '@Sentry\State\HubInterface'
-                $level: !php/const Monolog\Logger::ERROR
-                $fillExtraContext: true # Enables sending monolog context to Sentry
+
+when@dev:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        register_error_listener: false
+        register_error_handler: false
+        options:
+            enable_logs: true
+            environment: '%kernel.environment%'
+            attach_stacktrace: true
+            send_default_pii: true
