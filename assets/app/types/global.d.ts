@@ -143,7 +143,7 @@ declare global {
 
     type WatchlistButtonProps = {
         symbol: string;
-        company: string;
+        company?: string;
         isInWatchlist: boolean;
         showTrashIcon?: boolean;
         type?: 'button' | 'icon';
@@ -178,35 +178,29 @@ declare global {
         status: boolean;
         data: StockWithData[];
         errors: [];
-        meta: [];
+        meta: {
+            page: number;
+            limit: number;
+            total_pages: number;
+            has_next_page: boolean;
+            has_previous_page: boolean;
+        } | [];
     }
 
     type StockWithData = {
-        id: number,
-        sortOrder: number,
-        addedAt: {
-            date: string,
-            timezone_type: number,
-            timezone: string
-        },
-        stock: {
-            symbol: string,
-            name: string,
-            exchange: string,
-            industry: string,
-            logoUrl: string,
-            currency: string,
-            cachedPrice: number,
-            cachedChangePercent: number,
-            cachedPreviousClose: number,
-            cachedHigh: number,
-            cachedLow: number,
-            quoteCachedAt: {
-                date: string,
-                timezone_type: number,
-                timezone: string
-            }
-        }
+        id: number;
+        symbol: string;
+        name: string;
+        exchange: string;
+        currency: string;
+        price: number;
+        change_percent: number;
+        market_cap: string;
+        pe_ratio: number;
+        added_at: string;
+        sort_order: number,
+        industry?: string;
+        logoUrl?: string;
     };
 
     type AlertsListProps = {

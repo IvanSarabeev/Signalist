@@ -1,10 +1,9 @@
-import {FC, memo, useState} from "react";
-import {Button} from "@/components/ui/button";
-import {Plus} from "lucide-react";
+import {FC, memo, useEffect, useState} from "react";
 import WatchlistTable from "@/components/WatchlistTable";
 import AddStockModal from "@/components/modals/AddStockModal";
 import AddAlertModal from "@/components/modals/AddAlertModal";
 import AlertPanel from "@/components/AlertsPanel";
+import {getWatchlist} from "@/app/api/watchlist";
 
 const initialStocks = [
     { id: 1, company: "Apple Inc", symbol: "AAPL", price: 233.16, change: 1.54, marketCap: "$3.56T", peRatio: 35.5, starred: true },
@@ -29,13 +28,50 @@ const initialAlerts = [
 ];
 
 const WatchlistPage: FC = () => {
-    const [stocks, setStocks] = useState(initialStocks);
+    const [stocks, setStocks] = useState<StockWithData[]>([]);
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPreviousPage: false,
+    });
     const [alerts, setAlerts] = useState(initialAlerts);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [addStockOpen, setAddStockOpen] = useState(false);
     const [selectedStock, setSelectedStock] = useState(null);
     const [alertPrice, setAlertPrice] = useState("");
     const [newStock, setNewStock] = useState({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
+
+    const loadStocks = async () => {
+        try {
+            const watchlistResult = await getWatchlist();
+
+            if (watchlistResult.status) {
+                if (watchlistResult.data.length > 0) {
+                    setStocks(watchlistResult.data);
+                }
+
+                if (Object.keys(watchlistResult.meta).length > 0) {
+                    setPagination((prevState) => ({
+                        ...prevState,
+                        // TODO: How should I access the meta properties - page, limit and etc...
+                    }));
+                }
+            }
+
+        } catch (error: unknown) {
+            console.log('Error: ', error);
+
+            setStocks([]);
+        }
+    }
+
+    useEffect(() => {
+        loadStocks();
+    }, []);
+
+    console.log('Stocks: ', stocks);
 
     const toggleStar = (id: number) => {
         setStocks((prev) =>
@@ -85,7 +121,7 @@ const WatchlistPage: FC = () => {
 
     const openEditAlert = (alert) => { setAlertDialogOpen(true); };
 
-    const deleteAlert = (id) => {
+    const deleteAlert = (id: number) => {
         console.log('Deleted an Alert');
     }
 

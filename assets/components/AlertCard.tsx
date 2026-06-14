@@ -13,7 +13,7 @@ type AlertCardProps = {
         symbol: string;
         company: string;
         price: number;
-        change: number;
+        exchange: number;
     };
     onEdit: (alert: {
         id: number;
@@ -62,7 +62,7 @@ const AlertCard: FC<AlertCardProps> = ({
                 <div className="text-right shrink-0">
                     <p className="text-gray-300 text-sm font-semibold font-mono">{stock.symbol}</p>
                     <p className={`text-xs font-semibold ${isPositive ? "text-emerald-400" : "text-red-400"}`}>
-                        {isPositive ? "+" : ""}{stock.change.toFixed(2)}%
+                        {isPositive ? "+" : ""}{Number(stock.exchange).toFixed(2)}%
                     </p>
                 </div>
             </div>
