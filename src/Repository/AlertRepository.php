@@ -43,12 +43,16 @@ class AlertRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
 
         if (empty($items)) {
-            return array_map(
-                fn(array $item) => [
-
-                ],
-                $items
-            );
+            return [];
         }
+
+        return array_map(
+            function(array $item) {
+                return [
+                    'id' => $item['id']
+                ];
+            },
+            $items
+        );
     }
 }
