@@ -10,20 +10,18 @@ use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\ApiResponse;
 use App\Service\Watchlist\WatchlistServiceInterface;
 use OpenApi\Attributes as OA;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Throwable;
 
 #[Route(path: '/api/v1/watchlist', name: 'watchlist_')]
 #[OA\Tag(name: 'Watchlist')]
-final class WatchlistController extends AbstractController
+final readonly class WatchlistController
 {
     public function __construct(
-        private readonly WatchlistServiceInterface $watchlistService,
+        private WatchlistServiceInterface $watchlistService,
     )
     { }
 
