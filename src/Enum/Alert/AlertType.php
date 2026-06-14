@@ -6,12 +6,21 @@ namespace App\Enum\Alert;
 
 enum AlertType: string
 {
-    case PRICE          = 'Price';
+    case PRICE          = 'price';
     case PERCENT_CHANGE = 'percent_change';
     case VOLUME         = 'volume';
     case MARKET_CAP     = 'market_cap';
     case MOVING_AVERAGE = 'moving_average';
     case RSI            = 'rsi';
+
+    /**
+     * Used by Assert\Choice in requests.
+     * PHP attributes only accept compile-time constants.
+     */
+    public const VALUES = [
+        'price', 'percent_change', 'volume',
+        'market_cap', 'moving_average', 'rsi',
+    ];
 
     public function label(): string
     {

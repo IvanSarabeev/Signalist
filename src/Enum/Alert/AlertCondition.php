@@ -12,6 +12,15 @@ enum AlertCondition: string
     case CROSSES_ABOVE         = 'crosses_above';
     case CROSSES_BELOW         = 'crosses_below';
 
+    /**
+     * Used by Assert\Choice in requests.
+     * PHP attributes only accept compile-time constants.
+     */
+    public const VALUES = [
+        'gt', 'gte', 'lt', 'lte', 'eq', 'crosses_above', 'crosses_below',
+    ];
+
+
     public function label(): string
     {
         return match($this) {

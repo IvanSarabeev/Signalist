@@ -192,7 +192,7 @@ class Alert
                 'symbol'         => $this->getStock()->getSymbol(),
                 'name'           => $this->getStock()->getName(),
                 'currency'       => $this->getStock()->getCurrency(),
-                'price'          => $this->getStock()->getCachedPrice(),
+                'price'          => number_format((float) ($this->getStock()->getCachedPrice()), 2, ','),
                 'logo_url'       => $this->getStock()->getLogoUrl(),
                 'change_percent' => $this->getStock()->getCachedChangePercent(),
             ],

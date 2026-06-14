@@ -14,6 +14,15 @@ enum AlertFrequency: string
     case MARKET_OPEN    = 'market_open';
     case MARKET_CLOSE   = 'market_close';
 
+    /**
+     * Used by Assert\Choice in requests.
+     * PHP attributes only accept compile-time constants.
+     */
+    public const VALUES = [
+        'once', 'once_per_hour', 'once_per_day',
+        'once_per_week', 'market_open', 'market_close',
+    ];
+
     public function label(): string
     {
         return match($this) {
