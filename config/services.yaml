@@ -53,6 +53,9 @@ services:
 
     App\Presentation\Http\ArgumentResolver\StockListRequestResolver:
         tags: ['controller.argument_value_resolver']
+
+    App\Presentation\Http\ArgumentResolver\Alert\CreateAlertRequestResolver:
+        tags: ['controller.argument_value_resolver']
     # End of Region Controller
 
     # Region Notification
