@@ -41,13 +41,13 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
             <section aria-label="watchlist-section" className="watchlist-table">
                 <Table aria-label="watchlist-table">
                     <TableHeader>
-                        <TableRow className="border-gray-700 hover:bg-transparent bg-gray-600/90 pl-4 pr-2">
+                        <TableRow className="border-gray-700 hover:bg-transparent bg-gray-600/90">
                             {WATCHLIST_TABLE_HEADER.map((header, index) => {
                                 return (
                                     <TableHead
                                         key={`${header}-${index}`}
                                         aria-label={header}
-                                        className="font-monospace text-base font-semibold text-gray-400 text-wrap"
+                                        className="px-4 font-monospace text-base font-semibold text-gray-400 text-wrap"
                                     >
                                         {header}
                                     </TableHead>
