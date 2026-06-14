@@ -3,7 +3,8 @@ import WatchlistTable from "@/components/WatchlistTable";
 import AddStockModal from "@/components/modals/AddStockModal";
 import AddAlertModal from "@/components/modals/AddAlertModal";
 import AlertPanel from "@/components/AlertsPanel";
-import {getWatchlist} from "@/app/api/watchlist";
+import {deleteWatchlistItem, getWatchlist} from "@/app/api/watchlist";
+import {addNotification} from "@/lib/utils";
 
 const initialAlerts = [
     { id: 101, stockId: 1, price: "240.60", condition: "above",  frequency: "once_per_day"    },
@@ -62,8 +63,32 @@ const WatchlistPage: FC = () => {
         );
     };
 
-    const removeStock = (id: number) => {
-        setStocks((prev) => prev.filter((s) => s.id !== id));
+    const removeStock = async (stock: StockWithData) => {
+        if (!stock) {
+            addNotification({
+                type: "error",
+                duration: 3000,
+                message: "Error",
+                description: "Invalid stock. Please try again later!",
+            });
+            return;
+        }
+
+        try {
+            await deleteWatchlistItem(stock.symbol);
+
+            setStocks((prev) => prev.filter((s) => s.id !== stock.id));
+        } catch (error: unknown) {
+            const message = (error as ApiError)?.message ?? `Unable to delete ${stock.symbol}`;
+
+            addNotification({
+                type: "error",
+                duration: 3000,
+                message: "Error",
+                description: `${message}. Please try again later or contact the support center`,
+            });
+        }
+
     };
 
     const openAlertDialog = (stock) => {

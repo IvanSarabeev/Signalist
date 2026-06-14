@@ -7,3 +7,7 @@ export async function getWatchlist(): Promise<WatchlistResponse> {
 export async function addWatchlistItem(symbol: string): Promise<AddWatchlistItemResponse> {
     return api.post(`/watchlist/${symbol}`);
 }
+
+export async function deleteWatchlistItem(symbol: string): Promise<void> {
+    return api.delete(`/watchlist/${symbol}`);
+}

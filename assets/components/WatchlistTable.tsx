@@ -10,7 +10,7 @@ import WatchlistButton from "@/components/WatchlistButton";
 type WatchlistTableProps = {
     stocks: StockWithData[];
     toggleStar: (id: number) => void;
-    removeStock: (id: number) => void;
+    removeStock: (stock: StockWithData) => void;
     openAlertDialog: (stock: Object) => void;
     setAddStockOpen: (value: boolean) => void;
 }
@@ -111,7 +111,7 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
                                             <Button
                                                 size="sm"
                                                 aria-label={`Remove ${stock.name}`}
-                                                onClick={() => removeStock(stock.id)}
+                                                onClick={() => removeStock(stock)}
                                                 className="watchlist-remove transition-opacity cursor-pointer"
                                             >
                                                 <Trash2 className="trash-icon" />
