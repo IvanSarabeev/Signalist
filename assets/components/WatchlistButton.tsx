@@ -1,5 +1,6 @@
 import React, {FC, memo, useState, useMemo} from 'react'
 import {UserRoundPlus} from "lucide-react";
+import {Button} from "@/components/ui/button";
 
 const WatchlistButton: FC<WatchlistButtonProps> = ({
     symbol,
@@ -48,7 +49,11 @@ const WatchlistButton: FC<WatchlistButtonProps> = ({
     }
 
     return (
-        <button className={`watchlist-btn ${added ? "watchlist-remove" : ""}`} onClick={onClick}>
+        <Button
+            onClick={onClick}
+            aria-label='remove from watchlist'
+            className={`watchlist-btn ${added ? "watchlist-remove" : ""}`}
+        >
             {showTrashIcon && added ? (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +67,7 @@ const WatchlistButton: FC<WatchlistButtonProps> = ({
                 </svg>
             ) : null}
             <span>{label}</span>
-        </button>
+        </Button>
     )
 }
 

@@ -16,5 +16,4 @@ final class StockNotFound extends HttpException
     {
         return "Stock not found";
     }
-
 }

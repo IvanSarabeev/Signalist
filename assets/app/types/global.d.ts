@@ -143,7 +143,7 @@ declare global {
 
     type WatchlistButtonProps = {
         symbol: string;
-        company: string;
+        company?: string;
         isInWatchlist: boolean;
         showTrashIcon?: boolean;
         type?: 'button' | 'icon';
@@ -174,17 +174,40 @@ declare global {
         watchlist: StockWithData[];
     };
 
+    type WatchlistResponse = {
+        status: boolean;
+        data: StockWithData[];
+        errors: [];
+        meta: {
+            page: number;
+            limit: number;
+            total_pages: number;
+            has_next_page: boolean;
+            has_previous_page: boolean;
+        } | [];
+    }
+
+    type AddWatchlistItemResponse = {
+        status: boolean;
+        data: StockWithData;
+        errors: [];
+        meta: [];
+    }
+
     type StockWithData = {
-        userId: string;
+        id: number;
         symbol: string;
-        company: string;
-        addedAt: Date;
-        currentPrice?: number;
-        changePercent?: number;
-        priceFormatted?: string;
-        changeFormatted?: string;
-        marketCap?: string;
-        peRatio?: string;
+        name: string;
+        exchange: string;
+        industry?: string;
+        logoUrl?: string;
+        currency: string;
+        price: number;
+        change_percent: number;
+        market_cap: string;
+        pe_ratio: number;
+        added_at: string;
+        sort_order: number,
     };
 
     type AlertsListProps = {
@@ -260,6 +283,8 @@ declare global {
         response: Record<string, any>;
         message: string;
     }
+
+
 }
 
 export {};

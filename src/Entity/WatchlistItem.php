@@ -84,10 +84,9 @@ class WatchlistItem
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'stock' => $this->getStock(),
-            'order' => $this->getSortOrder(),
-            'addedAt' => $this->getAddedAt()->format('Y-m-d\TH:i:s'),
+            'id'       => $this->id,
+            'added_at' => $this->getAddedAt()->format('Y-m-d\TH:i:s'),
+            ...$this->getStock()->toArray(),
         ];
     }
 }

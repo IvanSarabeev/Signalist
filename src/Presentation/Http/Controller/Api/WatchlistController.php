@@ -6,11 +6,13 @@ namespace App\Presentation\Http\Controller\Api;
 
 use App\Entity\User;
 use App\Infrastructure\Routing\RouteRequirements;
+use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\ApiResponse;
 use App\Service\Watchlist\WatchlistInterface;
 use OpenApi\Attributes as OA;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -28,18 +30,33 @@ final class WatchlistController extends AbstractController
     )
     { }
 
+    /**
+     * Get the watchlist per a user
+     *
+     * @param User|null $user
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route(path: '', name: 'list', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user): JsonResponse
+    public function index(#[CurrentUser] ?User $user, Request $request): JsonResponse
     {
-        $items = $this->watchlist->getItems($user);
+        $pagination = PaginatedRequest::fromRequest($request);
+        $items = $this->watchlist->getItems($user, $pagination);
 
         if ($items === null) {
             return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
         }
 
-        return ApiResponse::success($items);
+        return ApiResponse::success(data: $items->items, meta: [$items->toArray()]);
     }
 
+    /**
+     * Create an watchlist item per an user
+     *
+     * @param User|null $user
+     * @param string $symbol
+     * @return JsonResponse
+     */
     #[Route(
         path: '/{symbol}',
         name: 'add',
@@ -53,6 +70,13 @@ final class WatchlistController extends AbstractController
         return ApiResponse::success(data: $item->toArray(), status: Response::HTTP_CREATED);
     }
 
+    /**
+     * Delete a specific watchlist item for a user
+     *
+     * @param User|null $user
+     * @param string $symbol
+     * @return JsonResponse
+     */
     #[Route(
         path: '/{symbol}',
         name: 'delete',
@@ -61,17 +85,8 @@ final class WatchlistController extends AbstractController
     )]
     public function deleteStock(#[CurrentUser] ?User $user, string $symbol): JsonResponse
     {
-        try {
-            $this->watchlist->deleteItem($user, $symbol);
+        $this->watchlist->deleteItem($user, $symbol);
 
-            return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
-        } catch (Throwable $exception) {
-            $this->logger->warning(sprintf(
-                self::WATCHLIST_PREFIX . 'Unable to delete stock: %s',
-                $symbol
-            ), ['message' => $exception->getMessage()]);
-
-            return ApiResponse::error('Unable to remove ' . $symbol . ' from watchlist', status: Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
     }
 }

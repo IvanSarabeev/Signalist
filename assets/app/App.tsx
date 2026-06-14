@@ -13,6 +13,7 @@ const SecureTokenAuthenticationPage = lazy(() => import('@/app/pages/auth/Secure
 
 const AccountDashboardPage = lazy(() => import('@/app/pages/root/Home'));
 const StockDetailsPage = lazy(() => import('@/app/pages/root/StockDetailPage'));
+const WatchlistPage = lazy(() => import('@/app/pages/root/WatchlistPage'));
 
 const router = createBrowserRouter([
     {
@@ -35,7 +36,8 @@ const router = createBrowserRouter([
         ),
         children: [
             {index: true, element: withSuspense(AccountDashboardPage)},
-            {path: '/account/stocks/:symbol', element: withSuspense(StockDetailsPage)}
+            {path: '/account/stocks/:symbol', element: withSuspense(StockDetailsPage)},
+            {path: '/account/watchlist', element: withSuspense(WatchlistPage)},
         ]
     },
     {

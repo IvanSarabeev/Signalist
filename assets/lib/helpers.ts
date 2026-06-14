@@ -103,10 +103,10 @@ export const getChangeColorClas = (changePercent?: number) => {
     return changePercent > 0 ? 'text-green-500' : 'text-red-500';
 };
 
-export const formatPrice = (price: number) => {
+export const formatPrice = (price: number, currency: string|null = null) => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'EUR',
+        currency: currency ?? 'EUR',
         minimumFractionDigits: 2
     }).format(price);
 };

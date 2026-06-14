@@ -9,6 +9,8 @@ use App\Entity\WatchlistItem;
 use App\Presentation\Http\Exception\Services\StockExistingInWatchlistException;
 use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Exception\Services\WatchlistItemNotFound;
+use App\Presentation\Http\Request\PaginatedRequest;
+use App\Presentation\Http\Response\PaginatedResponse;
 use App\Repository\WatchlistItemRepository;
 use App\Service\Stock\StockServiceInterface;
 use DateTimeImmutable;
@@ -25,15 +27,34 @@ final readonly class WatchlistService implements WatchlistInterface
     )
     { }
 
-    public function getItems(User $user): ?array
+    /**
+     * Get the watchlist items that a user has and return pagination based DTO response
+     *
+     * @param User $user
+     * @param PaginatedRequest $pagination
+     * @return PaginatedResponse|null
+     */
+    public function getItems(User $user, PaginatedRequest $pagination): ?PaginatedResponse
     {
-        $items = $this->watchlistItemRepository->findUserWatchlistItems($user);
+        $total = $this->watchlistItemRepository->countUserWatchlistItems($user);
 
-        if (empty($items)) {
+        if ($total === 0) {
             return null;
         }
 
-        return $items;
+        $items = $this->watchlistItemRepository->findUserWatchlistItems(
+            $user,
+            $pagination->limit,
+            $pagination->getOffset()
+        );
+
+        return new PaginatedResponse(
+            items:       $items,
+            total:       $total,
+            page:        $pagination->page,
+            limit:       $pagination->limit,
+            total_pages: (int) ceil($total / $pagination->limit),
+        );
     }
 
     /**
