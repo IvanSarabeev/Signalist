@@ -10,6 +10,8 @@ import {
 } from "@/lib/constants";
 import {useParams} from "react-router";
 import WatchlistButton from "@/components/WatchlistButton";
+import {addWatchlistItem} from "@/app/api/watchlist";
+import {addNotification} from "@/lib/utils";
 
 const StockDetailPage: FC = () => {
     const {symbol} = useParams<{symbol: string}>();
@@ -26,6 +28,32 @@ const StockDetailPage: FC = () => {
     if (!symbol) {
         return <div>No symbol found.</div>
     }
+
+    const onWatchlistAdd = async (symbol: string, isAdded: boolean = false) => {
+        try {
+            const result = await addWatchlistItem(symbol);
+
+            if (result.status && Object.keys(result.data).length > 0) {
+                // TODO: Introduce new Object item in which we will collect the Stocks
+                addNotification({
+                    type: "success",
+                    message: `Added ${symbol.toUpperCase()} successfully`,
+                    description: "You can view your watchlist for more information",
+                    duration: 4000
+                });
+            }
+        } catch (error: unknown) {
+            const apiError = error as ApiError;
+            const message = apiError.message;
+
+            addNotification({
+                type: "error",
+                message: "Error",
+                description: message,
+                duration: 4000
+            });
+        }
+    };
 
     return (
         <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
@@ -56,8 +84,8 @@ const StockDetailPage: FC = () => {
                     <div className="flex items-center justify-between">
                         <WatchlistButton
                             symbol={symbol.toUpperCase()}
-                            company={symbol.toUpperCase()}
                             isInWatchlist={false}
+                            onWatchlistChange={onWatchlistAdd}
                         />
                     </div>
 

@@ -65,7 +65,7 @@ export const setupInterceptors = (
             }
 
             // 🔥 SIMPLE STRATEGY (NO REFRESH TOKEN)
-            return Promise.reject(error);
+            return error;
 
             // 🔒 REFRESH TOKEN FLOW (DISABLED FOR NOW)
             /*

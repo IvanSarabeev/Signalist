@@ -187,11 +187,20 @@ declare global {
         } | [];
     }
 
+    type AddWatchlistItemResponse = {
+        status: boolean;
+        data: StockWithData;
+        errors: [];
+        meta: [];
+    }
+
     type StockWithData = {
         id: number;
         symbol: string;
         name: string;
         exchange: string;
+        industry?: string;
+        logoUrl?: string;
         currency: string;
         price: number;
         change_percent: number;
@@ -199,8 +208,6 @@ declare global {
         pe_ratio: number;
         added_at: string;
         sort_order: number,
-        industry?: string;
-        logoUrl?: string;
     };
 
     type AlertsListProps = {

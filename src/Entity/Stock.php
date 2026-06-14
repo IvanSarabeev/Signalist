@@ -274,4 +274,23 @@ class Stock
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'symbol'         => $this->getSymbol(),
+            'name'           => $this->getName(),
+            'exchange'       => $this->getExchange(),
+            'industry'       => $this->getIndustry(),
+            'logoUrl'        => $this->getLogoUrl(),
+            'currency'       => $this->getCurrency(),
+            'price'          => $this->getCachedPrice(),
+            'change_percent' => $this->getCachedChangePercent(),
+            'market_cap'     => $this->getCachedPreviousClose(),
+            'pe_ratio'       => $this->getCachedHigh(),
+            'cachedLow'      => $this->getCachedLow(),
+            'quote_at'       => $this->getQuoteCachedAt()->format('Y-m-d\TH:i:s'),
+            'alerts'         => $this->getAlerts()->toArray(),
+        ];
+    }
 }

@@ -30,9 +30,8 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
                 <Button
                     size="sm"
                     onClick={() => setAddStockOpen(true)}
-                    className="yellow-btn w-auto! px-5"
+                    className="yellow-btn w-auto! px-5 font-bold! text-base!"
                 >
-                    <Plus className="size-4 mr-1.5" />
                     Add Stock
                 </Button>
             </div>
