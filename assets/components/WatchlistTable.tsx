@@ -1,26 +1,28 @@
-import React, {FC, memo} from 'react'
+import React, {FC, memo, SetStateAction} from 'react'
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Bell, Plus, Star, Trash2, TrendingDown, TrendingUp} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {WATCHLIST_TABLE_HEADER} from "@/lib/constants";
 import {formatMarketCapValue, formatPrice, getChangeColorClas} from "@/lib/helpers";
-import WatchlistButton from "@/components/WatchlistButton";
+import {Link} from "react-router-dom";
 
 type WatchlistTableProps = {
     stocks: StockWithData[];
     toggleStar: (id: number) => void;
-    removeStock: (stock: StockWithData) => void;
     openAlertDialog: (stock: Object) => void;
     setAddStockOpen: (value: boolean) => void;
+    setIsOpen:  (value: SetStateAction<boolean>) => void;
+    setConfirmStock: (value: React.SetStateAction<StockWithData | null>) => void;
 }
 
 const WatchlistTable: FC<WatchlistTableProps> = ({
     stocks,
     toggleStar,
-    removeStock,
     openAlertDialog,
     setAddStockOpen,
+    setIsOpen,
+    setConfirmStock,
 }) => {
     return (
         <section className="flex flex-col">
@@ -72,9 +74,13 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
                                     </TableCell>
 
                                     <TableCell className="pl-4 pr-2 border border-gray-600/90">
-                                        <span className="text-white font-medium text-base text-wrap text-center">
+                                        <Link
+                                            to={`/account/stocks/${stock.symbol}`}
+                                            aria-label={`view ${stock.name} details`}
+                                            className="text-white font-medium text-base text-wrap text-center hover:underline"
+                                        >
                                             {stock.name}
-                                        </span>
+                                        </Link>
                                     </TableCell>
 
                                     <TableCell className="pl-4 pr-2 border border-gray-600/90">
@@ -111,7 +117,10 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
                                             <Button
                                                 size="sm"
                                                 aria-label={`Remove ${stock.name}`}
-                                                onClick={() => removeStock(stock)}
+                                                onClick={() => {
+                                                    setConfirmStock(stock);
+                                                    setIsOpen((prevState) => !prevState);
+                                                }}
                                                 className="watchlist-remove transition-opacity cursor-pointer"
                                             >
                                                 <Trash2 className="trash-icon" />

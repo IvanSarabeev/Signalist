@@ -1,10 +1,13 @@
-import {FC, memo, useEffect, useState} from "react";
+import React, {FC, memo, useEffect, useState} from "react";
 import WatchlistTable from "@/components/WatchlistTable";
 import AddStockModal from "@/components/modals/AddStockModal";
 import AddAlertModal from "@/components/modals/AddAlertModal";
 import AlertPanel from "@/components/AlertsPanel";
 import {deleteWatchlistItem, getWatchlist} from "@/app/api/watchlist";
 import {addNotification} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import {Trash2} from "lucide-react";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
 
 const initialAlerts = [
     { id: 101, stockId: 1, price: "240.60", condition: "above",  frequency: "once_per_day"    },
@@ -28,6 +31,8 @@ const WatchlistPage: FC = () => {
     const [selectedStock, setSelectedStock] = useState(null);
     const [alertPrice, setAlertPrice] = useState("");
     const [newStock, setNewStock] = useState({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
+    const [isOpen, setIsOpen] = useState(false);
+    const [confirmStock, setConfirmStock] = useState<StockWithData | null>(null);
 
     const loadStocks = async () => {
         try {
@@ -138,9 +143,10 @@ const WatchlistPage: FC = () => {
             <WatchlistTable
                 stocks={stocks}
                 toggleStar={toggleStar}
-                removeStock={removeStock}
                 setAddStockOpen={setAddStockOpen}
                 openAlertDialog={openAlertDialog}
+                setIsOpen={setIsOpen}
+                setConfirmStock={setConfirmStock}
             />
 
             <AlertPanel
@@ -169,6 +175,32 @@ const WatchlistPage: FC = () => {
                 newStock={newStock}
                 setNewStock={setNewStock}
             />
+
+            {(isOpen && confirmStock !== null) && (
+                <ConfirmationModal
+                    title={`Remove ${confirmStock.symbol} from watchlist?`}
+                    description={`This will permanently remove ${confirmStock.name}. You can always add it back later.`}
+                    closeCallback={() => setConfirmStock(null)}
+                    primaryButton={
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={async () => {
+                                await removeStock(confirmStock);
+                                setConfirmStock(null);
+                            }}
+                        >
+                            <Trash2 className="size-4" />
+                            Remove
+                        </Button>
+                    }
+                    secondaryButton={
+                        <Button size="sm" variant="outline" onClick={() => setConfirmStock(null)}>
+                            Cancel
+                        </Button>
+                    }
+                />
+            )}
         </div>
     );
 };
