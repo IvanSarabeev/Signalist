@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Infrastructure\Routing\RouteRequirements;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\ApiResponse;
-use App\Service\Watchlist\WatchlistInterface;
+use App\Service\Watchlist\WatchlistServiceInterface;
 use OpenApi\Attributes as OA;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,11 +22,8 @@ use Throwable;
 #[OA\Tag(name: 'Watchlist')]
 final class WatchlistController extends AbstractController
 {
-    private const WATCHLIST_PREFIX = 'Watchlist: ';
-
     public function __construct(
-        private readonly WatchlistInterface $watchlist,
-        private readonly LoggerInterface    $logger,
+        private readonly WatchlistServiceInterface $watchlistService,
     )
     { }
 
@@ -41,7 +38,7 @@ final class WatchlistController extends AbstractController
     public function index(#[CurrentUser] ?User $user, Request $request): JsonResponse
     {
         $pagination = PaginatedRequest::fromRequest($request);
-        $items = $this->watchlist->getItems($user, $pagination);
+        $items = $this->watchlistService->getItems($user, $pagination);
 
         if ($items === null) {
             return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
@@ -65,7 +62,7 @@ final class WatchlistController extends AbstractController
     )]
     public function addStock(#[CurrentUser] ?User $user, string $symbol): JsonResponse
     {
-        $item = $this->watchlist->addItem($user, $symbol);
+        $item = $this->watchlistService->addItem($user, $symbol);
 
         return ApiResponse::success(data: $item->toArray(), status: Response::HTTP_CREATED);
     }
@@ -85,7 +82,7 @@ final class WatchlistController extends AbstractController
     )]
     public function deleteStock(#[CurrentUser] ?User $user, string $symbol): JsonResponse
     {
-        $this->watchlist->deleteItem($user, $symbol);
+        $this->watchlistService->deleteItem($user, $symbol);
 
         return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
     }

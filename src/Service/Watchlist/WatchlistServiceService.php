@@ -18,7 +18,7 @@ use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-final readonly class WatchlistService implements WatchlistInterface
+final readonly class WatchlistServiceService implements WatchlistServiceInterface
 {
     public function __construct(
         private StockServiceInterface   $stockService,

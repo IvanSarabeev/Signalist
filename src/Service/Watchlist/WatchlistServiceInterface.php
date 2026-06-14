@@ -9,7 +9,7 @@ use App\Entity\WatchlistItem;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 
-interface WatchlistInterface
+interface WatchlistServiceInterface
 {
     public function getItems(User $user, PaginatedRequest $pagination): ?PaginatedResponse;
 
