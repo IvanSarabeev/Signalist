@@ -45,4 +45,12 @@ final readonly class AlertController
 
         return ApiResponse::success(data: $alert->toArray(), status: Response::HTTP_CREATED);
     }
+
+    #[Route(path: '/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function delete(#[CurrentUser] User $user, int $id): JsonResponse
+    {
+        $this->alertService->deleteAlert($user, $id);
+
+        return ApiResponse::success(status: Response::HTTP_NO_CONTENT);
+    }
 }

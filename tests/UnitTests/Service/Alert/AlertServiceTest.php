@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Enum\Alert\AlertCondition;
 use App\Enum\Alert\AlertFrequency;
 use App\Enum\Alert\AlertType;
-use App\Presentation\Http\Exception\Services\AlertExistingException;
+use App\Presentation\Http\Exception\Services\Alert\AlertExistingException;
 use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;

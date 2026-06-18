@@ -6,7 +6,9 @@ namespace App\Service\Alert;
 
 use App\Entity\Alert;
 use App\Entity\User;
-use App\Presentation\Http\Exception\Services\AlertExistingException;
+use App\Presentation\Http\Exception\Services\Alert\AlertDeletionFailed;
+use App\Presentation\Http\Exception\Services\Alert\AlertExistingException;
+use App\Presentation\Http\Exception\Services\Alert\AlertNotFound;
 use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;
@@ -19,6 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final readonly class AlertService implements AlertServiceInterface
 {
@@ -112,5 +115,30 @@ final readonly class AlertService implements AlertServiceInterface
         }
 
         return $alert;
+    }
+
+    /**
+     * Delete a specific alert for a user
+     *
+     * @param User $user
+     * @param int $id
+     * @return void
+     *
+     * @throws AlertNotFound
+     */
+    public function deleteAlert(User $user, int $id): void
+    {
+        $alert = $this->alertRepository->findUserAlertItem($user, $id);
+
+        if (!$alert) {
+            throw new AlertNotFound();
+        }
+
+        try {
+            $this->entityManager->remove($alert);
+            $this->entityManager->flush();
+        } catch (Throwable) {
+            throw new AlertDeletionFailed();
+        }
     }
 }
