@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Alert;
@@ -55,7 +57,7 @@ class AlertRepository extends ServiceEntityRepository
                 condition_quality: $item['conditionQuality']->value,
                 condition_label:   $item['conditionQuality']->label(),
                 condition_symbol:  $item['conditionQuality']->symbol(),
-                threshold_value:   $item['thresholdValue'],
+                threshold_value:   (float) ($item['thresholdValue'] ?? 0),
                 frequency:         $item['frequency']->value,
                 frequency_label:   $item['frequency']->label(),
                 is_active:         $item['isActive'],
@@ -63,13 +65,24 @@ class AlertRepository extends ServiceEntityRepository
                 last_triggered_at: $item['lastTriggeredAt']?->format('Y-m-d H:i:s'),
                 stock_symbol:      $item['stock']['symbol'] ?? null,
                 name:              $item['stock']['name'] ?? null,
-                price:             $item['stock']['cachedPrice'] ?? 0,
+                price:             (float) ($item['stock']['cachedPrice'] ?? 0),
                 currency:          $item['stock']['currency'],
-                market_cap:        $item['stock']['cachedHigh'],
+                market_cap:        (float) ($item['stock']['cachedHigh'] ?? 0),
                 logo_url:          $item['stock']['logoUrl'],
-                change_percent:    $item['stock']['cachedChangePercent'],
+                change_percent:    (float) ($item['stock']['cachedChangePercent'] ?? 0),
             ),
             $items
         );
+    }
+
+    public function findUserAlertItem(User $user, int $id): ?Alert
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
