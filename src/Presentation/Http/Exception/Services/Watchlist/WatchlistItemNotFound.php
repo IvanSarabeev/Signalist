@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Presentation\Http\Exception\Services;
+namespace App\Presentation\Http\Exception\Services\Watchlist;
 
 use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;

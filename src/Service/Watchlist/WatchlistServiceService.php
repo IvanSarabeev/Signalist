@@ -8,7 +8,8 @@ use App\Entity\User;
 use App\Entity\WatchlistItem;
 use App\Presentation\Http\Exception\Services\StockExistingInWatchlistException;
 use App\Presentation\Http\Exception\Services\StockNotFound;
-use App\Presentation\Http\Exception\Services\WatchlistItemNotFound;
+use App\Presentation\Http\Exception\Services\Watchlist\WatchlistItemDeletionException;
+use App\Presentation\Http\Exception\Services\Watchlist\WatchlistItemNotFound;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Repository\WatchlistItemRepository;
@@ -17,6 +18,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Throwable;
 
 final readonly class WatchlistServiceService implements WatchlistServiceInterface
 {
@@ -111,7 +113,11 @@ final readonly class WatchlistServiceService implements WatchlistServiceInterfac
             throw new WatchlistItemNotFound();
         }
 
-        $this->entityManager->remove($item);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->remove($item);
+            $this->entityManager->flush();
+        } catch (Throwable) {
+            throw new WatchlistItemDeletionException();
+        }
     }
 }
