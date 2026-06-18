@@ -8,9 +8,12 @@ use App\Entity\Alert;
 use App\Entity\User;
 use App\Presentation\Http\Exception\Services\Alert\AlertDeletionFailed;
 use App\Presentation\Http\Exception\Services\Alert\AlertExistingException;
-use App\Presentation\Http\Exception\Services\Alert\AlertNotFound;
+use App\Presentation\Http\Exception\Services\Alert\AlertNotFoundException;
+use App\Presentation\Http\Exception\Services\Alert\AlertNothingToUpdateException;
+use App\Presentation\Http\Exception\Services\Alert\AlertUpdateException;
 use App\Presentation\Http\Exception\Services\StockNotFound;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
+use App\Presentation\Http\Request\Alert\UpdateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Repository\AlertRepository;
@@ -72,14 +75,14 @@ final readonly class AlertService implements AlertServiceInterface
      * @param int $id
      * @return array
      *
-     * @throws AlertNotFound - When the Alert is missing
+     * @throws AlertNotFoundException - When the Alert is missing
      */
     public function getAlert(User $user, int $id): array
     {
         $alert = $this->alertRepository->findUserAlertItem($user, $id);
 
         if (!$alert) {
-            throw new AlertNotFound();
+            throw new AlertNotFoundException();
         }
 
         return $alert->toAlert();
@@ -127,11 +130,81 @@ final readonly class AlertService implements AlertServiceInterface
         try {
             $this->entityManager->flush();
         } catch (ORMException $exception) {
+            $this->entityManager->rollback();
+
             $this->logger->error(self::ALERT_PREFIX . 'Entity Manager error', [
                 'message' => $exception->getMessage(),
             ]);
 
             throw new AlertExistingException();
+        }
+
+        return $alert;
+    }
+
+    /**
+     * Update partially an Alert
+     *
+     * @param User $user
+     * @param string $symbol
+     * @param UpdateAlertRequest $updateAlertRequest
+     * @return Alert
+     *
+     * @throws AlertNothingToUpdateException - When there's nothing to update.
+     * @throws StockNotFound - When the stock is missing for the specific user.
+     * @throws AlertNotFoundException - When the alert is missing.
+     * @throws AlertUpdateException - When the alert entity failed to update.
+     */
+    public function updateAlert(User $user, string $symbol, UpdateAlertRequest $updateAlertRequest): Alert
+    {
+        if ($updateAlertRequest->isEmpty()) {
+            throw new AlertNothingToUpdateException();
+        }
+
+        $stock = $this->stockService->findStockBySymbol($symbol);
+
+        if ($stock === null) {
+            throw new StockNotFound();
+        }
+
+        $alert = $this->alertRepository->findUserAlertWithStock($user, $stock);
+
+        if ($alert === null) {
+            throw new AlertNotFoundException();
+        }
+
+        if ($updateAlertRequest->alertName !== null) {
+            $alert->setAlertName($updateAlertRequest->alertName);
+        }
+
+        if ($updateAlertRequest->alertType !== null) {
+            $alert->setAlertType($updateAlertRequest->getAlertType());
+        }
+
+        if ($updateAlertRequest->conditionQuality !== null) {
+            $alert->setConditionQuality($updateAlertRequest->getAlertConditionQuality());
+        }
+
+        if ($updateAlertRequest->frequency !== null) {
+            $alert->setFrequency($updateAlertRequest->getAlertFrequency());
+        }
+
+        if ($updateAlertRequest->thresholdValue !== null) {
+            $alert->setThresholdValue($updateAlertRequest->thresholdValue);
+        }
+
+        if ($updateAlertRequest->isActive !== null) {
+            $alert->setIsActive($updateAlertRequest->isActive);
+        }
+
+        try {
+            $this->entityManager->flush();
+        } catch (ORMException $exception) {
+            $this->logger->error(self::ALERT_PREFIX . 'Failed to update alert', [
+                'message' => $exception->getMessage(),
+            ]);
+
+            throw new AlertUpdateException();
         }
 
         return $alert;
@@ -144,14 +217,14 @@ final readonly class AlertService implements AlertServiceInterface
      * @param int $id
      * @return void
      *
-     * @throws AlertNotFound - When the Alert is missing
+     * @throws AlertNotFoundException - When the Alert is missing
      */
     public function deleteAlert(User $user, int $id): void
     {
         $alert = $this->alertRepository->findUserAlertItem($user, $id);
 
         if (!$alert) {
-            throw new AlertNotFound();
+            throw new AlertNotFoundException();
         }
 
         try {

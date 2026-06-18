@@ -7,6 +7,7 @@ namespace App\Service\Alert;
 use App\Entity\Alert;
 use App\Entity\User;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
+use App\Presentation\Http\Request\Alert\UpdateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 
@@ -17,6 +18,8 @@ interface AlertServiceInterface
     public function getAlert(User $user, int $id): array;
 
     public function createAlert(User $user, CreateAlertRequest $createAlertRequest): Alert;
+
+    public function updateAlert(User $user, string $symbol, UpdateAlertRequest $updateAlertRequest): Alert;
 
     public function deleteAlert(User $user, int $id): void;
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Alert;
+use App\Entity\Stock;
 use App\Entity\User;
 use App\Presentation\Http\Response\Alerts\AlertItems;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -82,6 +83,17 @@ class AlertRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->andWhere('a.id = :id')
             ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findUserAlertWithStock(User $user, Stock $stock): ?Alert
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('a.stock = :stock')
+            ->setParameter('stock', $stock)
             ->getQuery()
             ->getOneOrNullResult();
     }

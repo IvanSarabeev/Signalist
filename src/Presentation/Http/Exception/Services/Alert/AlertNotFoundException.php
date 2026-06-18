@@ -5,7 +5,7 @@ namespace App\Presentation\Http\Exception\Services\Alert;
 use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-final class AlertNotFound extends HttpException
+final class AlertNotFoundException extends HttpException
 {
     public function getStatusCode(): int
     {
