@@ -173,6 +173,31 @@ class Alert
         return $this;
     }
 
+    /**
+     * Return a list of alert items with the specific stock details
+     *
+     * @return array<string, array{
+     *     alert_name:        string|null,
+     *     alert_type:        string,
+     *     alert_type_label:  string,
+     *     condition_quality: string,
+     *     condition_label:   string,
+     *     threshold_value:   float,
+     *     frequency:         string,
+     *     frequency_label:   string,
+     *     is_active:         bool,
+     *     created_at:        string|null,
+     *     last_triggered_at: string|null,
+     *      stock: array<string, array{
+     *          symbol:         string|null,
+     *          name:           string|null,
+     *          currency:       string|null,
+     *          price:          float,
+     *          logo_url:       string|null,
+     *          change_percent: string|null,
+     *      }
+     * }>
+     */
     public function toArray(): array
     {
         return [
@@ -182,7 +207,7 @@ class Alert
             'condition_quality' => $this->getConditionQuality()->value,
             'condition_label'   => $this->getConditionQuality()->label(),
             'condition_symbol'  => $this->getConditionQuality()->symbol(),
-            'threshold_value'   => $this->getThresholdValue(),
+            'threshold_value'   => (float) ($this->getThresholdValue() ?? 0),
             'frequency'         => $this->getFrequency()->value,
             'frequency_label'   => $this->getFrequency()->label(),
             'is_active'         => $this->isActive(),
@@ -192,10 +217,48 @@ class Alert
                 'symbol'         => $this->getStock()->getSymbol(),
                 'name'           => $this->getStock()->getName(),
                 'currency'       => $this->getStock()->getCurrency(),
-                'price'          => number_format((float) ($this->getStock()->getCachedPrice()), 2, ','),
+                'price'          => (float) ($this->getStock()->getCachedPrice() ?? 0),
                 'logo_url'       => $this->getStock()->getLogoUrl(),
                 'change_percent' => $this->getStock()->getCachedChangePercent(),
             ],
+        ];
+    }
+
+    /**
+     * Return a specific alert details with key stock identifier data
+     *
+     * @return array<string, array{
+     *     alert_name:        string|null,
+     *     alert_type:        string,
+     *     alert_type_label:  string,
+     *     condition_quality: string,
+     *     condition_label:   string,
+     *     threshold_value:   float,
+     *     frequency:         string,
+     *     frequency_label:   string,
+     *     is_active:         bool,
+     *     stock: array<string, array{
+     *         symbol: string|null,
+     *         name:   string|null,
+     *     }
+     * }>
+     */
+    public function toAlert(): array
+    {
+        return [
+            'alert_name'        => $this->getAlertName(),
+            'alert_type'        => $this->getAlertType()->value,
+            'alert_type_label'  => $this->getAlertType()->label(),
+            'condition_quality' => $this->getConditionQuality()->value,
+            'condition_label'   => $this->getConditionQuality()->label(),
+            'threshold_value'   => (float) ($this->getThresholdValue() ?? 0),
+            'frequency'         => $this->getFrequency()->value,
+            'frequency_label'   => $this->getFrequency()->label(),
+            'is_active'         => $this->isActive(),
+            'stock'             => [
+                'symbol'        => $this->getStock()->getSymbol(),
+                'name'          => $this->getStock()->getName(),
+            ]
         ];
     }
 }

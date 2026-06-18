@@ -66,6 +66,26 @@ final readonly class AlertService implements AlertServiceInterface
     }
 
     /**
+     * Get a specific user Alert
+     *
+     * @param User $user
+     * @param int $id
+     * @return array
+     *
+     * @throws AlertNotFound - When the Alert is missing
+     */
+    public function getAlert(User $user, int $id): array
+    {
+        $alert = $this->alertRepository->findUserAlertItem($user, $id);
+
+        if (!$alert) {
+            throw new AlertNotFound();
+        }
+
+        return $alert->toAlert();
+    }
+
+    /**
      * Create Alert for a specific user
      *
      * @param User $user
@@ -124,7 +144,7 @@ final readonly class AlertService implements AlertServiceInterface
      * @param int $id
      * @return void
      *
-     * @throws AlertNotFound
+     * @throws AlertNotFound - When the Alert is missing
      */
     public function deleteAlert(User $user, int $id): void
     {

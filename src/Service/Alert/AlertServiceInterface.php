@@ -14,6 +14,8 @@ interface AlertServiceInterface
 {
     public function getAlerts(User $user, PaginatedRequest $paginatedRequest): ?PaginatedResponse;
 
+    public function getAlert(User $user, int $id): array;
+
     public function createAlert(User $user, CreateAlertRequest $createAlertRequest): Alert;
 
     public function deleteAlert(User $user, int $id): void;

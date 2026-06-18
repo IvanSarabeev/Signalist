@@ -38,6 +38,14 @@ final readonly class AlertController
         return ApiResponse::success(data: $alerts->items, meta: [$alerts->toArray()]);
     }
 
+    #[Route(path: '/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(#[CurrentUser] User $user, int $id): JsonResponse
+    {
+        $alert = $this->alertService->getAlert($user, $id);
+
+        return ApiResponse::success($alert);
+    }
+
     #[Route(path: '', name: 'create', methods: ['POST'])]
     public function create(#[CurrentUser] User $user, CreateAlertRequest $createAlertRequest): JsonResponse
     {
