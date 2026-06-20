@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Alert;
+use App\Entity\Stock;
+use App\Entity\User;
+use App\Presentation\Http\Response\Alerts\AlertItems;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Order;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +23,78 @@ class AlertRepository extends ServiceEntityRepository
         parent::__construct($registry, Alert::class);
     }
 
-    //    /**
-    //     * @return Alert[] Returns an array of Alert objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function countUserAlerts(User $user): int
+    {
+        return (int) $this->createQueryBuilder('alert')
+            ->select('COUNT(alert.id)')
+            ->andWhere('alert.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Alert
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findUserAlertItems(User $user, int $limit, int $offset): array
+    {
+        $items = $this->createQueryBuilder('alert')
+            ->leftJoin('alert.stock', 'stock')
+            ->addSelect('stock')
+            ->andWhere('alert.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('alert.createdAt', Order::Descending->value)
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+
+        if (empty($items)) {
+            return [];
+        }
+
+        return array_map(
+            fn(array $item) => new AlertItems(
+                id:                $item['id'],
+                alert_name:        $item['alertName'],
+                alert_type_label:  $item['alertType']->label(),
+                condition_quality: $item['conditionQuality']->value,
+                condition_label:   $item['conditionQuality']->label(),
+                condition_symbol:  $item['conditionQuality']->symbol(),
+                threshold_value:   (float) ($item['thresholdValue'] ?? 0),
+                frequency:         $item['frequency']->value,
+                frequency_label:   $item['frequency']->label(),
+                is_active:         $item['isActive'],
+                created_at:        $item['createdAt']?->format('Y-m-d H:i:s'),
+                last_triggered_at: $item['lastTriggeredAt']?->format('Y-m-d H:i:s'),
+                stock_symbol:      $item['stock']['symbol'] ?? null,
+                name:              $item['stock']['name'] ?? null,
+                price:             (float) ($item['stock']['cachedPrice'] ?? 0),
+                currency:          $item['stock']['currency'],
+                market_cap:        (float) ($item['stock']['cachedHigh'] ?? 0),
+                logo_url:          $item['stock']['logoUrl'],
+                change_percent:    (float) ($item['stock']['cachedChangePercent'] ?? 0),
+            ),
+            $items
+        );
+    }
+
+    public function findUserAlertItem(User $user, int $id): ?Alert
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findUserAlertWithStock(User $user, Stock $stock): ?Alert
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('a.stock = :stock')
+            ->setParameter('stock', $stock)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

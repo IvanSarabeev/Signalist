@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Presentation\Http\Exception\Services;
+namespace App\Presentation\Http\Exception\Services\Alert;
 
 use App\Presentation\Http\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-final class WatchlistItemNotFound extends HttpException
+final class AlertNotFoundException extends HttpException
 {
     public function getStatusCode(): int
     {
@@ -14,6 +14,6 @@ final class WatchlistItemNotFound extends HttpException
 
     public function getErrorMessage(): string
     {
-        return 'Watchlist item not found';
+        return 'Alert not found.';
     }
 }
