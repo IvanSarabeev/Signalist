@@ -60,7 +60,6 @@ final readonly class EmailFactory
             );
     }
 
-
     /**
      * @param string $email
      * @param string $symbol
@@ -68,67 +67,37 @@ final readonly class EmailFactory
      * @param float $currentMetric
      * @param float $threshold
      * @param string|null $triggeredAt
+     * @param bool $isUpper
      * @return Email
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function createAlertUpperEmail(
-        string    $email,
-        string    $symbol,
-        string    $company,
-        float     $currentMetric,
-        float     $threshold,
-        ?string   $triggeredAt
+    public function createAlertEmail(
+        string  $email,
+        string  $symbol,
+        string  $company,
+        float   $currentMetric,
+        float   $threshold,
+        ?string $triggeredAt,
+        bool    $isUpper,
     ): Email
     {
-        return (new Email())
-            ->from(self::FROM_MAIL)
-            ->to($email)
-            ->subject('Alert')
-            ->html(
-                $this->twig->render('emails/alerts/stocks/stock-alert-upper.html.twig', [
-                    'timestamp'    => $triggeredAt ?? new DateTime(),
-                    'symbol'       => $symbol,
-                    'company'      => $company,
-                    'currentPrice' => $currentMetric,
-                    'targetPrice'  => $threshold
-                ])
-            );
-    }
+        $template = $isUpper
+            ? 'emails/alerts/stocks/stock-alert-upper.html.twig'
+            : 'emails/alerts/stocks/stock-alert-lower.html.twig';
 
-    /**
-     * @param string $email
-     * @param string $symbol
-     * @param string $company
-     * @param float $currentMetric
-     * @param float $threshold
-     * @param string|null $triggeredAt
-     * @return Email
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function createAlertLowerEmail(
-        string    $email,
-        string    $symbol,
-        string    $company,
-        float     $currentMetric,
-        float     $threshold,
-        ?string   $triggeredAt
-    ): Email
-    {
         return (new Email())
             ->from(self::FROM_MAIL)
             ->to($email)
             ->subject('Alert')
             ->html(
-                $this->twig->render('emails/alerts/stocks/stock-alert-lower.html.twig', [
+                $this->twig->render($template, [
                     'timestamp'    => $triggeredAt ?? new DateTime(),
                     'symbol'       => $symbol,
                     'company'      => $company,
                     'currentPrice' => $currentMetric,
-                    'targetPrice'  => $threshold
+                    'targetPrice'  => $threshold,
                 ])
             );
     }
