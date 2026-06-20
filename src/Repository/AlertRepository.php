@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Alert;
 use App\Entity\Stock;
 use App\Entity\User;
+use App\Enum\Alert\AlertFrequency;
 use App\Presentation\Http\Response\Alerts\AlertItems;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
@@ -96,5 +97,19 @@ class AlertRepository extends ServiceEntityRepository
             ->setParameter('stock', $stock)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findActiveAlertsByFrequency(AlertFrequency $frequency): mixed
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.stock', 'stock')
+            ->addSelect('stock')
+            ->andWhere('a.isActive = :isActive')
+            ->andWhere('a.frequency = :frequency')
+            ->setParameter('isActive', true)
+            ->setParameter('frequency', $frequency)
+            ->orderBy('a.createdAt', Order::Ascending->value)
+            ->getQuery()
+            ->getResult();
     }
 }
