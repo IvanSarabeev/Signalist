@@ -13,6 +13,7 @@
         "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6",
+        "dragonmantank/cron-expression": "^3.6",
         "finnhub/client": "^2.0",
         "firebase/php-jwt": "^7.0",
         "nelmio/api-doc-bundle": "^5.10",
