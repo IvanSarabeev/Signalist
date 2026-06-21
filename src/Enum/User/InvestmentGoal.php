@@ -12,4 +12,14 @@ enum InvestmentGoal: string
     case CONSERVATIVE = 'conservative';
 
     public const VALUES = ['growth', 'income', 'balanced', 'conservative'];
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::GROWTH       => 'Growth',
+            self::INCOME       => 'Income',
+            self::BALANCED     => 'Balanced',
+            self::CONSERVATIVE => 'Conservative',
+        };
+    }
 }

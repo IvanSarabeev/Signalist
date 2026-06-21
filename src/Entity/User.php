@@ -335,4 +335,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * Return a specific User details
+     *
+     * @return array<string, array{
+     *     email:                    string|null,
+     *     full_name:                string|null,
+     *     country:                  string|null,
+     *     investment_goal:          string|null,
+     *     investment_goal_label:    string,
+     *     preferred_industry:       string|null,
+     *     preferred_industry_label: string,
+     *     risk_tolerance:           string|null,
+     *     risk_tolerance_label:     string,
+     *     created_at:               string|null
+     * }>
+     */
+    public function toArray(): array
+    {
+        return [
+            'email'                    => $this->getEmail(),
+            'full_name'                => $this->getFullName(),
+            'country'                  => $this->getCountry(),
+            'investment_goal'          => $this->getInvestmentGoal()->value,
+            'investment_goal_label'    => $this->getInvestmentGoal()->label(),
+            'preferred_industry'       => $this->getPreferredIndustry()->value,
+            'preferred_industry_label' => $this->getPreferredIndustry()->label(),
+            'risk_tolerance'           => $this->getRiskTolerance()->value,
+            'risk_tolerance_label'     => $this->getRiskTolerance()->label(),
+            'created_at'               => $this->getCreatedAt()?->format('Y-m-d\TH:i:s')
+        ];
+    }
 }

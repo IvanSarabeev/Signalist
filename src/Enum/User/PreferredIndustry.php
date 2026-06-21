@@ -13,4 +13,15 @@ enum PreferredIndustry: string
     case CONSUMER_GOODS = 'consumerGoods';
 
     public const VALUES = ['technology', 'healthcare', 'finance', 'energy', 'consumerGoods'];
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::TECHNOLOGY     => 'Technology',
+            self::HEALTHCARE     => 'Healthcare',
+            self::FINANCE        => 'Finance',
+            self::ENERGY         => 'Energy',
+            self::CONSUMER_GOODS => 'ConsumerGoods',
+        };
+    }
 }

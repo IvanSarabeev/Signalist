@@ -14,7 +14,6 @@ use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 

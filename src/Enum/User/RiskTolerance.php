@@ -11,4 +11,13 @@ enum RiskTolerance: string
     case HIGH   = 'high';
 
     public const VALUES = ['low', 'medium', 'high'];
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::LOW    => 'Low',
+            self::MEDIUM => 'Medium',
+            self::HIGH   => 'High',
+        };
+    }
 }
