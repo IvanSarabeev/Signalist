@@ -62,13 +62,16 @@ final readonly class TriggeredAlertMessageHandler
             $stock = $alert->getStock();
 
             $email = $this->emailFactory->createAlertEmail(
-                email:         $user->getEmail() ?? 'unknown@email.com',
-                symbol:        $stock->getSymbol(),
-                company:       $stock->getName(),
-                currentMetric: $triggeredAlertMessage->currentMetric,
-                threshold:     (float) $alert->getThresholdValue(),
-                triggeredAt:   $triggeredAlertMessage->triggeredAt,
-                isUpper:       $this->isUpperDirection($alert->getConditionQuality()),
+                email:           $user->getEmail() ?? 'unknown@email.com',
+                symbol:          $stock->getSymbol(),
+                company:         $stock->getName(),
+                currentMetric:   $stock->getCurrency() . $triggeredAlertMessage->currentMetric,
+                threshold:       $stock->getCurrency() . $alert->getThresholdValue(),
+                triggeredAt:     $triggeredAlertMessage->triggeredAt,
+                isUpper:         $this->isUpperDirection($alert->getConditionQuality()),
+                conditionSymbol: $alert->getConditionQuality()->symbol(),
+                alerType:        $alert->getAlertType()->label(),
+                changePercent:   $stock->getCachedChangePercent(),
             );
 
             $this->emailService->send($email);

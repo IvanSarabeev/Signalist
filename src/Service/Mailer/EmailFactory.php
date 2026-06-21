@@ -64,10 +64,13 @@ final readonly class EmailFactory
      * @param string $email
      * @param string $symbol
      * @param string $company
-     * @param float $currentMetric
-     * @param float $threshold
+     * @param string $currentMetric
+     * @param string $threshold
      * @param string|null $triggeredAt
      * @param bool $isUpper
+     * @param string $conditionSymbol
+     * @param string $alerType
+     * @param string $changePercent
      * @return Email
      * @throws LoaderError
      * @throws RuntimeError
@@ -77,10 +80,13 @@ final readonly class EmailFactory
         string  $email,
         string  $symbol,
         string  $company,
-        float   $currentMetric,
-        float   $threshold,
+        string  $currentMetric,
+        string  $threshold,
         ?string $triggeredAt,
         bool    $isUpper,
+        string  $conditionSymbol,
+        string  $alerType,
+        string  $changePercent,
     ): Email
     {
         $template = $isUpper
@@ -93,11 +99,14 @@ final readonly class EmailFactory
             ->subject('Alert')
             ->html(
                 $this->twig->render($template, [
-                    'timestamp'    => $triggeredAt ?? new DateTime(),
-                    'symbol'       => $symbol,
-                    'company'      => $company,
-                    'currentPrice' => $currentMetric,
-                    'targetPrice'  => $threshold,
+                    'timestamp'       => $triggeredAt ?? new DateTime(),
+                    'symbol'          => $symbol,
+                    'company'         => $company,
+                    'currentPrice'    => $currentMetric,
+                    'targetPrice'     => $threshold,
+                    'alertType'       => $alerType,
+                    'conditionSymbol' => $conditionSymbol,
+                    'changePercent'   => $changePercent,
                 ])
             );
     }

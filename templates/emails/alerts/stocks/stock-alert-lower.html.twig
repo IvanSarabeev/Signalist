@@ -133,11 +133,8 @@
                         <!-- Stock Info -->
                         <div class="dark-bg" style="text-align: center; padding: 30px 20px; background-color: #212328; border-radius: 8px; margin-bottom: 10px;">
                             <h2 class="dark-text" style="margin: 0 0 10px 0; font-size: 28px; font-weight: 700; color: #ffffff;">
-                                {{symbol}}
+                                {{symbol}} - {{ company }}
                             </h2>
-                            <p class="dark-text-muted" style="margin: 0 0 20px 0; font-size: 16px; color: #6b7280;">
-                                {{company}}
-                            </p>
 
                             <!-- Current Price -->
                             <div style="margin-bottom: 20px;">
@@ -155,12 +152,14 @@
                             <h3 class="dark-text" style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #ffffff;">
                                 Alert Details
                             </h3>
-                            <p class="mobile-text dark-text-secondary" style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.5; color: #9ca3af;">
-                                <strong>Target Price:</strong> {{targetPrice}}
-                            </p>
-                            <p class="mobile-text dark-text-secondary" style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.5; color: #9ca3af;">
-                                <strong>Trigger:</strong> Price dropped below your lower threshold of {{targetPrice}}
-                            </p>
+
+                            <p>Your alert for <strong class="text-base font-semibold text-white" style="color: #ffffff;">{{ company }} ({{ symbol }})</strong> just triggered:</p>
+
+                            <ul>
+                                <li>Condition: <strong class="text-base font-semibold text-white" style="color: #ffffff;">{{ alertType }} {{ conditionSymbol }} {{ threshold }}</strong></li>
+                                <li>Current Price: <strong class="text-base font-semibold text-white" style="color: #ffffff;">{{ targetPrice }}</strong></li>
+                                <li>Change: {{ changePercent }}</li>
+                            </ul>
                         </div>
 
                         <!-- Opportunity Message -->
