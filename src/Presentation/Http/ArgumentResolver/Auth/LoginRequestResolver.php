@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\ArgumentResolver\Auth;
 
+use App\Presentation\Http\Exception\RequestValidationException;
 use App\Presentation\Http\Request\Auth\LoginRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class LoginRequestResolver implements ValueResolverInterface
+final readonly class LoginRequestResolver implements ValueResolverInterface
 {
+    public function __construct(private ValidatorInterface $validator)
+    { }
+
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         if ($argument->getType() !== LoginRequest::class) {
@@ -19,10 +24,18 @@ final class LoginRequestResolver implements ValueResolverInterface
 
         $data = $this->extractData($request);
 
-        yield new LoginRequest(
-            email:    (string) ($data['email'] ?? ''),
-            password: (string) ($data['password'] ?? '')
+        $loginRequest = new LoginRequest(
+            email:    $data['email'],
+            password: $data['password']
         );
+
+        $violations = $this->validator->validate($loginRequest);
+
+        if (count($violations) > 0) {
+            throw new RequestValidationException($violations);
+        }
+
+        yield $loginRequest;
     }
 
     private function extractData(Request $request): array
