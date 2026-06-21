@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Presentation\Http\Controller\Api\Authentication;
 
 use App\DTO\Auth\RegisterDTO;
-use App\DTO\Auth\SignInDTO;
 use App\Enum\InvestmentGoal;
 use App\Enum\PreferredIndustry;
 use App\Enum\RateLimiterTypes;
@@ -13,9 +12,9 @@ use App\Enum\RiskTolerance;
 use App\Enum\SerializerFormat;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Attribute\RateLimit;
-use App\Presentation\ApiDoc\Auth\LoginDoc;
 use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
+use App\Presentation\Http\Request\Auth\LoginRequest;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
 use Exception;
@@ -44,35 +43,16 @@ final class AuthenticationController extends AbstractController
     /**
      * Authenticate if the User is existing in the system
      *
-     * @param Request $request
+     * @param LoginRequest $loginRequest
      * @return JsonResponse
      */
     #[RateLimit(RateLimiterTypes::LOGIN_IP)]
     #[RateLimit(RateLimiterTypes::LOGIN, identifierField: 'email')]
-    #[Route(path: '/login', name: 'login', methods: 'POST')]
-    public function authenticateUser(Request $request): JsonResponse
+    #[Route(path: '/login', name: 'login', methods: ['POST'])]
+    public function authenticateUser(LoginRequest $loginRequest): JsonResponse
     {
         try {
-            $parameters = $this->serializer->deserialize(
-                $request->getContent(),
-                SignInDTO::class,
-                SerializerFormat::JSON->value
-            );
-        } catch (ExceptionInterface) {
-            return $this->json(
-                ['status' => false, 'message' => 'Invalid JSON payload'],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
-        $violations = $this->validator->validate($parameters);
-        $constraintViolation = $this->constraintViolationJsonResponse($violations);
-        if ($constraintViolation !== null) {
-            return $constraintViolation;
-        }
-
-        try {
-            $user = $this->authentication->authenticateUser($parameters);
+            $user = $this->authentication->authenticateUser($loginRequest);
 
             // Commented out due to low service limit
 //            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);

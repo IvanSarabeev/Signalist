@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Security\Auth;
 
 use App\DTO\Auth\RegisterDTO;
-use App\DTO\Auth\SignInDTO;
 use App\Entity\User;
 use App\Enum\InvestmentGoal;
 use App\Enum\PreferredIndustry;
@@ -14,6 +13,7 @@ use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Exception\Security\EmailExistsException;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Presentation\Http\Exception\Security\UserRegistrationException;
+use App\Presentation\Http\Request\Auth\LoginRequest;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -81,15 +81,14 @@ final readonly class Authentication implements AuthenticationInterface
     /**
      * Authenticate the User credentials
      *
-     * @param SignInDTO $dto
+     * @param LoginRequest $loginRequest
      * @return User
-     * @throws InvalidCredentialsException - Throw an error
      */
-    public function authenticateUser(SignInDTO $dto): User
+    public function authenticateUser(LoginRequest $loginRequest): User
     {
-        $user = $this->userRepository->findOneByEmail($dto->email);
+        $user = $this->userRepository->findOneByEmail($loginRequest->email);
 
-        if (!$user || !$this->passwordHasher->isPasswordValid($user, $dto->password)) {
+        if (!$user || !$this->passwordHasher->isPasswordValid($user, $loginRequest->password)) {
             throw new InvalidCredentialsException();
         }
 
