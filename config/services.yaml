@@ -65,6 +65,9 @@ services:
 
     App\Presentation\Http\ArgumentResolver\Auth\RegisterRequestResolver:
         tags: [ 'controller.argument_value_resolver']
+
+    App\Presentation\Http\ArgumentResolver\Auth\ValidateOtpRequestResolver:
+        tags: [ 'controller.argument_value_resolver']
     # End of Region Controller
 
     # Region Notification

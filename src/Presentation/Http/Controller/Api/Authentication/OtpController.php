@@ -4,60 +4,33 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\DTO\Otp\VerifyOtpRequest;
 use App\Enum\RateLimiterTypes;
-use App\Enum\SerializerFormat;
 use App\Presentation\Http\Attribute\RateLimit;
 use App\Presentation\Http\Controller\Api\AbstractController;
+use App\Presentation\Http\Request\Auth\ValidateOtpRequest;
 use App\Security\Otp\OtpService;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/otp', name: 'api_otp_')]
 #[OA\Tag(name: 'OTP')]
 final class OtpController extends AbstractController
 {
-    public function __construct(
-        private readonly OtpService $otpService,
-        private readonly SerializerInterface $serializer,
-        private readonly ValidatorInterface $validator,
-    ) { }
+    public function __construct(private readonly OtpService $otpService)
+    { }
 
     #[RateLimit(RateLimiterTypes::OTP)]
-    #[Route('/verify', name: 'verify', methods: 'POST')]
-    public function verifyOtp(Request $request): JsonResponse
+    #[Route('/verify', name: 'verify', methods: ['POST'])]
+    public function verifyOtp(ValidateOtpRequest $otpRequest): JsonResponse
     {
-        try {
-            $parameters = $this->serializer->deserialize(
-                $request->getContent(),
-                VerifyOtpRequest::class,
-                SerializerFormat::JSON->value
-            );
-        } catch (ExceptionInterface) {
-            return $this->json(
-                ['status' => false, 'message' => 'Invalid JSON payload'],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-
-        $violations = $this->validator->validate($parameters);
-        $constraintViolation = $this->constraintViolationJsonResponse($violations);
-        if ($constraintViolation !== null) {
-            return $constraintViolation;
-        }
-
-        $this->otpService->validateVerificationCode($parameters);
+        $this->otpService->validateVerificationCode($otpRequest);
 
         return $this->json(['status' => true], Response::HTTP_ACCEPTED);
     }
 
-    #[Route(path: '/resend', name: 'resend', methods: 'POST')]
+    #[Route(path: '/resend', name: 'resend', methods: ['POST'])]
     public function resend(): JsonResponse
     {
         /*
