@@ -8,7 +8,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Throwable;
 
-final readonly class EmailService
+final readonly class EmailService implements EmailServiceInterface
 {
     private const EMAIL_PREFIX = 'Email: ';
 
@@ -30,8 +30,7 @@ final readonly class EmailService
             $this->mailer->send($email);
 
             $this->logger->info(
-                sprintf(self::EMAIL_PREFIX . 'send on: %s', $email->getDate()->format('Y-m-d H:i:s')), [
-                    'to' => implode(', ', $email->getTo()),
+                sprintf(self::EMAIL_PREFIX . 'send on: %s', $email->getDate()?->format('Y-m-d H:i:s') ?? 'unknown'), [
                     'subject' => $email->getSubject()
                 ]
             );

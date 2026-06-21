@@ -22,6 +22,9 @@ framework:
             # Route your messages to the transports
             'App\Message\Auth\SendWelcomeEmailMessage': async
             'App\Message\Auth\SendOtpMessage': async
+            'App\Message\Alert\CheckAlertMessage': async
+            'App\Message\Alert\ProcessAlertByFrequencyMessage': async
+            'App\Message\Alert\TriggeredAlertMessage': async
 
 # when@test:
 #    framework:
