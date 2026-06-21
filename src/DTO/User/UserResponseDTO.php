@@ -2,9 +2,9 @@
 
 namespace App\DTO\User;
 
-use App\Enum\InvestmentGoal;
-use App\Enum\PreferredIndustry;
-use App\Enum\RiskTolerance;
+use App\Enum\User\InvestmentGoal;
+use App\Enum\User\PreferredIndustry;
+use App\Enum\User\RiskTolerance;
 use DateTimeImmutable;
 
 final class UserResponseDTO

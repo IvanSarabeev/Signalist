@@ -15,9 +15,9 @@ const defaultValues = {
     email: 'test@example.com',
     password: 'Test123.',
     country: 'BG',
-    investmentGoals: 'Growth',
-    riskTolerance: 'Medium',
-    preferredIndustry: 'Technology'
+    investmentGoals: 'growth',
+    riskTolerance: 'medium',
+    preferredIndustry: 'technology'
 };
 
 const SignUpPage = () => {

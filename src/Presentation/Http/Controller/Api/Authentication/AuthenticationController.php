@@ -4,28 +4,19 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\DTO\Auth\RegisterDTO;
-use App\Enum\InvestmentGoal;
-use App\Enum\PreferredIndustry;
 use App\Enum\RateLimiterTypes;
-use App\Enum\RiskTolerance;
-use App\Enum\SerializerFormat;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Attribute\RateLimit;
 use App\Presentation\Http\Controller\Api\AbstractController;
-use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Presentation\Http\Request\Auth\LoginRequest;
+use App\Presentation\Http\Request\Auth\RegisterRequest;
 use App\Security\Auth\AuthenticationInterface;
 use App\Security\Token\TokenManagerInterface;
-use Exception;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route(path: '/api/v1/authentication', name: 'api_authentication_')]
 #[OA\Tag(name: 'Authentication')]
@@ -33,10 +24,8 @@ final class AuthenticationController extends AbstractController
 {
     public function __construct(
         private readonly AuthenticationInterface $authentication,
-        private readonly SerializerInterface     $serializer,
         private readonly NotificationDispatcher  $notificationDispatcher,
         private readonly TokenManagerInterface   $tokenManager,
-        private readonly ValidatorInterface      $validator,
     )
     { }
 
@@ -51,67 +40,28 @@ final class AuthenticationController extends AbstractController
     #[Route(path: '/login', name: 'login', methods: ['POST'])]
     public function authenticateUser(LoginRequest $loginRequest): JsonResponse
     {
-        try {
-            $user = $this->authentication->authenticateUser($loginRequest);
+        $user = $this->authentication->authenticateUser($loginRequest);
 
-            // Commented out due to low service limit
+        // Commented out due to low service limit
 //            $this->notificationDispatcher->notify(NotificationType::LOGIN_OTP, $user);
 
-            $token = $this->tokenManager->generateAccessToken($user);
+        $token = $this->tokenManager->generateAccessToken($user);
 
-            return $this->json(['status' => true, 'token' => $token]);
-        } catch (InvalidCredentialsException $credentialsException) {
-            return $this->json(
-                ['status' => false, 'message' => $credentialsException->getMessage()],
-                Response::HTTP_UNAUTHORIZED
-            );
-        }
+        return $this->json(['status' => true, 'token' => $token]);
     }
 
     /**
      * Register new User to the system
      *
-     * @param Request $request
+     * @param RegisterRequest $registerRequest
      * @return JsonResponse
      */
     #[RateLimit(RateLimiterTypes::REGISTER)]
-    #[Route(path: '/register', name: 'register', methods: 'POST')]
-    public function registerUser(Request $request): JsonResponse
+    #[Route(path: '/register', name: 'register', methods: ['POST'])]
+    public function registerUser(RegisterRequest $registerRequest): JsonResponse
     {
-        try {
-            $parameters = $this->serializer->deserialize(
-                $request->getContent(),
-                RegisterDTO::class,
-                SerializerFormat::JSON->value
-            );
-        } catch (ExceptionInterface) {
-            return $this->json(
-                ['status' => false, 'message' => 'Invalid JSON payload'],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
+        $this->authentication->persistUserRegistration($registerRequest);
 
-        $this->normalizeEnumFields($parameters, [
-            'investmentGoals'   => InvestmentGoal::class,
-            'riskTolerance'     => RiskTolerance::class,
-            'preferredIndustry' => PreferredIndustry::class,
-        ]);
-
-        $violations = $this->validator->validate($parameters);
-        $constraintViolation = $this->constraintViolationJsonResponse($violations);
-        if ($constraintViolation !== null) {
-            return $constraintViolation;
-        }
-
-        try {
-            $this->authentication->persistUserRegistration($parameters);
-
-            return $this->json(['status' => true], Response::HTTP_CREATED);
-        } catch (Exception $exception) {
-            return $this->json(
-                ['status' => false, 'message' => $exception->getMessage()],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
+        return $this->json(['status' => true], Response::HTTP_CREATED);
     }
 }

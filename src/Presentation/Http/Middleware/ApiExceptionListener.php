@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presentation\Http\Middleware;
 
 use App\Presentation\Http\Exception\HttpException;

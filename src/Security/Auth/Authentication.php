@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Security\Auth;
 
-use App\DTO\Auth\RegisterDTO;
 use App\Entity\User;
-use App\Enum\InvestmentGoal;
-use App\Enum\PreferredIndustry;
-use App\Enum\RiskTolerance;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Exception\Security\EmailExistsException;
 use App\Presentation\Http\Exception\Security\InvalidCredentialsException;
 use App\Presentation\Http\Exception\Security\UserRegistrationException;
 use App\Presentation\Http\Request\Auth\LoginRequest;
+use App\Presentation\Http\Request\Auth\RegisterRequest;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -36,13 +33,12 @@ final readonly class Authentication implements AuthenticationInterface
     /**
      * Persist the User to the system
      *
-     * @param RegisterDTO $dto
-     * @return User
-     * @throws Exception
+     * @param RegisterRequest $registerRequest
+     * @return void
      */
-    public function persistUserRegistration(RegisterDTO $dto): User
+    public function persistUserRegistration(RegisterRequest $registerRequest): void
     {
-        $existingUser = $this->userRepository->findOneByEmail($dto->email);
+        $existingUser = $this->userRepository->findOneByEmail($registerRequest->email);
 
         if ($existingUser !== null) {
             throw new EmailExistsException();
@@ -50,15 +46,13 @@ final readonly class Authentication implements AuthenticationInterface
 
         $user = new User();
 
-        $user->setFullName($dto->fullName);
-        $user->setEmail($dto->email);
-        $user->setPassword(
-            $this->passwordHasher->hashPassword($user, $dto->password)
-        );
-        $user->setCountry($dto->country);
-        $user->setInvestmentGoal(InvestmentGoal::from($dto->investmentGoals));
-        $user->setRiskTolerance(RiskTolerance::from($dto->riskTolerance));
-        $user->setPreferredIndustry(PreferredIndustry::from($dto->preferredIndustry));
+        $user->setFullName($registerRequest->fullName);
+        $user->setEmail($registerRequest->email);
+        $user->setPassword($this->passwordHasher->hashPassword($user, $registerRequest->password));
+        $user->setCountry($registerRequest->country);
+        $user->setInvestmentGoal($registerRequest->getInvestmentGoal());
+        $user->setRiskTolerance($registerRequest->getRiskTolerance());
+        $user->setPreferredIndustry($registerRequest->getPreferredIndustry());
 
         try {
             $this->entityManager->persist($user);
@@ -67,15 +61,15 @@ final readonly class Authentication implements AuthenticationInterface
             // Commented out due to low service limit
 //            $this->notificationDispatcher->notify(NotificationType::USER_REGISTERED, $user);
         } catch (Exception $exception) {
+            $this->entityManager->rollback();
+
             $this->logger->error(self::AUTHENTICATION_PREFIX . 'User registration failed: ', [
                 'message' => $exception->getMessage(),
-                'code' => $exception->getCode(),
+                'code'    => $exception->getCode(),
             ]);
 
             throw new UserRegistrationException();
         }
-
-        return $user;
     }
 
     /**
