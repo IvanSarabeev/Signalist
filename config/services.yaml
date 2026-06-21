@@ -61,7 +61,10 @@ services:
         tags: [ 'controller.argument_value_resolver']
 
     App\Presentation\Http\ArgumentResolver\Auth\LoginRequestResolver:
-        tags: [ 'controller.argument_value_resolver' ]
+        tags: [ 'controller.argument_value_resolver']
+
+    App\Presentation\Http\ArgumentResolver\Auth\RegisterRequestResolver:
+        tags: [ 'controller.argument_value_resolver']
     # End of Region Controller
 
     # Region Notification
