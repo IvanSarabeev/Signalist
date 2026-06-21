@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\Enum\RateLimiterTypes;
+use App\Enum\Security\RateLimiter;
 use App\Notification\NotificationDispatcher;
 use App\Presentation\Http\Attribute\RateLimit;
 use App\Presentation\Http\Controller\Api\AbstractController;
@@ -34,8 +34,8 @@ final class AuthenticationController extends AbstractController
      * @param LoginRequest $loginRequest
      * @return JsonResponse
      */
-    #[RateLimit(RateLimiterTypes::LOGIN_IP)]
-    #[RateLimit(RateLimiterTypes::LOGIN, identifierField: 'email')]
+    #[RateLimit(RateLimiter::LOGIN_IP->value)]
+    #[RateLimit(RateLimiter::LOGIN->value, identifierField: 'email')]
     #[Route(path: '/login', name: 'login', methods: ['POST'])]
     public function authenticateUser(LoginRequest $loginRequest): JsonResponse
     {
@@ -55,7 +55,7 @@ final class AuthenticationController extends AbstractController
      * @param RegisterRequest $registerRequest
      * @return JsonResponse
      */
-    #[RateLimit(RateLimiterTypes::REGISTER)]
+    #[RateLimit(RateLimiter::REGISTER->value)]
     #[Route(path: '/register', name: 'register', methods: ['POST'])]
     public function registerUser(RegisterRequest $registerRequest): JsonResponse
     {

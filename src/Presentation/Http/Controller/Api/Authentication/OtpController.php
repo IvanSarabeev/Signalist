@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controller\Api\Authentication;
 
-use App\Enum\RateLimiterTypes;
+use App\Enum\Security\RateLimiter;
 use App\Presentation\Http\Attribute\RateLimit;
 use App\Presentation\Http\Controller\Api\AbstractController;
 use App\Presentation\Http\Request\Auth\ValidateOtpRequest;
@@ -21,7 +21,7 @@ final class OtpController extends AbstractController
     public function __construct(private readonly OtpService $otpService)
     { }
 
-    #[RateLimit(RateLimiterTypes::OTP)]
+    #[RateLimit(RateLimiter::OTP->value, identifierField: 'code')]
     #[Route('/verify', name: 'verify', methods: ['POST'])]
     public function verifyOtp(ValidateOtpRequest $otpRequest): JsonResponse
     {
