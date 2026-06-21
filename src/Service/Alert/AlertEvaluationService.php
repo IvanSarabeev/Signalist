@@ -6,22 +6,10 @@ namespace App\Service\Alert;
 
 use App\Entity\Alert;
 use App\Enum\Alert\AlertCondition;
-use App\Enum\Alert\AlertType;
-use App\Mapper\Stock\QuoteMapper;
-use App\Presentation\Http\Exception\Services\Alert\UnsupportedAlertTypeException;
-use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class AlertEvaluationService implements AlertEvaluationServiceInterface
 {
-    public function __construct(
-        private FinnhubClientInterface $finnhubClient,
-        private QuoteMapper            $quoteMapper,
-        private EntityManagerInterface $entityManager,
-    )
-    { }
-
     /**
      * Evaluate the alert condition against the freshly fetched metric.
      *
@@ -72,22 +60,5 @@ final readonly class AlertEvaluationService implements AlertEvaluationServiceInt
         $elapsed = $now->getTimestamp() - $alert->getLastTriggeredAt()->getTimestamp();
 
         return $elapsed >= $alert->getFrequency()->cooldownSeconds();
-    }
-
-    /**
-     * Stamp the alert as triggered and persist the change.
-     *
-     * For ONCE frequency, isActive is also set to false so the alert is
-     * never re-evaluated by the scheduler.
-     */
-    public function handleTrigger(Alert $alert): void
-    {
-        $alert->setLastTriggeredAt(new DateTimeImmutable());
-
-        if ($alert->getFrequency()->deactivatesAfterTrigger()) {
-            $alert->setIsActive(false);
-        }
-
-        $this->entityManager->flush();
     }
 }

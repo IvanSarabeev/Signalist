@@ -9,6 +9,7 @@ use App\Message\Alert\TriggeredAlertMessage;
 use App\Presentation\Http\Exception\Services\Alert\UnsupportedAlertTypeException;
 use App\Repository\AlertRepository;
 use App\Service\Alert\AlertEvaluationServiceInterface;
+use App\Service\Alert\AlertTriggerServiceInterface;
 use App\Service\Alert\Metric\AlertMetricProviderInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
@@ -40,6 +41,7 @@ final readonly class CheckAlertMessageHandler
         private LoggerInterface                 $logger,
         private AlertEvaluationServiceInterface $alertEvaluationService,
         private AlertMetricProviderInterface    $alertMetricProvider,
+        private AlertTriggerServiceInterface    $alertTriggerService,
     ) {}
 
     /**
@@ -122,7 +124,7 @@ final readonly class CheckAlertMessageHandler
             'threshold'     => $alert->getThresholdValue(),
         ]);
 
-        $this->alertEvaluationService->handleTrigger($alert);
+        $this->alertTriggerService->handleTrigger($alert);
 
         // Dispatch the notification email asynchronously so a mailer failure
         // never rolls back the DB trigger stamp.

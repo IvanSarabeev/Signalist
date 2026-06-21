@@ -11,6 +11,4 @@ interface AlertEvaluationServiceInterface
     public function isAlertConditionCorrect(Alert $alert, float $currentMetric): bool;
 
     public function isCooldownExpired(Alert $alert): bool;
-
-    public function handleTrigger(Alert $alert): void;
 }
