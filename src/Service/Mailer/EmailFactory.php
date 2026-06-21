@@ -9,7 +9,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-final readonly class EmailFactory
+final readonly class EmailFactory implements EmailFactoryInterface
 {
     private const FROM_MAIL = 'no-reply@signalist.com';
 

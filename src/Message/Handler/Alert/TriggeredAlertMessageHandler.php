@@ -8,7 +8,9 @@ use App\Enum\Alert\AlertCondition;
 use App\Message\Alert\TriggeredAlertMessage;
 use App\Repository\AlertRepository;
 use App\Service\Mailer\EmailFactory;
+use App\Service\Mailer\EmailFactoryInterface;
 use App\Service\Mailer\EmailService;
+use App\Service\Mailer\EmailServiceInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -32,10 +34,10 @@ final readonly class TriggeredAlertMessageHandler
     private const TRIGGERED_ALERT_PREFIX = 'Triggered Alert Handler: ';
 
     public function __construct(
-        private AlertRepository $alertRepository,
-        private EmailFactory    $emailFactory,
-        private EmailService    $emailService,
-        private LoggerInterface $logger,
+        private AlertRepository       $alertRepository,
+        private EmailFactoryInterface $emailFactory,
+        private EmailServiceInterface $emailService,
+        private LoggerInterface       $logger,
     )
     { }
 

@@ -8,7 +8,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Throwable;
 
-final readonly class EmailService
+final readonly class EmailService implements EmailServiceInterface
 {
     private const EMAIL_PREFIX = 'Email: ';
 
