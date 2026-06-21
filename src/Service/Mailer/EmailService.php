@@ -31,7 +31,6 @@ final readonly class EmailService
 
             $this->logger->info(
                 sprintf(self::EMAIL_PREFIX . 'send on: %s', $email->getDate()?->format('Y-m-d H:i:s') ?? 'unknown'), [
-                    'to' => implode(', ', $email->getTo()),
                     'subject' => $email->getSubject()
                 ]
             );

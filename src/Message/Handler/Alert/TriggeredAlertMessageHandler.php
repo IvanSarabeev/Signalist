@@ -62,7 +62,7 @@ final readonly class TriggeredAlertMessageHandler
             $stock = $alert->getStock();
 
             $email = $this->emailFactory->createAlertEmail(
-                email:         $user->getEmail(),
+                email:         $user->getEmail() ?? 'unknown@email.com',
                 symbol:        $stock->getSymbol(),
                 company:       $stock->getName(),
                 currentMetric: $triggeredAlertMessage->currentMetric,
