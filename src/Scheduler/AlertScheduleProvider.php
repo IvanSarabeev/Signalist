@@ -40,13 +40,15 @@ final class AlertScheduleProvider implements ScheduleProviderInterface
             // NYSE market open — 09:30 EST = 14:30 UTC, Monday–Friday
             RecurringMessage::cron(
                 '30 14 * * 1-5',
-                new ProcessAlertByFrequencyMessage(AlertFrequency::MARKET_OPEN)
+                new ProcessAlertByFrequencyMessage(AlertFrequency::MARKET_OPEN),
+                'America/New_York'
             ),
 
             // NYSE market close — 16:00 EST = 21:00 UTC, Monday–Friday
             RecurringMessage::cron(
                 '0 21 * * 1-5',
-                new ProcessAlertByFrequencyMessage(AlertFrequency::MARKET_CLOSE)
+                new ProcessAlertByFrequencyMessage(AlertFrequency::MARKET_CLOSE),
+                'America/New_York'
             )
         );
     }

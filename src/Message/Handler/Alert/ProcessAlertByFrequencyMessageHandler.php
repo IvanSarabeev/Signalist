@@ -10,6 +10,7 @@ use App\Message\Alert\ProcessAlertByFrequencyMessage;
 use App\Repository\AlertRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Throwable;
 
@@ -28,6 +29,7 @@ final readonly class ProcessAlertByFrequencyMessageHandler
     /**
      * @param ProcessAlertByFrequencyMessage $byFrequencyMessage
      * @return void
+     * @throws ExceptionInterface
      */
     public function __invoke(ProcessAlertByFrequencyMessage $byFrequencyMessage): void
     {
@@ -42,17 +44,9 @@ final readonly class ProcessAlertByFrequencyMessageHandler
             return;
         }
 
-        try {
-            /** @var Alert $alert */
-            foreach ($alerts as $alert) {
-                $this->bus->dispatch(new CheckAlertMessage($alert->getId()));
-            }
-        } catch (Throwable $exception) {
-            $this->logger->critical(self::PROCESS_ALERT_PREFIX . 'Dispatch failure', [
-                'frequency'       => $byFrequencyMessage->frequency->value,
-                'frequency_label' => $byFrequencyMessage->frequency->label(),
-                'message'         => $exception->getMessage(),
-            ]);
+        /** @var Alert $alert */
+        foreach ($alerts as $alert) {
+            $this->bus->dispatch(new CheckAlertMessage($alert->getId()));
         }
     }
 }

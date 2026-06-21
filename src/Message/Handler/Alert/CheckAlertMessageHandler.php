@@ -127,7 +127,7 @@ final readonly class CheckAlertMessageHandler
         $this->bus->dispatch(new TriggeredAlertMessage(
             alertId:       $alert->getId(),
             currentMetric: $currentMetric,
-            triggeredAt:   (new DateTimeImmutable())->format('d M Y, H:i'),
+            triggeredAt:   (new DateTimeImmutable())->format('Y-m-d\TH:i:s'),
         ));
     }
 }
