@@ -8,8 +8,6 @@ use App\Entity\Alert;
 
 interface AlertEvaluationServiceInterface
 {
-    public function getCurrentMetric(Alert $alert): float;
-
     public function isAlertConditionCorrect(Alert $alert, float $currentMetric): bool;
 
     public function isCooldownExpired(Alert $alert): bool;

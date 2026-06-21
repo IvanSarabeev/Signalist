@@ -9,6 +9,7 @@ use App\Message\Alert\TriggeredAlertMessage;
 use App\Presentation\Http\Exception\Services\Alert\UnsupportedAlertTypeException;
 use App\Repository\AlertRepository;
 use App\Service\Alert\AlertEvaluationServiceInterface;
+use App\Service\Alert\Metric\AlertMetricProviderInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -38,6 +39,7 @@ final readonly class CheckAlertMessageHandler
         private MessageBusInterface             $bus,
         private LoggerInterface                 $logger,
         private AlertEvaluationServiceInterface $alertEvaluationService,
+        private AlertMetricProviderInterface    $alertMetricProvider,
     ) {}
 
     /**
@@ -71,7 +73,7 @@ final readonly class CheckAlertMessageHandler
 
         // Fetch live metric from Finnhub
         try {
-            $currentMetric = $this->alertEvaluationService->getCurrentMetric($alert);
+            $currentMetric = $this->alertMetricProvider->getCurrentMetric($alert);
         } catch (UnsupportedAlertTypeException $e) {
             // Not a failure — just a feature gap. Log and skip without retrying.
             $this->logger->error(self::CHECK_ALERT_PREFIX . 'Unsupported type — skipping evaluation', [
