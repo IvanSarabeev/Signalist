@@ -25,12 +25,13 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
     setConfirmStock,
 }) => {
     return (
-        <section className="flex flex-col">
+        <section className="size-fit flex flex-col justify-center">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="watchlist-title">Watchlist</h1>
 
                 <Button
                     size="sm"
+                    type="button"
                     onClick={() => setAddStockOpen(true)}
                     className="yellow-btn w-auto! px-5 font-bold! text-base!"
                 >

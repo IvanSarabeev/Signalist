@@ -8,13 +8,7 @@ import {addNotification} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-
-const initialAlerts = [
-    { id: 101, stockId: 1, price: "240.60", condition: "above",  frequency: "once_per_day"    },
-    { id: 102, stockId: 5, price: "300.80", condition: "equals", frequency: "once_per_minute" },
-    { id: 103, stockId: 6, price: "700.40", condition: "below",  frequency: "once_per_hour"   },
-    { id: 104, stockId: 2, price: "540.13", condition: "above",  frequency: "once_per_day"    },
-];
+import {getAlerts} from "@/app/api/alerts";
 
 const WatchlistPage: FC = () => {
     const [stocks, setStocks] = useState<StockWithData[]>([]);
@@ -25,7 +19,8 @@ const WatchlistPage: FC = () => {
         hasNextPage: false,
         hasPreviousPage: false,
     });
-    const [alerts, setAlerts] = useState(initialAlerts);
+
+    const [alerts, setAlerts] = useState<Alert[]>([]);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [addStockOpen, setAddStockOpen] = useState(false);
     const [selectedStock, setSelectedStock] = useState(null);
@@ -34,14 +29,17 @@ const WatchlistPage: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [confirmStock, setConfirmStock] = useState<StockWithData | null>(null);
 
-    const loadStocks = async () => {
+    /**
+     * Retrieve all watchlist items
+     *
+     * @return Promise<void>
+     */
+    const loadStocks: () => Promise<void> = async () => {
         try {
             const watchlistResult = await getWatchlist();
 
-            if (watchlistResult.status) {
-                if (watchlistResult.data.length > 0) {
-                    setStocks(watchlistResult.data);
-                }
+            if (watchlistResult.status && watchlistResult.data.length > 0) {
+                setStocks(watchlistResult.data);
 
                 if (Object.keys(watchlistResult.meta).length > 0) {
                     setPagination((prevState) => ({
@@ -51,15 +49,38 @@ const WatchlistPage: FC = () => {
                 }
             }
 
-        } catch (error: unknown) {
-            console.log('Error: ', error);
-
+        } catch {
             setStocks([]);
         }
-    }
+    };
+
+    /**
+     * Retrieve all available alerts
+     *
+     * @return Promise<void>
+     */
+    const loadAlerts: () => Promise<void> = async () => {
+        try {
+            const alertsResult = await getAlerts();
+
+            if (alertsResult.status && alertsResult.data?.length > 0) {
+                setAlerts(alertsResult.data);
+            }
+
+            if (Object.keys(alertsResult.meta).length > 0) {
+                setPagination((prevState) => ({
+                    ...prevState,
+                    // TODO: How should I access the meta properties - page, limit and etc...
+                }));
+            }
+        } catch {
+            setAlerts([]);
+        }
+    };
 
     useEffect(() => {
         loadStocks();
+        loadAlerts();
     }, []);
 
     const toggleStar = (id: number) => {
@@ -139,7 +160,7 @@ const WatchlistPage: FC = () => {
     }
 
     return (
-        <div className="min-h-screen p-6 flex flex-column-reverse gap-2 items-start">
+        <div className="min-h-screen w-full p-6 flex flex-col lg:flex-row gap-2.5 md:gap-4 overflow-hidden">
             <WatchlistTable
                 stocks={stocks}
                 toggleStar={toggleStar}

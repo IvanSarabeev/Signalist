@@ -279,7 +279,7 @@
         @apply lg:col-span-2 space-y-8;
     }
     .watchlist-alerts {
-        @apply items-start gap-6 h-full flex-col w-fit lg:col-span-1;
+        @apply block min-w-100 size-fit items-start gap-6 md:flex md:flex-col lg:col-span-1;
     }
     .watchlist-icon-btn {
         @apply w-fit cursor-pointer hover:bg-transparent! text-gray-400 hover:text-yellow-500;
@@ -291,7 +291,7 @@
         @apply w-8 h-8 rounded-full flex items-center justify-center bg-gray-700/50;
     }
     .trash-icon {
-        @apply h-4 w-4 text-gray-400 hover:text-red-400;
+        @apply size-4 text-gray-400 hover:text-red-400;
     }
     .star-icon {
         @apply h-4 w-4;
@@ -360,7 +360,7 @@
         @apply flex border-b pb-3 items-center justify-between gap-3 mb-2;
     }
     .alert-company {
-        @apply text-gray-400 text-base;
+        @apply text-gray-400 text-base font-medium;
     }
     .alert-price {
         @apply text-gray-100 font-bold;

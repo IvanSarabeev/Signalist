@@ -174,6 +174,8 @@ declare global {
         watchlist: StockWithData[];
     };
 
+    type AlertsResponse = ApiResponse<Alert[], []>;
+
     type WatchlistResponse = {
         status: boolean;
         data: StockWithData[];
@@ -268,14 +270,24 @@ declare global {
     };
 
     type Alert = {
-        id: string;
-        symbol: string;
-        company: string;
-        alertName: string;
-        currentPrice: number;
-        alertType: 'upper' | 'lower';
-        threshold: number;
-        changePercent?: number;
+        id: number;
+        alert_name: string;
+        alert_type_label: string;
+        condition_quality: string;
+        condition_label: string;
+        condition_symbol: string;
+        threshold_value: number;
+        frequency: string;
+        frequency_label: string;
+        last_triggered_at: string|null;
+        is_active: boolean;
+        stock_symbol: string;
+        name: string;
+        price: number;
+        currency: string;
+        market_cap: number;
+        logo_url: string;
+        change_percent: number;
     };
 
     type ApiError = {
