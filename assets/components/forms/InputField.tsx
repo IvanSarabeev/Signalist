@@ -17,6 +17,7 @@ const InputField = ({
     value
 }: FormInputProps) =>  {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
     const isInputTypePassword = type === "password";
     const inputType = isInputTypePassword && isPasswordVisible ? "text" : type;
 
@@ -31,7 +32,7 @@ const InputField = ({
                     placeholder={placeholder}
                     disabled={disabled}
                     value={value}
-                    maxLength={name === 'otp' ? 4 : undefined}
+                    maxLength={name === 'otp' ? 6 : undefined}
                     className={cn('form-input', {'opacity-50 cursor-not-allowed': disabled})}
                     {...register(name as any, validation as any)}
                 />

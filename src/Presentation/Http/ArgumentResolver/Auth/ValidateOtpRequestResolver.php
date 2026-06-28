@@ -20,16 +20,30 @@ final readonly class ValidateOtpRequestResolver implements ValueResolverInterfac
             return [];
         }
 
-        $ptpRequest = new ValidateOtpRequest(
-            $request->request->getString('code'),
-        );
+        $data = $this->extractData($request);
 
-        $violations = $this->validator->validate($ptpRequest);
+        $otpRequest = new ValidateOtpRequest($data['otp']);
+
+        $violations = $this->validator->validate($otpRequest);
 
         if (count($violations) > 0) {
             throw new RequestValidationException($violations);
         }
 
-        yield $ptpRequest;
+        yield $otpRequest;
+    }
+
+    private function extractData(Request $request): array
+    {
+        if ($this->isJson($request)) {
+            return json_decode($request->getContent(), associative: true) ?? [];
+        }
+
+        return $request->request->all();
+    }
+
+    private function isJson(Request $request): bool
+    {
+        return str_contains($request->headers->get('Content-Type'), 'application/json');
     }
 }

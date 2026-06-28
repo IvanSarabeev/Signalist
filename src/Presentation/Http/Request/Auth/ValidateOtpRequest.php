@@ -12,8 +12,8 @@ final readonly class ValidateOtpRequest
     public function __construct(
         #[Assert\NotBlank(message: 'OTP is required')]
         #[Assert\Type(Types::STRING)]
-        #[Assert\Length(max: 6, maxMessage: 'OTP is too long')]
-        public string $code,
+        #[Assert\Length(max: 6, maxMessage: 'Invalid OTP')]
+        public string $otp,
     )
     { }
 }

@@ -23,7 +23,7 @@ final readonly class OtpService
      */
     public function validateVerificationCode(ValidateOtpRequest $otpRequest): void
     {
-        $token = $this->tokenGenerator->validateToken($otpRequest->code);
+        $token = $this->tokenGenerator->validateToken($otpRequest->otp);
 
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['id' => $token->getUserId()]);

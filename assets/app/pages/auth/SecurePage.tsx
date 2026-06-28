@@ -24,7 +24,7 @@ const SecurePage: FC = () => {
     if (!accessToken) navigate('/');
 
     const onSubmit: SubmitHandler<SecurePageData> = async (data) => {
-        if (data.otp.length < 4) {
+        if (data.otp.length < 6) {
             addNotification({
                 type: 'error',
                 message: 'Incorrect OTP!',
@@ -67,8 +67,8 @@ const SecurePage: FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} method='POST' className='space-y-5'>
                 <InputField
                     name='otp'
-                    label='OTP / (One Time Password)'
-                    placeholder='Enter the 4-digit code'
+                    label="We've send you One Time Password"
+                    placeholder='Enter the code'
                     register={register}
                     error={errors.otp}
                 />
