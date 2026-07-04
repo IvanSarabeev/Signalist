@@ -10,7 +10,7 @@ import {Link} from "react-router-dom";
 type WatchlistTableProps = {
     stocks: StockWithData[];
     toggleStar: (id: number) => void;
-    openAlertDialog: (stock: Object) => void;
+    openAlertDialog: (stock: StockWithData) => void;
     setAddStockOpen: (value: boolean) => void;
     setIsOpen:  (value: SetStateAction<boolean>) => void;
     setConfirmStock: (value: React.SetStateAction<StockWithData | null>) => void;
@@ -25,7 +25,7 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
     setConfirmStock,
 }) => {
     return (
-        <section className="size-fit flex flex-col justify-center">
+        <section className="size-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="watchlist-title">Watchlist</h1>
 

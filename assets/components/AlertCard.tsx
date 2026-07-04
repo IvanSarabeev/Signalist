@@ -85,7 +85,6 @@ const AlertCard: FC<AlertCardProps> = ({
                                         size="icon"
                                         name="delete-btn"
                                         aria-label="Delete alert"
-                                        disabled={!alert.is_active}
                                         onClick={() => onDelete(alert.id)}
                                         className="alert-delete-btn"
                                     >

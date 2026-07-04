@@ -7,7 +7,7 @@ type AlertPanelProps = {
     alerts: Alert[];
     stocks: StockWithData[];
     onCreateAlert: () => void;
-    onEditAlert: (alert: {}) => void;
+    onEditAlert: (alert: Alert) => void;
     onDeleteAlert: (id: number) => void;
 }
 

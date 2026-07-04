@@ -1,87 +1,169 @@
-import React, {FC, memo, SetStateAction} from 'react'
-import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import {Input} from "@/components/ui/input";
+import React, {FC, memo, SetStateAction, useEffect} from 'react'
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {createAlert} from "@/app/api/alerts";
+import InputField from "@/components/forms/InputField";
+import SelectField from "@/components/forms/SelectField";
+import {ALERT_TYPE_OPTIONS, CONDITION_OPTIONS, FREQUENCY_OPTIONS} from "@/lib/constants";
+import {addNotification} from "@/lib/utils";
 
 type AddAlertModalProps = {
+    type: 'edit' | 'create';
     isOpen: boolean;
     setAlertDialogOpen:  (value: boolean) => void;
-    saveAlert: () => void;
-    alerts: {};
-    selectedStock: null|{id: number; symbol: string; price: number; currency: string;};
-    alertPrice: string;
-    setAlertPrice:  (value: SetStateAction<string>) => void;
-    setAlerts: (value: SetStateAction<{}>) => void;
+    selectedStock: StockWithData | null;
+    alertPrice: number;
+    setAlerts: (value: SetStateAction<Alert[]>) => void;
 }
 
+const defaultValues = {
+    symbol: '',
+    alertName: '',
+    alertType: '',
+    conditionQuality: '',
+    frequency: '',
+    thresholdValue: 0,
+};
+
 const AddAlertModal: FC<AddAlertModalProps> = ({
+    type,
     isOpen,
     setAlertDialogOpen,
-    saveAlert,
     selectedStock,
     alertPrice,
-    setAlertPrice,
-    alerts,
     setAlerts,
 }) => {
+    const {
+        control,
+        register,
+        handleSubmit,
+        reset,
+        formState: {errors, isSubmitting, isLoading}
+    } = useForm<CreateAlertForm>({
+        defaultValues,
+        mode: 'onBlur'
+    });
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        reset({
+            ...defaultValues,
+            thresholdValue: alertPrice,
+            symbol: selectedStock?.symbol ?? "",
+        });
+    }, [isOpen, alertPrice, selectedStock, reset]);
+
+    const onSubmit: SubmitHandler<CreateAlertForm> = async (data: CreateAlertForm) => {
+        try {
+            const {status, data: alertData} = await createAlert(data);
+
+            if (status) {
+                // Update the alertsData
+                setAlerts((prevState) => [alertData, ...prevState]);
+
+                addNotification({
+                    type: 'success',
+                    message: 'Created Alert',
+                    description: `Successfully added alert for tracking ${data.symbol}`,
+                    duration: 2500
+                });
+                setAlertDialogOpen(false);
+            }
+        } catch (e: unknown) {
+            const error = e as ApiError;
+
+            addNotification({
+                type: "error",
+                message: error.message || 'Error',
+                description: `Unable to create alert for ${data.alertName}`,
+                duration: 3000
+            });
+        }
+    };
+
+    const alertTitle = type === 'create' ? 'Price Alert' : 'Edit Alert';
+
     return (
         <Dialog open={isOpen} onOpenChange={setAlertDialogOpen}>
-            <DialogContent className="bg-gray-900 border-gray-700 text-gray-100 sm:max-w-md">
+            <DialogContent className="alert-dialog">
                 <DialogHeader>
-                    <DialogTitle className="text-gray-100">
-                        {Object.keys(alerts).length > 0 ? "Edit Alert" : "Add Alert"} — {selectedStock?.symbol}
+                    <DialogTitle className="text-2xl alert-bold text-gray-100 leading-8 tracking-tight">
+                        {alertTitle}
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="space-y-4 py-2">
-                    <div className="flex items-center justify-between text-sm text-gray-400">
-                        <span>Current price</span>
+                <form onSubmit={handleSubmit(onSubmit)} method="POST" className="space-y-4">
+                    <InputField
+                        name="alertName"
+                        label="Alert Name"
+                        placeholder="Your alert name"
+                        register={register}
+                        error={errors.alertName}
+                        validation={{required: true, maxLength: 150}}
+                    />
 
-                        <span className="text-gray-100 font-semibold">
-                            {selectedStock?.currency}{" "}
-                            {selectedStock?.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                        </span>
-                    </div>
-                    <div className="space-y-1.5">
-                        <label htmlFor="alert-price-id" className="text-sm text-gray-400">
-                            Alert when price reaches
-                        </label>
+                    {/*TODO: If the User didn't select a Stock we can add searching functionality for finding the stock*/}
+                    <InputField
+                        name="symbol"
+                        label="Stock Identifier"
+                        placeholder="Your stock - Apple Inc (AAPL)"
+                        register={register}
+                        error={errors.symbol}
+                        value={selectedStock?.symbol}
+                        validation={{required: true, maxLength: 5}}
+                    />
 
-                        <Input
-                            id="alert-price-id"
-                            type="number"
-                            placeholder="e.g. 250.00"
-                            value={alertPrice}
-                            onChange={(e) => setAlertPrice(e.target.value)}
-                            className="bg-gray-800 border-gray-600 text-gray-100 placeholder:text-gray-500 focus:border-yellow-500"
-                        />
-                    </div>
-                </div>
+                    <SelectField
+                        name="alertType"
+                        label="Alert type"
+                        placeholder="Choose type"
+                        required
+                        error={errors.alertType}
+                        control={control}
+                        options={ALERT_TYPE_OPTIONS}
+                    />
 
-                <DialogFooter className="gap-2">
+                    <SelectField
+                        name="conditionQuality"
+                        label="Condition"
+                        placeholder="Choose condition"
+                        required
+                        error={errors.alertType}
+                        control={control}
+                        options={CONDITION_OPTIONS}
+                    />
+
+                    <InputField
+                        name="thresholdValue"
+                        label="Threshold value"
+                        placeholder="Choose threshold value"
+                        register={register}
+                        error={errors.thresholdValue}
+                        validation={{required: true, valueAsNumber: true}}
+                    />
+
+                    <SelectField
+                        name="frequency"
+                        label="Frequency"
+                        placeholder="Choose frequency"
+                        required
+                        error={errors.frequency}
+                        control={control}
+                        options={FREQUENCY_OPTIONS}
+                    />
+
                     <Button
-                        variant="ghost"
-                        onClick={() => setAlertDialogOpen(false)}
-                        className="text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                        type="submit"
+                        size="lg"
+                        aria-label="alert-button"
+                        disabled={isSubmitting || isLoading}
+                        className="w-full yellow-btn mt-4 text-sm leading-5 font-bold! tracking-normal"
                     >
-                        Cancel
+                       {isLoading ? 'Loading...' : 'Create alert'}
                     </Button>
-                    {alerts && (
-                        <Button
-                            onClick={() => {
-                                const updated = { ...alerts };
-                                setAlerts(updated);
-                                setAlertDialogOpen(false);
-                            }}
-                            className="watchlist-remove bg-red-500 hover:bg-red-600 text-white border-0"
-                        >
-                            Remove Alert
-                        </Button>
-                    )}
-                    <Button onClick={saveAlert} className="watchlist-btn w-auto! px-5">
-                        Save Alert
-                    </Button>
-                </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     )

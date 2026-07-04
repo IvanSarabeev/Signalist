@@ -8,7 +8,7 @@ import {addNotification} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import {getAlerts} from "@/app/api/alerts";
+import {deleteAlert, getAlerts} from "@/app/api/alerts";
 
 const WatchlistPage: FC = () => {
     const [stocks, setStocks] = useState<StockWithData[]>([]);
@@ -23,8 +23,8 @@ const WatchlistPage: FC = () => {
     const [alerts, setAlerts] = useState<Alert[]>([]);
     const [alertDialogOpen, setAlertDialogOpen] = useState(false);
     const [addStockOpen, setAddStockOpen] = useState(false);
-    const [selectedStock, setSelectedStock] = useState(null);
-    const [alertPrice, setAlertPrice] = useState("");
+    const [selectedStock, setSelectedStock] = useState<StockWithData | null>(null);
+    const [alertPrice, setAlertPrice] = useState(0);
     const [newStock, setNewStock] = useState({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
     const [isOpen, setIsOpen] = useState(false);
     const [confirmStock, setConfirmStock] = useState<StockWithData | null>(null);
@@ -89,7 +89,7 @@ const WatchlistPage: FC = () => {
         );
     };
 
-    const removeStock = async (stock: StockWithData) => {
+    const removeStock: (stock: StockWithData) => Promise<void> = async (stock: StockWithData) => {
         if (!stock) {
             addNotification({
                 type: "error",
@@ -104,6 +104,13 @@ const WatchlistPage: FC = () => {
             await deleteWatchlistItem(stock.symbol);
 
             setStocks((prev) => prev.filter((s) => s.id !== stock.id));
+
+            addNotification({
+                type: "success",
+                message: "Success",
+                description: `Successfully delete your ${stock.name}`,
+                duration: 2500,
+            });
         } catch (error: unknown) {
             const message = (error as ApiError)?.message ?? `Unable to delete ${stock.symbol}`;
 
@@ -114,49 +121,74 @@ const WatchlistPage: FC = () => {
                 description: `${message}. Please try again later or contact the support center`,
             });
         }
-
     };
 
-    const openAlertDialog = (stock) => {
+    const openAlertDialog: (stock: StockWithData) => void = (stock: StockWithData) => {
         setSelectedStock(stock);
-        setAlertPrice(alerts[stock.id]?.price || "");
+        setAlertPrice(stock.price);
         setAlertDialogOpen(true);
-    };
-
-    const saveAlert = () => {
-        if (selectedStock && alertPrice) {
-            setAlerts((prev) => ({ ...prev, [selectedStock.id]: { price: alertPrice } }));
-        } else if (selectedStock) {
-            const updated = { ...alerts };
-            delete updated[selectedStock.id];
-            setAlerts(updated);
-        }
-        setAlertDialogOpen(false);
     };
 
     const handleAddStock = () => {
         if (!newStock.company || !newStock.symbol) return;
-        const stock = {
-            id: Date.now(),
-            company: newStock.company,
-            symbol: newStock.symbol.toUpperCase(),
-            price: Number.parseFloat(newStock.price) || 0,
-            change: Number.parseFloat(newStock.change) || 0,
-            marketCap: newStock.marketCap || "—",
-            peRatio: Number.parseFloat(newStock.peRatio) || 0,
-            starred: false,
-        };
-        setStocks((prev) => [...prev, stock]);
+        // const stock = {
+        //     id: Date.now(),
+        //     company: newStock.company,
+        //     symbol: newStock.symbol.toUpperCase(),
+        //     price: Number.parseFloat(newStock.price) || 0,
+        //     change: Number.parseFloat(newStock.change) || 0,
+        //     marketCap: newStock.marketCap || "—",
+        //     peRatio: Number.parseFloat(newStock.peRatio) || 0,
+        //     starred: false,
+        // };
+        // setStocks((prev) => [...prev, stock]);
         setNewStock({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
         setAddStockOpen(false);
     };
 
-    const openCreateAlert = () => { setAlertDialogOpen(true); };
+    const openCreateAlert = () => {
+        setAlertDialogOpen(true);
+    };
 
-    const openEditAlert = (alert) => { setAlertDialogOpen(true); };
+    const openEditAlert = (alert: Alert) => {
+        // TODO: Continue with the Alert editing
+        setAlertDialogOpen(true);
+    };
 
-    const deleteAlert = (id: number) => {
-        console.log('Deleted an Alert');
+    const onAlertDelete: (id: number) => Promise<void> = async (id: number) => {
+        const alert = alerts.find((alert) => alert.id === id);
+
+        if (!alert) {
+            addNotification({
+                type: "error",
+                duration: 3000,
+                message: "Error",
+                description: "Invalid alert. Please try again later!",
+            });
+            return;
+        }
+
+        try {
+            await deleteAlert(id);
+
+            setAlerts((prevState) => prevState.filter((a) => a.id !== alert.id));
+
+            addNotification({
+                type: "success",
+                message: "Success",
+                description: `Successfully delete your alert: ${alert.name}`,
+                duration: 2500,
+            });
+        } catch (error: unknown) {
+            const message = (error as ApiError)?.message ?? `Unable to delete ${alert.name} (${alert.stock_symbol})`;
+
+            addNotification({
+                type: "error",
+                duration: 3000,
+                message: "Error",
+                description: `${message}. Please try again later or contact the support center`,
+            });
+        }
     }
 
     return (
@@ -175,18 +207,16 @@ const WatchlistPage: FC = () => {
                 stocks={stocks}
                 onCreateAlert={openCreateAlert}
                 onEditAlert={openEditAlert}
-                onDeleteAlert={deleteAlert}
+                onDeleteAlert={onAlertDelete}
             />
 
             <AddAlertModal
+                type="create"
                 isOpen={alertDialogOpen}
-                setAlertDialogOpen={setAlertDialogOpen}
-                alerts={alerts}
-                setAlerts={setAlerts}
-                saveAlert={saveAlert}
-                selectedStock={selectedStock}
                 alertPrice={alertPrice}
-                setAlertPrice={setAlertPrice}
+                selectedStock={selectedStock}
+                setAlertDialogOpen={setAlertDialogOpen}
+                setAlerts={setAlerts}
             />
 
             <AddStockModal
