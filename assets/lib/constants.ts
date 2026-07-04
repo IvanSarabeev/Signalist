@@ -27,14 +27,32 @@ export const PREFERRED_INDUSTRIES = [
 ];
 
 export const ALERT_TYPE_OPTIONS = [
-    { value: 'upper', label: 'Upper' },
-    { value: 'lower', label: 'Lower' },
-];
+    { value: 'price', label: 'Price' },
+    { value: 'percent_change', label: 'Percent Change' },
+    { value: 'volume', label: 'Volume' },
+    { value: 'market_cap', label: 'Market Cap' },
+    { value: 'moving_average', label: 'Moving Average' },
+    { value: 'rsi', label: 'RSI' }
+] as const;
 
 export const CONDITION_OPTIONS = [
-    { value: 'greater', label: 'Greater than (>)' },
-    { value: 'less', label: 'Less than (<)' },
-];
+    { value: 'gt', label: 'Greater than (>)' },
+    { value: 'gte', label: 'Greater than or equal (≥)' },
+    { value: 'lt', label: 'Less than (<)' },
+    { value: 'lte', label: 'Less than or equal (≤)' },
+    { value: 'eq', label: 'Equals (=)' },
+    { value: 'crosses_above', label: 'Crosses above (↑)' },
+    { value: 'crosses_below', label: 'Crosses above (↓)' }
+] as const;
+
+export const FREQUENCY_OPTIONS = [
+    { value: 'once', label: 'Once' },
+    { value: 'once_per_hour', label: 'Once per hour' },
+    { value: 'once_per_day', label: 'Once per day' },
+    { value: 'once_per_week', label: 'Once per week' },
+    { value: 'market_open', label: 'At market open' },
+    { value: 'market_close', label: 'At market close' }
+] as const;
 
 // TradingView Charts
 export const MARKET_OVERVIEW_WIDGET_CONFIG = {

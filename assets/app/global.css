@@ -279,7 +279,7 @@
         @apply lg:col-span-2 space-y-8;
     }
     .watchlist-alerts {
-        @apply block min-w-100 size-fit items-start gap-6 md:flex md:flex-col lg:col-span-1;
+        @apply flex flex-col min-w-100 h-fit w-full md:w-fit items-start gap-6 md:flex md:flex-col lg:col-span-1 mt-4 md:mt-0;
     }
     .watchlist-icon-btn {
         @apply w-fit cursor-pointer hover:bg-transparent! text-gray-400 hover:text-yellow-500;
@@ -345,7 +345,7 @@
         @apply text-xl font-semibold text-gray-100;
     }
     .alert-list {
-        @apply overflow-y-auto w-full max-h-[911px] rounded-lg flex border border-gray-600 flex-col gap-4 bg-gray-800 p-3 flex-1;
+        @apply overflow-y-auto size-full max-h-[911px] rounded-lg flex border border-gray-600 md:flex-col md:flex-1 gap-4 bg-gray-800 p-3;
     }
     .alert-empty {
         @apply px-6 py-8 text-center text-gray-500/50;

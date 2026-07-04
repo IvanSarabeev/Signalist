@@ -176,6 +176,23 @@ declare global {
 
     type AlertsResponse = ApiResponse<Alert[], []>;
 
+    type ErrorResponse = {
+        status: boolean;
+        message: string;
+        errors: string[];
+    };
+
+    type CreateAlertForm = {
+        symbol: string;
+        alertName: string;
+        alertType: string;
+        conditionQuality: string;
+        frequency: string;
+        thresholdValue: number;
+    }
+
+    type CreateAlertResponse = ApiResponse<Alert, ErrorResponse>;
+
     type WatchlistResponse = {
         status: boolean;
         data: StockWithData[];
