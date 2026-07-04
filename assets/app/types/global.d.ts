@@ -191,7 +191,7 @@ declare global {
         thresholdValue: number;
     }
 
-    type CreateAlertResponse = ApiResponse<Alert, ErrorResponse>;
+    type AlertResponse = ApiResponse<Alert, ErrorResponse>;
 
     type WatchlistResponse = {
         status: boolean;

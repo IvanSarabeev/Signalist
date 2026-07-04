@@ -146,7 +146,7 @@ final readonly class AlertService implements AlertServiceInterface
      * Update partially an Alert
      *
      * @param User $user
-     * @param string $symbol
+     * @param int $id
      * @param UpdateAlertRequest $updateAlertRequest
      * @return Alert
      *
@@ -155,13 +155,19 @@ final readonly class AlertService implements AlertServiceInterface
      * @throws AlertNotFoundException - When the alert is missing.
      * @throws AlertUpdateException - When the alert entity failed to update.
      */
-    public function updateAlert(User $user, string $symbol, UpdateAlertRequest $updateAlertRequest): Alert
+    public function updateAlert(User $user, int $id, UpdateAlertRequest $updateAlertRequest): Alert
     {
         if ($updateAlertRequest->isEmpty()) {
             throw new AlertNothingToUpdateException();
         }
 
-        $stock = $this->stockService->findStockBySymbol($symbol);
+        $findAlert = $this->alertRepository->findOneBy(['user' => $user, 'id' => $id]);
+
+        if (!$findAlert) {
+            throw new AlertNotFoundException();
+        }
+
+        $stock = $this->stockService->findStockBySymbol($findAlert->getStock()->getSymbol());
 
         if ($stock === null) {
             throw new StockNotFound();

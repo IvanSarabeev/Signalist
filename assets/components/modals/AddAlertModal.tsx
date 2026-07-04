@@ -2,7 +2,7 @@ import React, {FC, memo, SetStateAction, useEffect} from 'react'
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import {SubmitHandler, useForm} from "react-hook-form";
-import {createAlert} from "@/app/api/alerts";
+import {createAlert, updateAlert} from "@/app/api/alerts";
 import InputField from "@/components/forms/InputField";
 import SelectField from "@/components/forms/SelectField";
 import {ALERT_TYPE_OPTIONS, CONDITION_OPTIONS, FREQUENCY_OPTIONS} from "@/lib/constants";
@@ -15,6 +15,7 @@ type AddAlertModalProps = {
     selectedStock: StockWithData | null;
     alertPrice: number;
     setAlerts: (value: SetStateAction<Alert[]>) => void;
+    selectedAlert: Alert | null;
 }
 
 const defaultValues = {
@@ -33,6 +34,7 @@ const AddAlertModal: FC<AddAlertModalProps> = ({
     selectedStock,
     alertPrice,
     setAlerts,
+    selectedAlert,
 }) => {
     const {
         control,
@@ -57,19 +59,35 @@ const AddAlertModal: FC<AddAlertModalProps> = ({
 
     const onSubmit: SubmitHandler<CreateAlertForm> = async (data: CreateAlertForm) => {
         try {
-            const {status, data: alertData} = await createAlert(data);
+            if (type === 'edit' && selectedAlert) {
+                const {status, data: alertData} = await updateAlert(selectedAlert.id, data);
 
-            if (status) {
-                // Update the alertsData
-                setAlerts((prevState) => [alertData, ...prevState]);
+                if (status) {
+                    setAlerts((prev) => prev.map((a) => (a.id === alertData.id ? alertData : a)));
 
-                addNotification({
-                    type: 'success',
-                    message: 'Created Alert',
-                    description: `Successfully added alert for tracking ${data.symbol}`,
-                    duration: 2500
-                });
-                setAlertDialogOpen(false);
+                    addNotification({
+                        type: 'success',
+                        message: 'Updated Alert',
+                        description: `Successfully updated alert for tracking ${data.symbol}`,
+                        duration: 2500
+                    });
+                    setAlertDialogOpen(false);
+                }
+            } else {
+                const {status, data: alertData} = await createAlert(data);
+
+                if (status) {
+                    // Update the alertsData
+                    setAlerts((prevState) => [alertData, ...prevState]);
+
+                    addNotification({
+                        type: 'success',
+                        message: 'Created Alert',
+                        description: `Successfully added alert for tracking ${data.symbol}`,
+                        duration: 2500
+                    });
+                    setAlertDialogOpen(false);
+                }
             }
         } catch (e: unknown) {
             const error = e as ApiError;
@@ -77,13 +95,14 @@ const AddAlertModal: FC<AddAlertModalProps> = ({
             addNotification({
                 type: "error",
                 message: error.message || 'Error',
-                description: `Unable to create alert for ${data.alertName}`,
+                description: `Unable to ${type === 'edit' ? 'update' : 'create'} alert for ${data.alertName}`,
                 duration: 3000
             });
         }
     };
 
     const alertTitle = type === 'create' ? 'Price Alert' : 'Edit Alert';
+    const buttonLabel = type === 'edit' ? 'Save changes' : 'Create alert';
 
     return (
         <Dialog open={isOpen} onOpenChange={setAlertDialogOpen}>
@@ -161,7 +180,7 @@ const AddAlertModal: FC<AddAlertModalProps> = ({
                         disabled={isSubmitting || isLoading}
                         className="w-full yellow-btn mt-4 text-sm leading-5 font-bold! tracking-normal"
                     >
-                       {isLoading ? 'Loading...' : 'Create alert'}
+                        {isLoading ? 'Loading...' : buttonLabel}
                     </Button>
                 </form>
             </DialogContent>

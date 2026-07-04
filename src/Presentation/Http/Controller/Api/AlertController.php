@@ -56,12 +56,16 @@ final readonly class AlertController
         return ApiResponse::success(data: $alert->toArray(), status: Response::HTTP_CREATED);
     }
 
-    #[Route(path: '/{symbol}', name: 'edit', requirements: ['symbol' => RouteRequirements::SYMBOL_REGEX], methods: ['PATCH'])]
-    public function partialUpdate(#[CurrentUser] User $user, string $symbol, UpdateAlertRequest $updateAlertRequest): JsonResponse
+    #[Route(path: '/{id}', name: 'edit', requirements: ['id' => '\d+'], methods: ['PATCH'])]
+    public function partialUpdate(
+        #[CurrentUser] User $user,
+        int $id,
+        UpdateAlertRequest $updateAlertRequest
+    ): JsonResponse
     {
-        $alert = $this->alertService->updateAlert($user, $symbol, $updateAlertRequest);
+        $alert = $this->alertService->updateAlert($user, $id, $updateAlertRequest);
 
-        return ApiResponse::success(data: $alert->toAlert());
+        return ApiResponse::success(data: $alert->toArray());
     }
 
     #[Route(path: '/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]

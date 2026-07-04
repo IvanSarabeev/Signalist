@@ -33,6 +33,9 @@ const WatchlistPage: FC = () => {
     const [alertPrice, setAlertPrice] = useState(0);
     const [newStock, setNewStock] = useState({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
 
+    const [alertModalType, setAlertModalType] = useState<"create" | "edit">("create");
+    const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
+
     const [confirmState, setConfirmState] = useState<ConfirmState>(null);
 
     /**
@@ -155,11 +158,14 @@ const WatchlistPage: FC = () => {
     };
 
     const openCreateAlert = () => {
+        setAlertModalType("create");
+        setSelectedAlert(null);
         setAlertDialogOpen(true);
     };
 
     const openEditAlert = (alert: Alert) => {
-        // TODO: Continue with the Alert editing
+        setAlertModalType("edit");
+        setSelectedAlert(alert);
         setAlertDialogOpen(true);
     };
 
@@ -240,12 +246,13 @@ const WatchlistPage: FC = () => {
             />
 
             <AddAlertModal
-                type="create"
+                type={alertModalType}
                 isOpen={alertDialogOpen}
                 alertPrice={alertPrice}
                 selectedStock={selectedStock}
                 setAlertDialogOpen={setAlertDialogOpen}
                 setAlerts={setAlerts}
+                selectedAlert={selectedAlert}
             />
 
             <AddStockModal
