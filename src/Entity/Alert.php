@@ -201,6 +201,7 @@ class Alert
     public function toArray(): array
     {
         return [
+            'id'                => $this->getId(),
             'alert_name'        => $this->getAlertName(),
             'alert_type'        => $this->getAlertType()->value,
             'alert_type_label'  => $this->getAlertType()->label(),
@@ -213,14 +214,13 @@ class Alert
             'is_active'         => $this->isActive(),
             'created_at'        => $this->getCreatedAt()?->format('Y-m-d\TH:i:s'),
             'last_triggered_at' => $this->getLastTriggeredAt()?->format('Y-m-d\TH:i:s'),
-            'stock'             => [
-                'symbol'         => $this->getStock()->getSymbol(),
-                'name'           => $this->getStock()->getName(),
-                'currency'       => $this->getStock()->getCurrency(),
-                'price'          => (float) ($this->getStock()->getCachedPrice() ?? 0),
-                'logo_url'       => $this->getStock()->getLogoUrl(),
-                'change_percent' => $this->getStock()->getCachedChangePercent(),
-            ],
+            'stock_symbol'      => $this->getStock()->getSymbol(),
+            'name'              => $this->getStock()->getName(),
+            'price'             => (float) ($this->getStock()->getCachedPrice() ?? 0),
+            'currency'          => $this->getStock()->getCurrency(),
+            'market_cap'        => $this->getStock()->getCachedHigh(),
+            'logo_url'          => $this->getStock()->getLogoUrl(),
+            'change_percent'    => (float) ($this->getStock()->getCachedChangePercent() ?? 0),
         ];
     }
 
