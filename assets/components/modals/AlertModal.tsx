@@ -27,7 +27,7 @@ const defaultValues = {
     thresholdValue: 0,
 };
 
-const AddAlertModal: FC<AddAlertModalProps> = ({
+const AlertModal: FC<AddAlertModalProps> = ({
     type,
     isOpen,
     setAlertDialogOpen,
@@ -188,4 +188,4 @@ const AddAlertModal: FC<AddAlertModalProps> = ({
     )
 }
 
-export default memo(AddAlertModal);
+export default memo(AlertModal);

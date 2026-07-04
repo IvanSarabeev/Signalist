@@ -1,7 +1,7 @@
 import React, {FC, memo, useEffect, useState} from "react";
 import WatchlistTable from "@/components/WatchlistTable";
 import AddStockModal from "@/components/modals/AddStockModal";
-import AddAlertModal from "@/components/modals/AddAlertModal";
+import AlertModal from "@/components/modals/AlertModal";
 import AlertPanel from "@/components/AlertsPanel";
 import {deleteWatchlistItem, getWatchlist} from "@/app/api/watchlist";
 import {addNotification} from "@/lib/utils";
@@ -245,7 +245,7 @@ const WatchlistPage: FC = () => {
                 onDeleteAlert={requestDeleteAlert}
             />
 
-            <AddAlertModal
+            <AlertModal
                 type={alertModalType}
                 isOpen={alertDialogOpen}
                 alertPrice={alertPrice}
