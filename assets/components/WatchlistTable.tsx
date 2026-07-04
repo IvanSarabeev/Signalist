@@ -1,4 +1,4 @@
-import React, {FC, memo, SetStateAction} from 'react'
+import React, {FC, memo} from 'react'
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Bell, Plus, Star, Trash2, TrendingDown, TrendingUp} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
@@ -12,17 +12,14 @@ type WatchlistTableProps = {
     toggleStar: (id: number) => void;
     openAlertDialog: (stock: StockWithData) => void;
     setAddStockOpen: (value: boolean) => void;
-    setIsOpen:  (value: SetStateAction<boolean>) => void;
-    setConfirmStock: (value: React.SetStateAction<StockWithData | null>) => void;
+    requestStockDeletion: (stock: StockWithData) => void;
 }
 
 const WatchlistTable: FC<WatchlistTableProps> = ({
     stocks,
-    toggleStar,
     openAlertDialog,
     setAddStockOpen,
-    setIsOpen,
-    setConfirmStock,
+    requestStockDeletion,
 }) => {
     return (
         <section className="size-full flex flex-col justify-center">
@@ -118,10 +115,7 @@ const WatchlistTable: FC<WatchlistTableProps> = ({
                                             <Button
                                                 size="sm"
                                                 aria-label={`Remove ${stock.name}`}
-                                                onClick={() => {
-                                                    setConfirmStock(stock);
-                                                    setIsOpen((prevState) => !prevState);
-                                                }}
+                                                onClick={() => requestStockDeletion(stock)}
                                                 className="watchlist-remove transition-opacity cursor-pointer"
                                             >
                                                 <Trash2 className="trash-icon" />

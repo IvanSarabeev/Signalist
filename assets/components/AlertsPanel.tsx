@@ -8,7 +8,7 @@ type AlertPanelProps = {
     stocks: StockWithData[];
     onCreateAlert: () => void;
     onEditAlert: (alert: Alert) => void;
-    onDeleteAlert: (id: number) => void;
+    onDeleteAlert: (alert: Alert) => void;
 }
 
 const AlertsPanel: FC<AlertPanelProps> = ({

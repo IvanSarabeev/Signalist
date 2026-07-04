@@ -6,9 +6,15 @@ import AlertPanel from "@/components/AlertsPanel";
 import {deleteWatchlistItem, getWatchlist} from "@/app/api/watchlist";
 import {addNotification} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
-import {Trash2} from "lucide-react";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import {deleteAlert, getAlerts} from "@/app/api/alerts";
+
+type ConfirmState = {
+    title: string;
+    description: string;
+    confirmLabel?: string;
+    onConfirm: () => Promise<void> | void;
+} | null;
 
 const WatchlistPage: FC = () => {
     const [stocks, setStocks] = useState<StockWithData[]>([]);
@@ -26,8 +32,8 @@ const WatchlistPage: FC = () => {
     const [selectedStock, setSelectedStock] = useState<StockWithData | null>(null);
     const [alertPrice, setAlertPrice] = useState(0);
     const [newStock, setNewStock] = useState({ company: "", symbol: "", price: "", change: "", marketCap: "", peRatio: "" });
-    const [isOpen, setIsOpen] = useState(false);
-    const [confirmStock, setConfirmStock] = useState<StockWithData | null>(null);
+
+    const [confirmState, setConfirmState] = useState<ConfirmState>(null);
 
     /**
      * Retrieve all watchlist items
@@ -79,8 +85,10 @@ const WatchlistPage: FC = () => {
     };
 
     useEffect(() => {
-        loadStocks();
-        loadAlerts();
+        Promise.all([
+            loadStocks(),
+            loadAlerts(),
+        ]);
     }, []);
 
     const toggleStar = (id: number) => {
@@ -191,6 +199,28 @@ const WatchlistPage: FC = () => {
         }
     }
 
+    const requestStockDeletion: (stock: StockWithData) => void = (stock: StockWithData) => {
+        const alert = alerts.find((a) => a.stock_symbol === stock.symbol);
+
+        setConfirmState({
+            title: `Remove ${stock.symbol} from watchlist ?`,
+            description: `This will remove ${stock.name} and disable your alert ${alert?.name}.
+                If you want you can contact our customer support center.`,
+            confirmLabel: "Confirm",
+            onConfirm: () => removeStock(stock),
+        });
+    };
+
+    const requestDeleteAlert: (alert: Alert) => void = (alert: Alert) => {
+        setConfirmState({
+            title: `Remove "${alert.name}" from alerts ?`,
+            description: `This will delete your alert for (${alert.name} - ${alert.stock_symbol}).
+                If you want you can contact our customer support center.`,
+            confirmLabel: "Confirm",
+            onConfirm: () => onAlertDelete(alert.id),
+        });
+    };
+
     return (
         <div className="min-h-screen w-full p-6 flex flex-col lg:flex-row gap-2.5 md:gap-4 overflow-hidden">
             <WatchlistTable
@@ -198,8 +228,7 @@ const WatchlistPage: FC = () => {
                 toggleStar={toggleStar}
                 setAddStockOpen={setAddStockOpen}
                 openAlertDialog={openAlertDialog}
-                setIsOpen={setIsOpen}
-                setConfirmStock={setConfirmStock}
+                requestStockDeletion={requestStockDeletion}
             />
 
             <AlertPanel
@@ -207,7 +236,7 @@ const WatchlistPage: FC = () => {
                 stocks={stocks}
                 onCreateAlert={openCreateAlert}
                 onEditAlert={openEditAlert}
-                onDeleteAlert={onAlertDelete}
+                onDeleteAlert={requestDeleteAlert}
             />
 
             <AddAlertModal
@@ -227,26 +256,31 @@ const WatchlistPage: FC = () => {
                 setNewStock={setNewStock}
             />
 
-            {(isOpen && confirmStock !== null) && (
+            {confirmState && (
                 <ConfirmationModal
-                    title={`Remove ${confirmStock.symbol} from watchlist?`}
-                    description={`This will permanently remove ${confirmStock.name}. You can always add it back later.`}
-                    closeCallback={() => setConfirmStock(null)}
+                    title={confirmState.title}
+                    description={confirmState.description}
+                    closeCallback={() => setConfirmState(null)}
                     primaryButton={
                         <Button
                             size="sm"
                             variant="destructive"
                             onClick={async () => {
-                                await removeStock(confirmStock);
-                                setConfirmStock(null);
+                                await confirmState?.onConfirm();
+                                setConfirmState(null);
                             }}
+                            className="confirm-dialog-primary-btn"
                         >
-                            <Trash2 className="size-4" />
-                            Remove
+                            {confirmState.confirmLabel ?? "Confirm"}
                         </Button>
                     }
                     secondaryButton={
-                        <Button size="sm" variant="outline" onClick={() => setConfirmStock(null)}>
+                        <Button
+                            size="sm"
+                            variant="secondary"
+                            className="confirm-dialog-secondary-btn"
+                            onClick={() => setConfirmState(null)}
+                        >
                             Cancel
                         </Button>
                     }

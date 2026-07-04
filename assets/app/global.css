@@ -374,6 +374,22 @@
     .alert-delete-btn {
         @apply text-gray-400 rounded-full hover:bg-red-600/15 bg-transparent cursor-pointer transition-colors;
     }
+
+    .confirm-dialog-title {
+        @apply font-sans text-base text-white font-medium leading-6;
+    }
+
+    .confirm-dialog-description {
+        @apply font-sans text-sm text-muted-foreground font-normal leading-4;
+    }
+
+    .confirm-dialog-primary-btn {
+        @apply font-mono text-sm text-primary cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-95;
+    }
+
+    .confirm-dialog-secondary-btn {
+        @apply font-mono text-sm text-shadow-white cursor-pointer transition-all duration-200 hover:scale-105 hover:text-shadow-black;
+    }
 }
 
 /* Market News Component Styles */

@@ -9,7 +9,7 @@ type AlertCardProps = {
     alert: Alert;
     stock: StockWithData;
     onEdit: (alert: Alert) => void;
-    onDelete: (id: number) => void;
+    onDelete: (alert: Alert) => void;
 }
 
 const AlertCard: FC<AlertCardProps> = ({
@@ -85,7 +85,7 @@ const AlertCard: FC<AlertCardProps> = ({
                                         size="icon"
                                         name="delete-btn"
                                         aria-label="Delete alert"
-                                        onClick={() => onDelete(alert.id)}
+                                        onClick={() => onDelete(alert)}
                                         className="alert-delete-btn"
                                     >
                                         <Trash2 className="size-3.5" />

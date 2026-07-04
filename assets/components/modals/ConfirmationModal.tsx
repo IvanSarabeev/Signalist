@@ -26,18 +26,18 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
 }) => {
     return (
         <Dialog open onOpenChange={(open) => !open && closeCallback()}>
-            <DialogContent className="sm:max-w-105">
+            <DialogContent className="sm:max-w-105 border border-gray-600 bg-gray-800">
                 <DialogHeader>
                     <div className="flex items-start gap-3">
                         <div className="flex-size-9 shrink-0 items-center justify-center">
-                            <Trash2 className="size-4 text-destructive"/>
+                            <Trash2 className="size-6 text-destructive"/>
                         </div>
 
-                        <div className="flex flex-col gap-1">
-                            <DialogTitle className="text-sm font-medium leading-none">
+                        <div className="flex flex-col gap-2 md:gap-3">
+                            <DialogTitle className="confirm-dialog-title">
                                 {title}
                             </DialogTitle>
-                            <DialogDescription className="text-sm text-muted-foreground">
+                            <DialogDescription className="confirm-dialog-description">
                                 {description}
                             </DialogDescription>
                         </div>
