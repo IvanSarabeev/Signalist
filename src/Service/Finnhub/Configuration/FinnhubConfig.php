@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Finnhub;
+namespace App\Service\Finnhub\Configuration;
 
 final readonly class FinnhubConfig
 {

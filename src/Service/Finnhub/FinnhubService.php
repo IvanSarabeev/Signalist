@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub;
 
-use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
 use App\Infrastructure\Finnhub\FinnhubCompanyProfileMapper;
+use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
 use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
+use App\Service\Finnhub\Configuration\FinnhubConfig;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
