@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Finnhub;
 
-use App\DTO\Stock\QuoteResponseDTO;
 use App\DTO\Stock\StockResponseDTO;
-use App\Mapper\Stock\QuoteMapper;
+use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
 use App\Mapper\Stock\StockProfileMapper;
+use App\Presentation\Http\Response\Stocks\QuoteItem;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
@@ -38,8 +40,9 @@ final readonly class FinnhubService implements FinnhubServiceInterface
         private LoggerInterface        $logger,
         private StockProfileMapper     $stockProfileMapper,
         private FinnhubConfig          $finnhubConfig,
-        private QuoteMapper            $quoteMapper,
-    ) { }
+        private FinnhubQuoteMapper     $quoteMapper,
+    )
+    { }
 
     /**
      * Retrieves company news for a given stock symbol.
@@ -120,10 +123,9 @@ final readonly class FinnhubService implements FinnhubServiceInterface
 
     /**
      * @param string $symbol Stock ticker symbol
-     * @return QuoteResponseDTO stock prices for international markets
      * @throws InvalidArgumentException
      */
-    public function getQuote(string $symbol): QuoteResponseDTO
+    public function getQuote(string $symbol): QuoteItem
     {
         $data = $this->cache->get(
             "finhub.quote.$symbol",

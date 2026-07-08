@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Mapper\Stock;
+namespace App\Infrastructure\Finnhub;
 
-use App\DTO\Stock\QuoteResponseDTO;
+use App\Presentation\Http\Response\Stocks\QuoteItem;
 
-final class QuoteMapper
+final readonly class FinnhubQuoteMapper
 {
-    public function toDTO(array $quote): QuoteResponseDTO
+    public function toDTO(array $quote): QuoteItem
     {
-        return new QuoteResponseDTO(
+        return new QuoteItem(
             $quote['c'],
             $quote['d'],
             $quote['dp'],

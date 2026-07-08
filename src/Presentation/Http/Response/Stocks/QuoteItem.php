@@ -1,8 +1,10 @@
 <?php
 
-namespace App\DTO\Stock;
+declare(strict_types=1);
 
-final class QuoteResponseDTO
+namespace App\Presentation\Http\Response\Stocks;
+
+final readonly class QuoteItem
 {
     public function __construct(
         public float $currentPrice,

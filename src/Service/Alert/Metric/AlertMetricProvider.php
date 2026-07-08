@@ -6,14 +6,14 @@ namespace App\Service\Alert\Metric;
 
 use App\Entity\Alert;
 use App\Enum\Alert\AlertType;
-use App\Mapper\Stock\QuoteMapper;
+use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
 use App\Presentation\Http\Exception\Services\Alert\UnsupportedAlertTypeException;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 
 final readonly class AlertMetricProvider implements AlertMetricProviderInterface
 {
     public function __construct(
-        private QuoteMapper            $quoteMapper,
+        private FinnhubQuoteMapper     $quoteMapper,
         private FinnhubClientInterface $finnhubClient,
     )
     { }

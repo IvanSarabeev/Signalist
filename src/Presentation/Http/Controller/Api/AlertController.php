@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Presentation\Http\Controller\Api;
 
 use App\Entity\User;
-use App\Infrastructure\Routing\RouteRequirements;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
 use App\Presentation\Http\Request\Alert\UpdateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;

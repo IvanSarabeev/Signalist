@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub;
 
-use App\DTO\Stock\QuoteResponseDTO;
 use App\DTO\Stock\StockResponseDTO;
+use App\Presentation\Http\Response\Stocks\QuoteItem;
 
 interface FinnhubServiceInterface
 {
@@ -15,5 +15,5 @@ interface FinnhubServiceInterface
 
     public function getPopularStocks(int $limit = 10): array;
 
-    public function getQuote(string $symbol): QuoteResponseDTO;
+    public function getQuote(string $symbol): QuoteItem;
 }
