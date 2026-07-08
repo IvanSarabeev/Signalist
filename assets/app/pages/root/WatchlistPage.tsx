@@ -8,6 +8,7 @@ import {addNotification} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import {deleteAlert, getAlerts} from "@/app/api/alerts";
+import WatchlistSkeleton from "@/components/_comp/WatchlistSkeleton";
 
 type ConfirmState = {
     title: string;
@@ -17,6 +18,8 @@ type ConfirmState = {
 } | null;
 
 const WatchlistPage: FC = () => {
+    const [isInitialLoading, setIsInitialLoading] = useState(false);
+
     const [stocks, setStocks] = useState<StockWithData[]>([]);
     const [pagination, setPagination] = useState({
         page: 1,
@@ -88,11 +91,9 @@ const WatchlistPage: FC = () => {
     };
 
     useEffect(() => {
-        Promise.all([
-            loadStocks(),
-            loadAlerts(),
-        ]);
-    }, []);
+        Promise.all([loadStocks(), loadAlerts()])
+            .finally(() => setIsInitialLoading(true));
+    }, [isInitialLoading]);
 
     const toggleStar = (id: number) => {
         setStocks((prev) =>
@@ -226,6 +227,8 @@ const WatchlistPage: FC = () => {
             onConfirm: () => onAlertDelete(alert.id),
         });
     };
+
+    if (!isInitialLoading) return <WatchlistSkeleton rows={4} alerts={3} />;
 
     return (
         <div className="min-h-screen w-full p-6 flex flex-col lg:flex-row gap-2.5 md:gap-4 overflow-hidden">
