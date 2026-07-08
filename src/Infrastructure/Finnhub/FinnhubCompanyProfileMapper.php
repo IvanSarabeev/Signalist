@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Mapper\Stock;
+namespace App\Infrastructure\Finnhub;
 
-use App\DTO\Stock\StockResponseDTO;
+use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
 
-final class StockProfileMapper
+final class FinnhubCompanyProfileMapper
 {
-    public function toDTO(array $stockProfile): StockResponseDTO
+    public function toDTO(array $stockProfile): CompanyProfileItem
     {
-        return new StockResponseDTO(
+        return new CompanyProfileItem(
             $stockProfile['name'],
             $stockProfile['exchange'],
             $stockProfile['country'],
             $stockProfile['currency'],
             $stockProfile['finnhubIndustry'],
+            $stockProfile['marketCapitalization'],
             $stockProfile['logo'],
             $stockProfile['shareOutstanding'],
             $stockProfile['ticker'],
             $stockProfile['weburl'] ?? null,
+            $stockProfile['floatingShare']
         );
     }
 }

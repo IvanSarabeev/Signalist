@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub;
 
-use App\DTO\Stock\StockResponseDTO;
 use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
-use App\Mapper\Stock\StockProfileMapper;
+use App\Infrastructure\Finnhub\FinnhubCompanyProfileMapper;
+use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
@@ -32,15 +32,15 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * @param FinnhubClientInterface $finnhubClient Low-level API client
      * @param CacheInterface $cache Application cache layer
      * @param LoggerInterface $logger Error and system logger
-     * @param StockProfileMapper $stockProfileMapper Maps API data to DTOs
+     * @param FinnhubCompanyProfileMapper $stockProfileMapper Maps API data to DTOs
      */
     public function __construct(
-        private FinnhubClientInterface $finnhubClient,
-        private CacheInterface         $cache,
-        private LoggerInterface        $logger,
-        private StockProfileMapper     $stockProfileMapper,
-        private FinnhubConfig          $finnhubConfig,
-        private FinnhubQuoteMapper     $quoteMapper,
+        private FinnhubClientInterface      $finnhubClient,
+        private CacheInterface              $cache,
+        private LoggerInterface             $logger,
+        private FinnhubCompanyProfileMapper $stockProfileMapper,
+        private FinnhubConfig               $finnhubConfig,
+        private FinnhubQuoteMapper          $quoteMapper,
     )
     { }
 
@@ -74,10 +74,10 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * Cached for 24 hours due to low update frequency.
      *
      * @param string $symbol Stock ticker symbol
-     * @return StockResponseDTO Company profile data
+     * @return CompanyProfileItem - return specific Company profile
      * @throws InvalidArgumentException
      */
-    public function getCompanyProfile(string $symbol): StockResponseDTO
+    public function getCompanyProfile(string $symbol): CompanyProfileItem
     {
         $data = $this->cache->get(
             "finnhub.profile.$symbol",
@@ -95,10 +95,10 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * Returns a list of popular stocks with mapped DTO output.
      *
      * Each stock profile is fetched via cached API calls and transformed
-     * into a StockProfileDTO using StockProfileMapper.
+     * into a StockProfileDTO using FinnhubCompanyProfileMapper.
      *
      * @param int $limit Maximum number of stocks to return
-     * @return StockResponseDTO[] List of StockProfileDTOs
+     * @return CompanyProfileItem[] List of company profile data
      */
     public function getPopularStocks(int $limit = 10): array
     {
