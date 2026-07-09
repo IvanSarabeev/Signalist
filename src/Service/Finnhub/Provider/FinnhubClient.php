@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub\Provider;
 
+use App\Enum\Finnhub\CategoryNews;
 use DateTimeInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -61,5 +62,20 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
     public function getQuote(string $symbol): array
     {
         return $this->requestGet(self::GET_STOCK_QUOTE, ['symbol' => $symbol]);
+    }
+
+    /**
+     * Get specific market news based on provided category
+     *
+     * @param CategoryNews $categoryNews
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getMarketNews(CategoryNews $categoryNews): array
+    {
+        return $this->requestGet(self::GET_MARKET_NEWS, ['category' => $categoryNews->value]);
     }
 }
