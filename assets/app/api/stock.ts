@@ -5,5 +5,5 @@ export async function stocksSearch(symbol: string = ''): Promise<StocksResponse>
 }
 
 export async function stockNews(symbol: string) {
-    return api.get(`/stocks/${symbol}/news`);
+    return api.get(`/stocks/${symbol}/company-news`);
 }

@@ -193,17 +193,19 @@ declare global {
 
     type AlertResponse = ApiResponse<Alert, ErrorResponse>;
 
+    type MetaResponse = {
+        page: number
+        limit: number
+        total_pages: number
+        has_next_page: boolean
+        has_previous_page: boolean
+    }
+
     type WatchlistResponse = {
         status: boolean;
         data: StockWithData[];
         errors: [];
-        meta: {
-            page: number;
-            limit: number;
-            total_pages: number;
-            has_next_page: boolean;
-            has_previous_page: boolean;
-        } | [];
+        meta: MetaResponse | [];
     }
 
     type AddWatchlistItemResponse = {
