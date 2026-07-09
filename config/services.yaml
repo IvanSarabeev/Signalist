@@ -91,7 +91,7 @@ services:
     App\Service\Finnhub\Provider\FinnhubClientInterface:
         alias: App\Service\Finnhub\Provider\FinnhubClient
 
-    App\Service\Finnhub\FinnhubConfig:
+    App\Service\Finnhub\Configuration\FinnhubConfig:
         arguments:
             $popularSymbols: '%finnhub.popular_symbols%'
     # End of Region Services
