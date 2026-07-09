@@ -6,6 +6,7 @@ namespace App\Service\Finnhub;
 
 use App\Infrastructure\Finnhub\FinnhubCompanyProfileMapper;
 use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
+use App\Presentation\Http\Response\Stocks\CompanyNewsItem;
 use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
 use App\Service\Finnhub\Configuration\FinnhubConfig;
@@ -56,7 +57,7 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      */
     public function getCompanyNews(string $symbol): array
     {
-        return $this->cache->get(
+        $response = $this->cache->get(
             "finhub.news.$symbol",
             function (ItemInterface $item) use ($symbol) {
                 $item->expiresAfter(self::COMPANY_NEWS_TTL);
@@ -67,6 +68,19 @@ final readonly class FinnhubService implements FinnhubServiceInterface
                 return $this->finnhubClient->getCompanyNews($symbol, $from, $to);
             }
         );
+
+        return array_map(function ($item) {
+            return new CompanyNewsItem(
+                $item['id'],
+                $item['category'],
+                $item['datetime'],
+                $item['headline'],
+                $item['image'],
+                $item['source'],
+                $item['summary'],
+                $item['url'],
+            );
+        }, $response);
     }
 
     /**
