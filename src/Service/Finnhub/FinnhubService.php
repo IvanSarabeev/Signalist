@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub;
 
+use App\Enum\Finnhub\CategoryNews;
 use App\Infrastructure\Finnhub\FinnhubCompanyProfileMapper;
 use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
+use App\Presentation\Http\Response\PaginatedResponse;
 use App\Presentation\Http\Response\Stocks\CompanyNewsItem;
 use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
+use App\Presentation\Http\Response\Stocks\MarketNews;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
 use App\Service\Finnhub\Configuration\FinnhubConfig;
+use App\Service\Finnhub\Enum\FinnhubCache;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -26,9 +31,6 @@ use Throwable;
 final readonly class FinnhubService implements FinnhubServiceInterface
 {
     private const FINHUB_LOG_PREFIX = 'Finnhub :';
-
-    private const COMPANY_NEWS_TTL = 300; // 5 minutes
-    private const COMPANY_PROFILE_TTL = 86400; // 24 hours
 
     /**
      * @param FinnhubClientInterface $finnhubClient Low-level API client
@@ -58,9 +60,9 @@ final readonly class FinnhubService implements FinnhubServiceInterface
     public function getCompanyNews(string $symbol): array
     {
         $response = $this->cache->get(
-            "finhub.news.$symbol",
+            FinnhubCache::COMPANY_NEWS->key($symbol),
             function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(self::COMPANY_NEWS_TTL);
+                $item->expiresAfter(FinnhubCache::COMPANY_NEWS->ttl());
 
                 $to = new DateTimeImmutable();
                 $from = $to->modify('-7 days');
@@ -95,9 +97,9 @@ final readonly class FinnhubService implements FinnhubServiceInterface
     public function getCompanyProfile(string $symbol): CompanyProfileItem
     {
         $data = $this->cache->get(
-            "finnhub.profile.$symbol",
+            FinnhubCache::COMPANY_PROFILE->key($symbol),
             function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(self::COMPANY_PROFILE_TTL);
+                $item->expiresAfter(FinnhubCache::COMPANY_PROFILE->ttl());
 
                 return $this->finnhubClient->getCompanyProfile($symbol);
             }
@@ -123,9 +125,7 @@ final readonly class FinnhubService implements FinnhubServiceInterface
 
         foreach ($symbols as $symbol) {
             try {
-                $profile = $this->getCompanyProfile($symbol);
-
-                $results[] = $this->stockProfileMapper->toDTO((array)$profile);
+                $results[] = $this->getCompanyProfile($symbol);
             } catch (Throwable $throwable) {
                 $this->logger->error(self::FINHUB_LOG_PREFIX . $throwable->getMessage());
 
@@ -143,14 +143,48 @@ final readonly class FinnhubService implements FinnhubServiceInterface
     public function getQuote(string $symbol): QuoteItem
     {
         $data = $this->cache->get(
-            "finhub.quote.$symbol",
+            FinnhubCache::QUOTE->key($symbol),
             function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(self::COMPANY_NEWS_TTL);
+                $item->expiresAfter(FinnhubCache::QUOTE->ttl());
 
                 return $this->finnhubClient->getQuote($symbol);
             }
         );
 
         return $this->quoteMapper->toDTO($data);
+    }
+
+    /**
+     * @param CategoryNews $categoryNews
+     * @param int $page
+     * @param int $limit
+     * @return PaginatedResponse
+     * @throws InvalidArgumentException
+     */
+    public function getMarketNews(CategoryNews $categoryNews, int $page, int $limit): PaginatedResponse
+    {
+        /** @var MarketNews[] $response */
+        $response = $this->cache->get(
+            FinnhubCache::NEWS->key($categoryNews->value),
+            function (ItemInterface $item) use ($categoryNews) {
+                $item->expiresAfter(FinnhubCache::NEWS->ttl());
+
+                return $this->finnhubClient->getMarketNews($categoryNews);
+            }
+        );
+
+        $mappedNews = array_map(fn ($item) => new MarketNews(
+                id:       $item['id'],
+                category: $item['category'],
+                datetime: (new DateTimeImmutable('@' . $item['datetime']))->format(DateTimeInterface::ATOM),
+                headline: $item['headline'],
+                image:    isset($item['image']) ? (string) $item['image'] : null,
+                related:  $item['related'],
+                source:   $item['source'],
+                summary:  $item['summary'],
+                url:      $item['url'],
+        ), $response);
+
+        return PaginatedResponse::fromArray($mappedNews, $page, $limit);
     }
 }
