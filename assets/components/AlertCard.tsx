@@ -1,4 +1,4 @@
-import React, {FC, memo} from 'react'
+import React, {FC, memo, useState} from 'react'
 import StockLogo from "@/components/stocks/StockLogo";
 import {Pencil, Trash2} from "lucide-react";
 import {formatPrice} from "@/lib/helpers";
@@ -18,13 +18,31 @@ const AlertCard: FC<AlertCardProps> = ({
     onEdit,
     onDelete
 }) => {
+    const [imgError, setImgError] = useState(false);
+
+
     const isPositive = stock.change_percent >= 0;
 
     return (
         <div className="max-w-92 max-h-38.5 alert-item">
             <div className="alert-details">
                 <div className="flex items-center gap-3 min-w-0">
-                    <StockLogo symbol={stock.symbol} size={40} />
+                    {!imgError && alert.logo_url ? (
+                        <img
+                            src={alert.logo_url}
+                            alt={`${alert.name}-logo`}
+                            referrerPolicy="no-referrer"
+                            className="size-8 rounded-md object-contain"
+                            onError={(e) => {
+                                console.log('logo failed to load:', alert.logo_url, e);
+                                setImgError(true);
+                            }}
+                        />
+                    ) : (
+                        <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-300">
+                            {stock.symbol.slice(0, 2)}
+                        </div>
+                    )}
 
                     <div className="min-w-0">
                         <p className="text-gray-100 font-semibold text-sm truncate">
