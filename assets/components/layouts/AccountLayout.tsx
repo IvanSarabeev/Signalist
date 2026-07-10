@@ -10,7 +10,7 @@ const AccountLayout: FC = () => {
             <Toaster/>
 
             <TooltipProvider>
-                <main className="min-h-screen text-gray-400">
+                <main className="h-fit md:min-h-screen text-gray-400">
                     <Header />
 
                     <div className="container py-10">

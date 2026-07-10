@@ -199,13 +199,13 @@ declare global {
         total_pages: number
         has_next_page: boolean
         has_previous_page: boolean
-    }
+    } | {}
 
     type WatchlistResponse = {
         status: boolean;
         data: StockWithData[];
         errors: [];
-        meta: MetaResponse | [];
+        meta: MetaResponse | {};
     }
 
     type AddWatchlistItemResponse = {
@@ -241,11 +241,13 @@ declare global {
         summary: string;
         source: string;
         url: string;
-        datetime: number;
+        datetime: string;
         category: string;
         related: string;
         image?: string;
     };
+
+    type MarketNewsResponse = ApiResponse<MarketNewsArticle[], ErrorResponse>;
 
     type WatchlistNewsProps = {
         news?: MarketNewsArticle[];

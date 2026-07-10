@@ -1,4 +1,4 @@
-import React, {FC, Fragment, use, useState, memo} from 'react'
+import React, {FC, use, useState, memo} from 'react'
 import {AlertsResource, WatchlistsResource} from "@/app/pages/root/WatchlistPage";
 import {addNotification} from "@/lib/utils";
 import {deleteWatchlistItem} from "@/app/api/watchlist";
@@ -9,7 +9,6 @@ import AlertModal from "@/components/modals/AlertModal";
 import AddStockModal from "@/components/modals/AddStockModal";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import {Button} from "@/components/ui/button";
-import StockNewsPanel from "@/components/StockNewsPanel";
 
 type WatchlistContentProps = {
     watchlistsPromise: Promise<WatchlistsResource>;
@@ -176,78 +175,72 @@ const WatchlistContent: FC<WatchlistContentProps> = ({ watchlistsPromise, alerts
     };
 
     return (
-        <Fragment>
-            <div className="min-h-screen w-full p-6 flex flex-col lg:flex-row gap-2.5 md:gap-4 overflow-hidden">
-                <WatchlistTable
-                    stocks={watchlistStocks}
-                    toggleStar={toggleStar}
-                    setAddStockOpen={setAddStockOpen}
-                    openAlertDialog={openAlertDialog}
-                    requestStockDeletion={requestStockDeletion}
+        <div className="min-h-screen w-full p-6 flex flex-col lg:flex-row gap-2.5 md:gap-4 overflow-hidden">
+            <WatchlistTable
+                stocks={watchlistStocks}
+                toggleStar={toggleStar}
+                setAddStockOpen={setAddStockOpen}
+                openAlertDialog={openAlertDialog}
+                requestStockDeletion={requestStockDeletion}
+            />
+
+            <AlertPanel
+                alerts={alerts}
+                stocks={watchlistStocks}
+                onCreateAlert={openCreateAlert}
+                onEditAlert={openEditAlert}
+                onDeleteAlert={requestDeleteAlert}
+            />
+
+            <AlertModal
+                type={alertModalType}
+                isOpen={alertDialogOpen}
+                alertPrice={alertPrice}
+                selectedStock={selectedStock}
+                setAlertDialogOpen={setAlertDialogOpen}
+                setAlerts={setAlerts}
+                selectedAlert={selectedAlert}
+            />
+
+            <AddStockModal
+                isOpen={addStockOpen}
+                setAddStockOpen={setAddStockOpen}
+                handleAddStock={handleAddStock}
+                newStock={newStock}
+                setNewStock={setNewStock}
+            />
+
+            {confirmState && (
+                <ConfirmationModal
+                    title={confirmState.title}
+                    description={confirmState.description}
+                    closeCallback={() => setConfirmState(null)}
+                    primaryButton={
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={async () => {
+                                await confirmState?.onConfirm();
+                                setConfirmState(null);
+                            }}
+                            className="confirm-dialog-primary-btn"
+                        >
+                            {confirmState.confirmLabel ?? "Confirm"}
+                        </Button>
+                    }
+                    secondaryButton={
+                        <Button
+                            size="sm"
+                            variant="secondary"
+                            className="confirm-dialog-secondary-btn"
+                            onClick={() => setConfirmState(null)}
+                        >
+                            Cancel
+                        </Button>
+                    }
                 />
-
-                <AlertPanel
-                    alerts={alerts}
-                    stocks={watchlistStocks}
-                    onCreateAlert={openCreateAlert}
-                    onEditAlert={openEditAlert}
-                    onDeleteAlert={requestDeleteAlert}
-                />
-
-                <AlertModal
-                    type={alertModalType}
-                    isOpen={alertDialogOpen}
-                    alertPrice={alertPrice}
-                    selectedStock={selectedStock}
-                    setAlertDialogOpen={setAlertDialogOpen}
-                    setAlerts={setAlerts}
-                    selectedAlert={selectedAlert}
-                />
-
-                <AddStockModal
-                    isOpen={addStockOpen}
-                    setAddStockOpen={setAddStockOpen}
-                    handleAddStock={handleAddStock}
-                    newStock={newStock}
-                    setNewStock={setNewStock}
-                />
-
-                {confirmState && (
-                    <ConfirmationModal
-                        title={confirmState.title}
-                        description={confirmState.description}
-                        closeCallback={() => setConfirmState(null)}
-                        primaryButton={
-                            <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={async () => {
-                                    await confirmState?.onConfirm();
-                                    setConfirmState(null);
-                                }}
-                                className="confirm-dialog-primary-btn"
-                            >
-                                {confirmState.confirmLabel ?? "Confirm"}
-                            </Button>
-                        }
-                        secondaryButton={
-                            <Button
-                                size="sm"
-                                variant="secondary"
-                                className="confirm-dialog-secondary-btn"
-                                onClick={() => setConfirmState(null)}
-                            >
-                                Cancel
-                            </Button>
-                        }
-                    />
-                )}
-            </div>
-
-            {/* TODO: Pass the total watchlist symbols to the StockNewPanel */}
-
-            <StockNewsPanel />
-        </Fragment>
+            )}
+        </div>
     )
 }
 

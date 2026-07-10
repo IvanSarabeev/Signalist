@@ -1,5 +1,5 @@
 import React, {FC, memo} from 'react'
-import StockLogo from "@/components/StockLogo";
+import StockLogo from "@/components/stocks/StockLogo";
 import {Pencil, Trash2} from "lucide-react";
 import {formatPrice} from "@/lib/helpers";
 import {Button} from "@/components/ui/button";

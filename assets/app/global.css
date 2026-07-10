@@ -320,17 +320,23 @@
     .watchlist-news {
         @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
     }
+    .article-title {
+        @apply text-white font-semibold text-xl leading-6 tracking-normal mb-5;
+    }
+    .news-article {
+        @apply size-full flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-start gap-3 md:gap-5 mx-auto;
+    }
     .news-item {
-        @apply bg-gray-800 rounded-lg border w-full border-gray-600  p-4 duration-200 hover:border-gray-600 cursor-pointer;
+        @apply flex flex-col bg-gray-800 rounded-xl border w-full border-gray-600 px-4 py-3.5 max-w-86 max-h-62 duration-200 hover:border-gray-600 hover:scale-105 cursor-pointer;
     }
     .news-tag {
         @apply inline-block w-fit px-2 py-1 mb-5 rounded bg-gray-600/60 text-green-500 text-sm font-mono font-medium;
     }
     .news-title {
-        @apply text-lg  font-semibold text-gray-100 leading-tight mb-3 line-clamp-2;
+        @apply text-lg  font-semibold text-gray-100 leading-tight mb-3 line-clamp-2 text-balance;
     }
     .news-meta {
-        @apply flex items-center text-sm text-gray-500 mb-1;
+        @apply flex items-center text-sm text-gray-500 my-2;
     }
     .news-summary {
         @apply text-gray-400 flex-1 text-base leading-relaxed mb-3 line-clamp-3;
