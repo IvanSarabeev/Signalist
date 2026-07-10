@@ -1,4 +1,4 @@
-import React, {FC, Fragment, memo, useEffect, useState, useCallback} from 'react'
+import React, {FC, Fragment, memo, useEffect, useState} from 'react'
 import {CommandDialog, CommandInput} from "@/components/ui/command";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
@@ -12,8 +12,7 @@ function useModifierKey() {
     const [modifier, setModifier] = useState<'Ctrl' | '⌘'>('Ctrl');
 
     useEffect(() => {
-        const platform =
-            (navigator as any).userAgentData?.platform ?? navigator.platform ?? navigator.userAgent;
+        const platform = (navigator as any).userAgentData?.platform ?? navigator.userAgent;
 
         if (/mac/i.test(platform)) {
             setModifier('⌘');
@@ -96,14 +95,14 @@ const SearchCommand: FC<SearchCommandProps> = ({renderAs = "button", label = "Ad
         setSearchResults([]);
     };
 
-    const triggerClassName =
-        renderAs === 'text' ? 'search-text' : renderAs === 'shortcut'
-            ? 'search-shortcut' : 'search-btn';
+    const searchClassName = renderAs === 'shortcut' ? 'search-shortcut' : 'search-btn';
+    const triggerClassName = renderAs === 'text' ? 'search-text' : searchClassName;
 
     return (
         <Fragment>
             <Button
                 type='button'
+                variant='secondary'
                 className={triggerClassName}
                 onClick={() => setOpen((prevState) => !prevState)}
             >
@@ -128,7 +127,7 @@ const SearchCommand: FC<SearchCommandProps> = ({renderAs = "button", label = "Ad
                     <CommandInput
                         value={searchTerm.toUpperCase()}
                         onValueChange={setSearchTerm}
-                        placeholder="Search stocks ..."
+                        placeholder="Search stocks by symbol or company name"
                         className="search-input"
                     />
                     {isLoading && <Loader2 className="search-loader"/>}
