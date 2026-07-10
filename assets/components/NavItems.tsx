@@ -19,7 +19,7 @@ const NavItems: FC<{ initialStocks: Stocks[] }> = ({initialStocks}) => {
                 if (href === '/account/search') return (
                     <li key='search-trigger'>
                         <SearchCommand
-                            renderAs="text"
+                            renderAs="shortcut"
                             label="Search"
                             initialStocks={initialStocks}
                         />

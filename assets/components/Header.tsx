@@ -10,6 +10,8 @@ const Header: FC = () => {
     const {isAuthenticated, user} = useAuth();
     const {initialStocks} = useInitialStocks();
 
+    console.log('Initial Stocks: ', initialStocks);
+
     return (
         <header className="sticky top-0 header">
             <div className="container header-wrapper">

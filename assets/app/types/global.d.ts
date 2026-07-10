@@ -70,7 +70,7 @@ declare global {
     type UserResponse = ApiResponse<User | null, []>;
 
     type SearchCommandProps = {
-        renderAs?: 'button' | 'text';
+        renderAs?: 'button' | 'text' |'shortcut';
         label?: string;
         initialStocks: Stocks[];
     };

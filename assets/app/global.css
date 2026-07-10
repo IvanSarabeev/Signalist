@@ -206,8 +206,17 @@
     .footer-link {
         @apply text-gray-400 font-medium hover:text-yellow-400 hover:underline transition-colors;
     }
+    .search-shortcut {
+        @apply flex items-center gap-2 w-fit bg-transparent text-gray-400 cursor-pointer hover:text-yellow-500 transition-colors;
+    }
+    .search-shortcut-label {
+        @apply text-base font-medium whitespace-nowrap;
+    }
+    .search-shortcut-hint {
+        @apply flex items-center gap-1;
+    }
     .search-text {
-        @apply text-base size-fit border-0 p-0 text-inherit bg-inherit cursor-pointer hover:text-yellow-500 ;
+        @apply flex flex-col text-base size-fit border-0 p-0 text-inherit bg-inherit cursor-pointer hover:text-yellow-500 ;
     }
     .search-btn {
         @apply cursor-pointer px-4 py-2 w-fit flex items-center gap-2 text-sm md:text-base bg-yellow-500 hover:bg-yellow-500 text-black font-medium rounded;
