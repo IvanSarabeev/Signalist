@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Throwable;
 
-final readonly class WatchlistServiceService implements WatchlistServiceInterface
+final readonly class WatchlistService implements WatchlistServiceInterface
 {
     public function __construct(
         private StockServiceInterface   $stockService,

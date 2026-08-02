@@ -360,7 +360,7 @@
         @apply text-xl font-semibold text-gray-100;
     }
     .alert-list {
-        @apply overflow-y-auto size-full max-h-[911px] rounded-lg flex border border-gray-600 md:flex-col md:flex-1 gap-4 bg-gray-800 p-3;
+        @apply overflow-y-auto size-full max-h-[911px] rounded-lg flex flex-wrap justify-center border border-gray-600 md:flex-col md:flex-1 gap-4 bg-gray-800 p-3 mx-auto;
     }
     .alert-empty {
         @apply px-6 py-8 text-center text-gray-500/50;
