@@ -19,7 +19,7 @@ interface AlertServiceInterface
 
     public function createAlert(User $user, CreateAlertRequest $createAlertRequest): Alert;
 
-    public function updateAlert(User $user, string $symbol, UpdateAlertRequest $updateAlertRequest): Alert;
+    public function updateAlert(User $user, int $id, UpdateAlertRequest $updateAlertRequest): Alert;
 
     public function deleteAlert(User $user, int $id): void;
 }

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\DTO\Stock;
+declare(strict_types=1);
 
-final class StockResponseDTO
+namespace App\Presentation\Http\Response\Stocks;
+
+final readonly class CompanyProfileItem
 {
     public function __construct(
         public ?string $name,
@@ -10,9 +12,12 @@ final class StockResponseDTO
         public ?string $country,
         public ?string $currency,
         public ?string $finnhubIndustry,
+        public float   $marketCapitalization,
         public ?string $logo,
         public ?int    $shareOutstanding,
         public ?string $ticker,
-        public ?string $weburl,
-    ) { }
+        public ?string $webUrl,
+        public ?float  $floatingShare,
+    )
+    { }
 }

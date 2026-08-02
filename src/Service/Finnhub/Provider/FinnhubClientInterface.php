@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Finnhub\Provider;
 
+use App\Enum\Finnhub\CategoryNews;
 use DateTimeInterface;
 
 interface FinnhubClientInterface
@@ -13,4 +14,6 @@ interface FinnhubClientInterface
     public function getCompanyNews(string $symbol, DateTimeInterface $from, DateTimeInterface $to): array;
 
     public function getQuote(string $symbol): array;
+
+    public function getMarketNews(CategoryNews $categoryNews): array;
 }

@@ -70,7 +70,7 @@ declare global {
     type UserResponse = ApiResponse<User | null, []>;
 
     type SearchCommandProps = {
-        renderAs?: 'button' | 'text';
+        renderAs?: 'button' | 'text' |'shortcut';
         label?: string;
         initialStocks: Stocks[];
     };
@@ -174,17 +174,38 @@ declare global {
         watchlist: StockWithData[];
     };
 
+    type AlertsResponse = ApiResponse<Alert[], []>;
+
+    type ErrorResponse = {
+        status: boolean;
+        message: string;
+        errors: string[];
+    };
+
+    type CreateAlertForm = {
+        symbol: string;
+        alertName: string;
+        alertType: string;
+        conditionQuality: string;
+        frequency: string;
+        thresholdValue: number;
+    }
+
+    type AlertResponse = ApiResponse<Alert, ErrorResponse>;
+
+    type MetaResponse = {
+        page: number
+        limit: number
+        total_pages: number
+        has_next_page: boolean
+        has_previous_page: boolean
+    } | {}
+
     type WatchlistResponse = {
         status: boolean;
         data: StockWithData[];
         errors: [];
-        meta: {
-            page: number;
-            limit: number;
-            total_pages: number;
-            has_next_page: boolean;
-            has_previous_page: boolean;
-        } | [];
+        meta: MetaResponse | {};
     }
 
     type AddWatchlistItemResponse = {
@@ -220,11 +241,13 @@ declare global {
         summary: string;
         source: string;
         url: string;
-        datetime: number;
+        datetime: string;
         category: string;
         related: string;
         image?: string;
     };
+
+    type MarketNewsResponse = ApiResponse<MarketNewsArticle[], ErrorResponse>;
 
     type WatchlistNewsProps = {
         news?: MarketNewsArticle[];
@@ -268,14 +291,24 @@ declare global {
     };
 
     type Alert = {
-        id: string;
-        symbol: string;
-        company: string;
-        alertName: string;
-        currentPrice: number;
-        alertType: 'upper' | 'lower';
-        threshold: number;
-        changePercent?: number;
+        id: number;
+        alert_name: string;
+        alert_type_label: string;
+        condition_quality: string;
+        condition_label: string;
+        condition_symbol: string;
+        threshold_value: number;
+        frequency: string;
+        frequency_label: string;
+        last_triggered_at: string|null;
+        is_active: boolean;
+        stock_symbol: string;
+        name: string;
+        price: number;
+        currency: string;
+        market_cap: number;
+        logo_url: string;
+        change_percent: number;
     };
 
     type ApiError = {

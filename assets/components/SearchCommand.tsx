@@ -6,12 +6,41 @@ import {stocksSearch} from "@/app/api/stock";
 import {useDebounce} from "@/hooks/useDebounce";
 import {DialogTitle} from "@/components/ui/dialog";
 import SearchCommandList from "@/components/SearchCommandList";
+import {Kbd, KbdGroup} from "@/components/ui/kbd";
+
+function useModifierKey() {
+    const [modifier, setModifier] = useState<'Ctrl' | '⌘'>('Ctrl');
+
+    useEffect(() => {
+        const platform = (navigator as any).userAgentData?.platform ?? navigator.userAgent;
+
+        if (/mac/i.test(platform)) {
+            setModifier('⌘');
+        }
+    }, []);
+
+    return modifier;
+}
+
+const SHORTCUT_KBD_CLASS = "bg-gray-700 text-gray-300 border-gray-600 h-5 px-1.5 text-[11px] font-medium";
+
+const SearchShortcutHint: FC<{ className?: string }> = ({ className }) => {
+    const modifier = useModifierKey();
+
+    return (
+        <KbdGroup className={className}>
+            <Kbd className={SHORTCUT_KBD_CLASS}>{modifier}</Kbd>
+            <span className="text-gray-600 text-xs">+</span>
+            <Kbd className={SHORTCUT_KBD_CLASS}>K</Kbd>
+        </KbdGroup>
+    );
+};
 
 const SearchCommand: FC<SearchCommandProps> = ({renderAs = "button", label = "Add stock", initialStocks}) => {
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [searchResults, setSearchResults] = useState<Stocks[]>(initialStocks ?? []);
+    const [searchResults, setSearchResults] = useState<Stocks[]>(initialStocks);
 
     const isSearchMode = !!searchTerm.trim();
     const displayStocks = isSearchMode ? searchResults : searchResults?.slice(0, 10);
@@ -66,14 +95,29 @@ const SearchCommand: FC<SearchCommandProps> = ({renderAs = "button", label = "Ad
         setSearchResults([]);
     };
 
+    const searchClassName = renderAs === 'shortcut' ? 'search-shortcut' : 'search-btn';
+    const triggerClassName = renderAs === 'text' ? 'search-text' : searchClassName;
+
     return (
         <Fragment>
             <Button
                 type='button'
-                className={renderAs === 'text' ? 'search-text' : 'search-btn'}
+                variant='secondary'
+                className={triggerClassName}
                 onClick={() => setOpen((prevState) => !prevState)}
             >
-                {label}
+                {renderAs === 'shortcut' ? (
+                    <Fragment>
+                        <span className="search-shortcut-label">{label}</span>
+
+                        <SearchShortcutHint className="search-shortcut-hint"/>
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        {label}
+                        {renderAs === 'text' && <SearchShortcutHint />}
+                    </Fragment>
+                )}
             </Button>
 
             <CommandDialog open={open} onOpenChange={setOpen}>
@@ -83,7 +127,7 @@ const SearchCommand: FC<SearchCommandProps> = ({renderAs = "button", label = "Ad
                     <CommandInput
                         value={searchTerm.toUpperCase()}
                         onValueChange={setSearchTerm}
-                        placeholder="Search stocks ..."
+                        placeholder="Search stocks by symbol or company name"
                         className="search-input"
                     />
                     {isLoading && <Loader2 className="search-loader"/>}

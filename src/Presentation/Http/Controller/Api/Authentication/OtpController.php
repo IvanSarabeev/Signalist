@@ -21,14 +21,14 @@ final class OtpController extends AbstractController
     public function __construct(private readonly OtpService $otpService)
     { }
 
-//    #[RateLimit(RateLimiter::OTP->value, identifierField: 'otp')]
+    #[RateLimit(RateLimiter::OTP->value, identifierField: 'otp')]
     #[Route('/verify', name: 'verify', methods: ['POST'])]
     public function verifyOtp(ValidateOtpRequest $otpRequest): JsonResponse
     {
         return $this->json(['status' => true], Response::HTTP_ACCEPTED);
-        $this->otpService->validateVerificationCode($otpRequest);
-
-        return $this->json(['status' => true], Response::HTTP_ACCEPTED);
+//        $this->otpService->validateVerificationCode($otpRequest);
+//
+//        return $this->json(['status' => true], Response::HTTP_ACCEPTED);
     }
 
     #[Route(path: '/resend', name: 'resend', methods: ['POST'])]

@@ -27,8 +27,8 @@ const SearchCommandList: FC<SearchCommandListProps> = ({isLoading, isSearchMode,
             ) : (
                 <ul>
                     <div className="search-count">
-                        (<strong>{loadedStocks.length || 0}</strong>){" "}
-                        {isSearchMode ? 'Search results' : 'Popular stocks'}
+                        {isSearchMode ? 'Search results' : 'Popular stocks'}{" "}
+                        ({loadedStocks.length || 0})
                     </div>
 
                     {loadedStocks.map((stock, index) => (
