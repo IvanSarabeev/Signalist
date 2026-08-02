@@ -16,4 +16,8 @@ interface FinnhubClientInterface
     public function getQuote(string $symbol): array;
 
     public function getMarketNews(CategoryNews $categoryNews): array;
+
+    public function getRecommendationTrends(string $symbol): array;
+
+    public function getEarningsCalendar(?string $from = null, ?string $to = null, ?string $symbol = null): array;
 }

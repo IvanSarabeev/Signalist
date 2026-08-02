@@ -46,8 +46,6 @@ final class StockController extends AbstractController
     #[Route(path: '/{symbol}/company-news', name: 'company_news', requirements: ['symbol' => RouteRequirements::SYMBOL_REGEX], methods: ['GET'])]
     public function companyNews(string $symbol): JsonResponse
     {
-        $this->handleInvalidSymbol($symbol);
-
         $result = $this->finnhubService->getCompanyNews($symbol);
 
         if (empty($result)) {
@@ -55,13 +53,6 @@ final class StockController extends AbstractController
         }
 
         return ApiResponse::success($result);
-    }
-
-    private function handleInvalidSymbol(string $symbol): void
-    {
-        if (!preg_match('/^[A-Z]{1,5}$/', $symbol)) {
-            throw $this->createNotFoundException('Invalid symbol');
-        }
     }
 
     #[Route(path: '/{category}/news', name: 'news', methods: ['GET'])]
