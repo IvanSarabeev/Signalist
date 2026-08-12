@@ -10,13 +10,16 @@ use App\Infrastructure\Finnhub\FinnhubQuoteMapper;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Presentation\Http\Response\Stocks\CompanyNewsItem;
 use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
+use App\Presentation\Http\Response\Stocks\EarningCalendarItem;
 use App\Presentation\Http\Response\Stocks\MarketNews;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
+use App\Presentation\Http\Response\Stocks\RecommendationTrendItem;
 use App\Service\Finnhub\Configuration\FinnhubConfig;
 use App\Service\Finnhub\Enum\FinnhubCache;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -160,6 +163,7 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * @param int $limit
      * @return PaginatedResponse
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function getMarketNews(CategoryNews $categoryNews, int $page, int $limit): PaginatedResponse
     {
@@ -186,5 +190,80 @@ final readonly class FinnhubService implements FinnhubServiceInterface
         ), $response);
 
         return PaginatedResponse::fromArray($mappedNews, $page, $limit);
+    }
+
+    /**
+     * Upcoming earnings calendar, from Finnhub's /calendar/earnings.
+     * Free tier, confirmed. Cached per from/to range since results depend
+     * on the date window requested.
+     *
+     * @param string|null $from ISO date; defaults to today if null
+     * @param string|null $to ISO date; defaults to $from + 14 days if null
+     * @param string|null $symbol stock symbol
+     * @return array|null
+     * @throws InvalidArgumentException
+     */
+    public function getEarningsCalendar(?string $from = null, ?string $to = null, ?string $symbol = null): ?array
+    {
+        $from ??= (new DateTimeImmutable())->format('Y-m-d');
+        $to ??= (new DateTimeImmutable())->modify('+14 days')->format('Y-m-d');
+
+        $response = $this->cache->get(
+            FinnhubCache::EARNINGS_CALENDAR->key($from . $to . $symbol),
+            function (ItemInterface $item) use ($from, $to, $symbol) {
+                $item->expiresAfter(FinnhubCache::EARNINGS_CALENDAR->ttl());
+
+                return $this->finnhubClient->getEarningsCalendar($from, $to, $symbol);
+            }
+        );
+
+        if (empty($response['earningsCalendar'])) {
+            $this->logger->error(self::FINHUB_LOG_PREFIX . 'Error empty earnings-calendar data', [
+                'from'   => $from,
+                'to'     => $to,
+                'symbol' => $symbol,
+            ]);
+
+            return null;
+        }
+
+        return array_map(fn ($item) => new EarningCalendarItem(
+            date:            $item['date'],
+            epsActual:       isset($item['epsActual']) ? (float) ($item['epsActual']) : null,
+            epsEstimate:     isset($item['epsEstimate']) ? (float) ($item['epsEstimate']) : null,
+            hour:            $item['hour'],
+            quarter:         $item['quarter'],
+            revenueActual:   isset($item['revenueActual']) ? (float) ($item['revenueActual']) : null,
+            revenueEstimate: isset($item['revenueEstimate']) ? (float) ($item['revenueEstimate']) : null,
+            symbol:          $item['symbol'],
+            year:            $item['year'],
+        ), $response['earningsCalendar']);
+    }
+
+    /**
+     * @param string $symbol
+     * @return RecommendationTrendItem[]
+     * @throws InvalidArgumentException
+     */
+    public function getRecommendationTrends(string $symbol): RecommendationTrendItem
+    {
+        $response = $this->cache->get(
+            FinnhubCache::RECOMMENDATION_TRENDS->key($symbol),
+            function (ItemInterface $item) use ($symbol) {
+                $item->expiresAfter(FinnhubCache::RECOMMENDATION_TRENDS->ttl());
+
+                return $this->finnhubClient->getRecommendationTrends($symbol);
+            }
+        );
+
+        return array_map(fn ($row) => new RecommendationTrendItem(
+            buy:        $row['buy'],
+            hold:       $row['hold'],
+            period:     $row['period'],
+            sell:       $row['sell'],
+            strongBuy:  $row['strongBuy'],
+            strongSell: $row['strongSell'],
+            symbol:     $row['symbol'],
+        ), $response);
     }
 }

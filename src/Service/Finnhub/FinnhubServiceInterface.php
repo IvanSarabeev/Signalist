@@ -8,6 +8,7 @@ use App\Enum\Finnhub\CategoryNews;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Presentation\Http\Response\Stocks\CompanyProfileItem;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
+use App\Presentation\Http\Response\Stocks\RecommendationTrendItem;
 
 interface FinnhubServiceInterface
 {
@@ -20,4 +21,8 @@ interface FinnhubServiceInterface
     public function getQuote(string $symbol): QuoteItem;
 
     public function getMarketNews(CategoryNews $categoryNews, int $page, int $limit): PaginatedResponse;
+
+    public function getEarningsCalendar(?string $from = null, ?string $to = null): ?array;
+
+    public function getRecommendationTrends(string $symbol): RecommendationTrendItem;
 }

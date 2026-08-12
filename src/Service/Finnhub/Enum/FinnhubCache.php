@@ -6,10 +6,12 @@ namespace App\Service\Finnhub\Enum;
 
 enum FinnhubCache: string
 {
-    case NEWS            = 'finnhub.news';
-    case COMPANY_NEWS    = 'finnhub.company.news';
-    case COMPANY_PROFILE = 'finnhub.company.profile';
-    case QUOTE           = 'finnhub.quote';
+    case NEWS                  = 'finnhub.news';
+    case COMPANY_NEWS          = 'finnhub.company.news';
+    case COMPANY_PROFILE       = 'finnhub.company.profile';
+    case QUOTE                 = 'finnhub.quote';
+    case EARNINGS_CALENDAR     = 'finnhub.earnings.calendar';
+    case RECOMMENDATION_TRENDS = 'finnhub.recommendation.trends';
 
     public function ttl(): int
     {
@@ -20,6 +22,8 @@ enum FinnhubCache: string
             self::COMPANY_PROFILE          => 3600,
             // 1 minute cache due to dynamic prices
             self::QUOTE                    => 60,
+            self::EARNINGS_CALENDAR        => 720,
+            self::RECOMMENDATION_TRENDS    => 820,
         };
     }
 

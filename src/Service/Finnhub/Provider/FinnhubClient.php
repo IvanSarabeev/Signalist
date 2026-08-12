@@ -78,4 +78,38 @@ final readonly class FinnhubClient extends AbstractFinnhubClient implements Finn
     {
         return $this->requestGet(self::GET_MARKET_NEWS, ['category' => $categoryNews->value]);
     }
+
+    /**
+     * Get recommendation trends per symbol
+     *
+     * @param string $symbol
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getRecommendationTrends(string $symbol): array
+    {
+        return $this->requestGet(self::GET_RECOMMENDATION_TRENDS, ['symbol' => $symbol]);
+    }
+
+    /**
+     * Get historical and coming earnings release.
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $symbol
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getEarningsCalendar(?string $from = null, ?string $to = null, ?string $symbol = null): array
+    {
+        $query = ['from' => $from, 'to' => $to, 'symbol' => $symbol];
+
+        return $this->requestGet(self::GET_EARNINGS_CALENDAR, $query);
+    }
 }
