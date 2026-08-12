@@ -12,13 +12,17 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
 use Random\RandomException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final readonly class TokenManager implements TokenManagerInterface
 {
     public function __construct(
-        private string                 $jwtSecret,
-        private int                    $accessTtl,
-        private int                    $refreshTtl,
+        #[Autowire(env: 'JWT_SECRET')]
+        private string $jwtSecret,
+        #[Autowire(env: 'JWT_ACCESS_TTL')]
+        private int $accessTtl,
+        #[Autowire(env: 'JWT_REFRESH_TTL')]
+        private int $refreshTtl,
         private EntityManagerInterface $entityManager
     )
     {}

@@ -22,17 +22,6 @@ services:
             - '../src/Entity/'
             - '../src/Enum/'
 
-    App\Security\ApiKeyAuthenticator:
-        arguments:
-            $jwtSecret: '%env(JWT_SECRET)%'
-            $jwtAlgorithm: '%env(JWT_ALGORITHM)%'
-
-    App\Security\Token\TokenManager:
-        arguments:
-            $jwtSecret: '%env(JWT_SECRET)%'
-            $accessTtl: '%env(JWT_ACCESS_TTL)%'
-            $refreshTtl: '%env(JWT_REFRESH_TTL)%'
-
     # Region Subscriber
     App\Presentation\Http\EventSubscriber\RateLimitSubscriber:
         arguments:
@@ -83,17 +72,8 @@ services:
     App\Service\Finnhub\:
         resource: '../src/Service/Finnhub/'
 
-    App\Service\Finnhub\Provider\FinnhubClient:
-        arguments:
-            $baseUrl: '%finnhub.base_url%'
-            $token: '%finnhub.token%'
-
     App\Service\Finnhub\Provider\FinnhubClientInterface:
         alias: App\Service\Finnhub\Provider\FinnhubClient
-
-    App\Service\Finnhub\Configuration\FinnhubConfig:
-        arguments:
-            $popularSymbols: '%finnhub.popular_symbols%'
     # End of Region Services
 
     # Region Sentry - Monolog Service

@@ -6,6 +6,7 @@ namespace App\Service\Finnhub\Provider;
 
 use JsonException;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -25,9 +26,11 @@ abstract readonly class AbstractFinnhubClient
     protected const GET_EARNINGS_CALENDAR     = '/calendar/earnings';
 
     public function __construct(
-        protected HttpClientInterface $httpClient,
-        protected string              $baseUrl,
-        protected string              $token,
+        private HttpClientInterface $httpClient,
+        #[Autowire(param: 'finnhub.base_url')]
+        private string $baseUrl,
+        #[Autowire(param: 'finnhub.token')]
+        private string $token,
     )
     { }
 
