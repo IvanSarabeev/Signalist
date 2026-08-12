@@ -84,7 +84,7 @@ jobs:
                   restore-keys: ${{ runner.os }}-composer-php84-
 
             - name: Install dependencies
-              run: composer install --prefer-dist --no-progress --no-interaction
+              run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
 
 #            - name: Prepare test database schema
 #              run: |
