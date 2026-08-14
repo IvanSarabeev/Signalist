@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+parameters:
+    billing.plans:
+        plus:
+            stripe_price: '%env(STRIPE_PRICE_PLUS_MONTHLY)%'
+            max_alerts: 3
+            max_watchlist_items: 10
+            ai_messages_per_month: 100
+            company_news_email: true
+            financial_consultations: false
+            advanced_metrics: false
+        pro:
+            stripe_price: '%env(STRIPE_PRICE_PRO_MONTHLY)%'
+            max_alerts: 8
+            max_watchlist_items: 20
+            ai_messages_per_month: 500
+            company_news_email: true
+            financial_consultations: true
+            advanced_metrics: true
