@@ -58,6 +58,14 @@ services:
         alias: App\Service\Finnhub\Provider\FinnhubClient
     # End of Region Services
 
+    # Region Billing
+    App\Service\Billing\StripeGatewayInterface:
+        alias: App\Infrastructure\Stripe\StripeGateway
+
+    App\Service\Billing\BillingServiceInterface:
+        alias: App\Service\Billing\BillingService
+    # End of Region Billing
+
     # Region Sentry - Monolog Service
     Sentry\Monolog\Handler:
         arguments:

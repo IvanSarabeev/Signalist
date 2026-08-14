@@ -25,6 +25,7 @@ framework:
             'App\Message\Alert\CheckAlertMessage': async
             'App\Message\Alert\ProcessAlertByFrequencyMessage': async
             'App\Message\Alert\TriggeredAlertMessage': async
+            'App\Message\Billing\StripeWebhookReceivedMessage': async
 
 # when@test:
 #    framework:

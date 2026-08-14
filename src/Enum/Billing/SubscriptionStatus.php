@@ -11,13 +11,29 @@ enum SubscriptionStatus: string
     case CANCELED   = 'canceled';
     case UNPAID     = 'unpaid';
 
+    public const VALUES = [
+        'incomplete', 'incomplete_expired', 'trialing', 'active',
+        'past_due', 'canceled', 'unpaid', 'paused',
+    ];
+
     public function grantsAccess(): bool
     {
         return match ($this) {
-            self::ACTIVE,
-            self::TRIALING,
-            self::PAST_DUE => true,
-            default        => false
+            self::ACTIVE, self::TRIALING, self::PAST_DUE => true,
+            default => false
+        };
+    }
+
+    public function requiredPaymentAttention(): bool
+    {
+        return $this === self::PAST_DUE;
+    }
+
+    public function isTerminal(): bool
+    {
+        return match ($this) {
+            self::CANCELED, self::INCOMPLETE => true,
+            default => false,
         };
     }
 }

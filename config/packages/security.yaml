@@ -17,6 +17,11 @@ security:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
 
+        stripe_webhook:
+            pattern: ^/api/v1/webhooks/stripe
+            stateless: true
+            security: false
+
         login:
             pattern: ^/api/v1/authentication/login
             stateless: true
@@ -43,6 +48,7 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
     access_control:
         # PUBLIC
+        - { path: ^/api/v1/webhooks/stripe, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/authentication/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/authentication/register, roles: PUBLIC_ACCESS }
 
