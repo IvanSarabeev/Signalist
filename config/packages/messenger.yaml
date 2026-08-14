@@ -3,6 +3,28 @@ framework:
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
         failure_transport: failed
 
+        # Autowiring MessageBusInterface without an argument name resolves to this bus.
+        # Existing handlers that inject `MessageBusInterface $bus` keep working unchanged.
+        default_bus: command.bus
+
+        buses:
+            # Writes. May be routed to a transport: always transactional when handled.
+            command.bus:
+                middleware:
+                    # Validates the command DTO itself before any handler runs so a malformed command never reaches the domain
+                    - validation
+                    # One command == one transaction. Commits on success, rolls back on any exception.
+                    # This is the transaction boundary for the whole app - handlers must not open their own.
+                    - doctrine_transactions
+
+            # Reads. Always synchronous, never transactional, always returns a values.
+            query.bus:
+                default_middleware:
+                    # A query with no handler is a wiring bug, not an empty result
+                    allow_no_handlers: false
+                middleware:
+                    - validation
+
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'

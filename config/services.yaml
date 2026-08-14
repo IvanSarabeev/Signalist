@@ -13,6 +13,20 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    # Region CQRS Buses
+    # Implementing a market interface is what puts a handler on the right bus.
+    # Handlers tagged here must NOT also carry #[AsMessageHandler]
+    # That registers them twice, and they will execute twice per dispatch event.
+    _instanceof:
+        App\Shared\Application\Query\QueryHandlerInterface:
+            tags:
+                - { name: 'messenger.message_handler', bus: 'query.bus' }
+
+        App\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: 'messenger.message_handler', bus: 'command.bus' }
+    # End of Region CQRS Buses
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
 
@@ -57,6 +71,22 @@ services:
     App\Service\Finnhub\Provider\FinnhubClientInterface:
         alias: App\Service\Finnhub\Provider\FinnhubClient
     # End of Region Services
+
+    # Region Bus Adapters
+    App\Shared\Infrastructure\Bus\MessengerCommandBus:
+        arguments:
+            $commandBus: '@command.bus'
+
+    App\Shared\Infrastructure\Bus\MessengerQueryBus:
+        arguments:
+            $queryBus: '@query.bus'
+
+    App\Shared\Application\Bus\CommandBusInterface:
+        alias: 'App\Shared\Infrastructure\Bus\MessengerCommandBus'
+
+    App\Shared\Application\Bus\QueryBusInterface:
+        alias: 'App\Shared\Infrastructure\Bus\MessengerQueryBus'
+    # End of Region Bus Adapters
 
     # Region Sentry - Monolog Service
     Sentry\Monolog\Handler:
