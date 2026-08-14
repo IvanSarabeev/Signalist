@@ -9,9 +9,6 @@
 controllers:
     resource: '../src/Presentation/Http/Controller'
     type: attribute
-    # exclude API folder to avoid double registration
-    exclude:
-        - '../src/Presentation/Http/Controller/Api/'
 
 kernel:
     resource: App\Kernel
