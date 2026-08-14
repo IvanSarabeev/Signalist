@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Billing\Plan;
 use App\Enum\User\InvestmentGoal;
 use App\Enum\User\PreferredIndustry;
 use App\Enum\User\RiskTolerance;
@@ -76,6 +77,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Alert::class, mappedBy: 'user', cascade: ['remove'], orphanRemoval: true)]
     private Collection $alerts;
+
+    #[ORM\Column(type: Types::STRING, length: 64, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
+    #[ORM\OneToOne(targetEntity: Subscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Subscription $subscription = null;
 
     public function __construct()
     {
@@ -366,5 +373,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'risk_tolerance_label'     => $this->getRiskTolerance()->label(),
             'created_at'               => $this->getCreatedAt()?->format('Y-m-d\TH:i:s')
         ];
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
+    }
+
+    public function getSubscription(): ?Subscription
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * The plan this user is entitled to right now.
+     *
+     * Null subscription -> OPEN. Non-access-granting status -> OPEN.
+     * Everything downstream (AlertService, WatchlistService, AiModelResolver,
+     * PlanVoter) asks this and nothing else, so there is exactly one place
+     * where "is this user paying" is decided.
+     */
+    public function setSubscription(?Subscription $subscription): static
+    {
+        $this->subscription = $subscription;
+
+        return $this;
+    }
+
+    public function currentPlan(): Plan
+    {
+        return $this->subscription?->effectivePlan() ?? Plan::OPEN;
     }
 }
