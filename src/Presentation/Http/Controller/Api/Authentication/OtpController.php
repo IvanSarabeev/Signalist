@@ -12,6 +12,7 @@ use App\Security\Otp\OtpService;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/otp', name: 'api_otp_')]
@@ -23,7 +24,7 @@ final class OtpController extends AbstractController
 
     #[RateLimit(RateLimiter::OTP->value, identifierField: 'otp')]
     #[Route('/verify', name: 'verify', methods: ['POST'])]
-    public function verifyOtp(ValidateOtpRequest $otpRequest): JsonResponse
+    public function verifyOtp(#[ValueResolver('validate_otp_request')] ValidateOtpRequest $otpRequest): JsonResponse
     {
         return $this->json(['status' => true], Response::HTTP_ACCEPTED);
 //        $this->otpService->validateVerificationCode($otpRequest);

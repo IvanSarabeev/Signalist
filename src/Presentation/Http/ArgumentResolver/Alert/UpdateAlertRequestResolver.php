@@ -6,9 +6,11 @@ namespace App\Presentation\Http\ArgumentResolver\Alert;
 
 use App\Presentation\Http\Request\Alert\UpdateAlertRequest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
+#[AsTargetedValueResolver('update_alert_request')]
 final class UpdateAlertRequestResolver implements ValueResolverInterface
 {
     public function resolve(Request $request, ArgumentMetadata $argument): iterable

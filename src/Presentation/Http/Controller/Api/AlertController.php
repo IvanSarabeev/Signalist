@@ -14,6 +14,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -48,7 +49,10 @@ final readonly class AlertController
     }
 
     #[Route(path: '', name: 'create', methods: ['POST'])]
-    public function create(#[CurrentUser] User $user, CreateAlertRequest $createAlertRequest): JsonResponse
+    public function create(
+        #[CurrentUser] User $user,
+        #[ValueResolver('create_alert_request')] CreateAlertRequest $createAlertRequest
+    ): JsonResponse
     {
         $alert = $this->alertService->createAlert($user, $createAlertRequest);
 
@@ -59,7 +63,7 @@ final readonly class AlertController
     public function partialUpdate(
         #[CurrentUser] User $user,
         int $id,
-        UpdateAlertRequest $updateAlertRequest
+        #[ValueResolver('update_alert_request')] UpdateAlertRequest $updateAlertRequest
     ): JsonResponse
     {
         $alert = $this->alertService->updateAlert($user, $id, $updateAlertRequest);

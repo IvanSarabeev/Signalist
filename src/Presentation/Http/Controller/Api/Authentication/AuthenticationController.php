@@ -15,6 +15,7 @@ use App\Security\Token\TokenManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/authentication', name: 'api_authentication_')]
@@ -37,7 +38,7 @@ final class AuthenticationController extends AbstractController
     #[RateLimit(RateLimiter::LOGIN_IP->value)]
     #[RateLimit(RateLimiter::LOGIN->value, identifierField: 'email')]
     #[Route(path: '/login', name: 'login', methods: ['POST'])]
-    public function authenticateUser(LoginRequest $loginRequest): JsonResponse
+    public function authenticateUser(#[ValueResolver('login_request')] LoginRequest $loginRequest): JsonResponse
     {
         $user = $this->authentication->authenticateUser($loginRequest);
 
@@ -57,7 +58,7 @@ final class AuthenticationController extends AbstractController
      */
     #[RateLimit(RateLimiter::REGISTER->value)]
     #[Route(path: '/register', name: 'register', methods: ['POST'])]
-    public function registerUser(RegisterRequest $registerRequest): JsonResponse
+    public function registerUser(#[ValueResolver('register_request')] RegisterRequest $registerRequest): JsonResponse
     {
         $this->authentication->persistUserRegistration($registerRequest);
 

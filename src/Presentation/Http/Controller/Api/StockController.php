@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/v1/stocks', name: 'api_stocks_')]
@@ -27,7 +28,7 @@ final class StockController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '', name: 'list', methods: ['GET'])]
-    public function list(StockListRequest $request): JsonResponse
+    public function list(#[ValueResolver('stock_list_request')] StockListRequest $request): JsonResponse
     {
         if ($request->symbol !== null) {
             $result = $this->finnhubService->getCompanyProfile($request->symbol);

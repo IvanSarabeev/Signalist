@@ -7,10 +7,12 @@ namespace App\Presentation\Http\ArgumentResolver\Auth;
 use App\Presentation\Http\Exception\RequestValidationException;
 use App\Presentation\Http\Request\Auth\RegisterRequest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[AsTargetedValueResolver('register_request')]
 final readonly class RegisterRequestResolver implements ValueResolverInterface
 {
     public function __construct(private ValidatorInterface $validator)

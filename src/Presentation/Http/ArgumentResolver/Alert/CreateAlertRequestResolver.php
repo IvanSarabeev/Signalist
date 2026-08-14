@@ -7,9 +7,11 @@ namespace App\Presentation\Http\ArgumentResolver\Alert;
 use App\Presentation\Http\Request\Alert\CreateAlertRequest;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
+#[AsTargetedValueResolver('create_alert_request')]
 final class CreateAlertRequestResolver implements ValueResolverInterface
 {
     /**

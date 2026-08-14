@@ -5,10 +5,12 @@ namespace App\Presentation\Http\ArgumentResolver\Auth;
 use App\Presentation\Http\Exception\RequestValidationException;
 use App\Presentation\Http\Request\Auth\ValidateOtpRequest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsTargetedValueResolver;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[AsTargetedValueResolver('validate_otp_request')]
 final readonly class ValidateOtpRequestResolver implements ValueResolverInterface
 {
     public function __construct(private ValidatorInterface $validator)
