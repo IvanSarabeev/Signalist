@@ -84,7 +84,7 @@ final readonly class CacheManager implements CacheManagerInterface
         }
     }
 
-    public function invalidate(string ...$tags): void
+    public function invalidate(array|string $tags): void
     {
         if ($tags === []) {
             return;

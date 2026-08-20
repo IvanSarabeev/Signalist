@@ -22,6 +22,7 @@ enum CacheProfile: string
     case USER_WATCHLIST        = 'user.watchlist';
     case USER_WATCHLIST_COUNT  = 'user.watchlist.count';
     case USER_ALERTS           = 'user.alerts';
+    case ALERT_DETAIL          = 'alert.detail';
 
     public function ttl(): int
     {

@@ -23,5 +23,5 @@ interface CacheManagerInterface
 
     public function delete(CacheProfile $profile, array $parts = []): void;
 
-    public function invalidate(string ...$tags): void;
+    public function invalidate(array|string $tags): void;
 }

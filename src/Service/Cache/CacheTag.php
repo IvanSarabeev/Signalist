@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Cache;
 
+use App\Entity\Alert;
 use App\Entity\Stock;
 use App\Entity\User;
 
@@ -24,6 +25,13 @@ final readonly class CacheTag
     public static function alerts(User|int $user): string
     {
         return self::user($user) . '-alerts';
+    }
+
+    public static function alert(Alert|int $alert): string
+    {
+        $id = $alert instanceof Alert ? (int) $alert->getId() : $alert;
+
+        return 'alert-' . $id;
     }
 
     public static function stock(Stock|string $stock): string

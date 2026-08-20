@@ -21,15 +21,19 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 final readonly class WatchlistService implements WatchlistServiceInterface
 {
+    private const LOG_PREFIX = 'Watchlist : ';
+
     public function __construct(
         private StockServiceInterface   $stockService,
         private EntityManagerInterface  $entityManager,
         private WatchlistItemRepository $watchlistItemRepository,
         private CacheManagerInterface   $cacheManager,
+        private LoggerInterface         $logger,
     )
     { }
 
@@ -100,7 +104,18 @@ final readonly class WatchlistService implements WatchlistServiceInterface
         $item->setAddedAt(new DateTimeImmutable(timezone: new DateTimeZone('Europe/Sofia')));
 
         $this->entityManager->persist($item);
-        $this->entityManager->flush();
+
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            $this->entityManager->rollback();
+
+            $this->logger->error(self::LOG_PREFIX . 'failed to add watchlist item', [
+                'user_id'   => $user->getId(),
+                'symbol'    => $symbol,
+                'message'   => $exception->getMessage(),
+            ]);
+        }
 
         $this->cacheManager->invalidate(CacheTag::watchlist($user));
 
