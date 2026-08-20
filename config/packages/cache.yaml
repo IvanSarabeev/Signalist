@@ -1,6 +1,6 @@
 framework:
     cache:
-        prefix_used: 'signalist/v1'
+        prefix_seed: 'signalist/v1'
 
         app: cache.adapter.filesystem
 
