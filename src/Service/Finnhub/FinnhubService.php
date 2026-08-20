@@ -14,16 +14,15 @@ use App\Presentation\Http\Response\Stocks\EarningCalendarItem;
 use App\Presentation\Http\Response\Stocks\MarketNews;
 use App\Presentation\Http\Response\Stocks\QuoteItem;
 use App\Presentation\Http\Response\Stocks\RecommendationTrendItem;
+use App\Service\Cache\CacheManagerInterface;
+use App\Service\Cache\CacheProfile;
+use App\Service\Cache\CacheTag;
 use App\Service\Finnhub\Configuration\FinnhubConfig;
-use App\Service\Finnhub\Enum\FinnhubCache;
 use App\Service\Finnhub\Provider\FinnhubClientInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
-use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 use Throwable;
 
 /**
@@ -35,19 +34,13 @@ final readonly class FinnhubService implements FinnhubServiceInterface
 {
     private const FINHUB_LOG_PREFIX = 'Finnhub :';
 
-    /**
-     * @param FinnhubClientInterface $finnhubClient Low-level API client
-     * @param CacheInterface $cache Application cache layer
-     * @param LoggerInterface $logger Error and system logger
-     * @param FinnhubCompanyProfileMapper $stockProfileMapper Maps API data to DTOs
-     */
     public function __construct(
         private FinnhubClientInterface      $finnhubClient,
-        private CacheInterface              $cache,
         private LoggerInterface             $logger,
         private FinnhubCompanyProfileMapper $stockProfileMapper,
         private FinnhubConfig               $finnhubConfig,
         private FinnhubQuoteMapper          $quoteMapper,
+        private CacheManagerInterface       $cacheManager,
     )
     { }
 
@@ -58,20 +51,19 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      *
      * @param string $symbol Stock ticker symbol (e.g., AAPL)
      * @return array<int, mixed> Raw news data from Finnhub
-     * @throws InvalidArgumentException
      */
     public function getCompanyNews(string $symbol): array
     {
-        $response = $this->cache->get(
-            FinnhubCache::COMPANY_NEWS->key($symbol),
-            function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(FinnhubCache::COMPANY_NEWS->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::COMPANY_NEWS,
+            [$symbol],
+            function () use ($symbol) {
                 $to = new DateTimeImmutable();
                 $from = $to->modify('-7 days');
 
                 return $this->finnhubClient->getCompanyNews($symbol, $from, $to);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock($symbol)],
         );
 
         return array_map(function ($item) {
@@ -95,20 +87,19 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      *
      * @param string $symbol Stock ticker symbol
      * @return CompanyProfileItem - return specific Company profile
-     * @throws InvalidArgumentException
      */
     public function getCompanyProfile(string $symbol): CompanyProfileItem
     {
-        $data = $this->cache->get(
-            FinnhubCache::COMPANY_PROFILE->key($symbol),
-            function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(FinnhubCache::COMPANY_PROFILE->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::COMPANY_PROFILE,
+            [$symbol],
+            function () use ($symbol) {
                 return $this->finnhubClient->getCompanyProfile($symbol);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock($symbol)],
         );
 
-        return $this->stockProfileMapper->toDTO($data);
+        return $this->stockProfileMapper->toDTO($response);
     }
 
     /**
@@ -141,20 +132,19 @@ final readonly class FinnhubService implements FinnhubServiceInterface
 
     /**
      * @param string $symbol Stock ticker symbol
-     * @throws InvalidArgumentException
      */
     public function getQuote(string $symbol): QuoteItem
     {
-        $data = $this->cache->get(
-            FinnhubCache::QUOTE->key($symbol),
-            function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(FinnhubCache::QUOTE->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::QUOTE,
+            [$symbol],
+            function () use ($symbol) {
                 return $this->finnhubClient->getQuote($symbol);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock($symbol)],
         );
 
-        return $this->quoteMapper->toDTO($data);
+        return $this->quoteMapper->toDTO($response);
     }
 
     /**
@@ -162,19 +152,18 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * @param int $page
      * @param int $limit
      * @return PaginatedResponse
-     * @throws InvalidArgumentException
      * @throws Exception
      */
     public function getMarketNews(CategoryNews $categoryNews, int $page, int $limit): PaginatedResponse
     {
         /** @var MarketNews[] $response */
-        $response = $this->cache->get(
-            FinnhubCache::NEWS->key($categoryNews->value),
-            function (ItemInterface $item) use ($categoryNews) {
-                $item->expiresAfter(FinnhubCache::NEWS->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::MARKET_NEWS,
+            [$categoryNews->value],
+            function () use ($categoryNews) {
                 return $this->finnhubClient->getMarketNews($categoryNews);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock($categoryNews->name)],
         );
 
         $mappedNews = array_map(fn ($item) => new MarketNews(
@@ -201,20 +190,19 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      * @param string|null $to ISO date; defaults to $from + 14 days if null
      * @param string|null $symbol stock symbol
      * @return array|null
-     * @throws InvalidArgumentException
      */
     public function getEarningsCalendar(?string $from = null, ?string $to = null, ?string $symbol = null): ?array
     {
         $from ??= (new DateTimeImmutable())->format('Y-m-d');
         $to ??= (new DateTimeImmutable())->modify('+14 days')->format('Y-m-d');
 
-        $response = $this->cache->get(
-            FinnhubCache::EARNINGS_CALENDAR->key($from . $to . $symbol),
-            function (ItemInterface $item) use ($from, $to, $symbol) {
-                $item->expiresAfter(FinnhubCache::EARNINGS_CALENDAR->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::EARNINGS_CALENDAR,
+            [$from, $to, $symbol],
+            function () use ($from, $to, $symbol) {
                 return $this->finnhubClient->getEarningsCalendar($from, $to, $symbol);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock('earning_symbol_' . $symbol)],
         );
 
         if (empty($response['earningsCalendar'])) {
@@ -243,17 +231,16 @@ final readonly class FinnhubService implements FinnhubServiceInterface
     /**
      * @param string $symbol
      * @return RecommendationTrendItem[]
-     * @throws InvalidArgumentException
      */
     public function getRecommendationTrends(string $symbol): RecommendationTrendItem
     {
-        $response = $this->cache->get(
-            FinnhubCache::RECOMMENDATION_TRENDS->key($symbol),
-            function (ItemInterface $item) use ($symbol) {
-                $item->expiresAfter(FinnhubCache::RECOMMENDATION_TRENDS->ttl());
-
+        $response = $this->cacheManager->get(
+            CacheProfile::RECOMMENDATION_TRENDS,
+            [$symbol],
+            function () use ($symbol) {
                 return $this->finnhubClient->getRecommendationTrends($symbol);
-            }
+            },
+            [CacheTag::finnhub(), CacheTag::stock('recommendation_' . $symbol)],
         );
 
         return array_map(fn ($row) => new RecommendationTrendItem(
