@@ -18,7 +18,7 @@ class WatchlistItem
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: Stock::class, inversedBy: 'watchlistItems')]
+    #[ORM\ManyToOne(targetEntity: Stock::class, inversedBy: 'stock')]
     #[ORM\JoinColumn(name: 'stock_symbol', referencedColumnName: 'symbol', nullable: false)]
     private Stock $stock;
 
