@@ -13,6 +13,9 @@ use App\Presentation\Http\Exception\Services\Watchlist\WatchlistItemNotFound;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Repository\WatchlistItemRepository;
+use App\Service\Cache\CacheManagerInterface;
+use App\Service\Cache\CacheProfile;
+use App\Service\Cache\CacheTag;
 use App\Service\Stock\StockServiceInterface;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -26,6 +29,7 @@ final readonly class WatchlistService implements WatchlistServiceInterface
         private StockServiceInterface   $stockService,
         private EntityManagerInterface  $entityManager,
         private WatchlistItemRepository $watchlistItemRepository,
+        private CacheManagerInterface   $cacheManager,
     )
     { }
 
@@ -38,24 +42,36 @@ final readonly class WatchlistService implements WatchlistServiceInterface
      */
     public function getItems(User $user, PaginatedRequest $pagination): ?PaginatedResponse
     {
-        $total = $this->watchlistItemRepository->countUserWatchlistItems($user);
+        $cachePayload = $this->cacheManager->get(
+            CacheProfile::USER_WATCHLIST,
+            [$user->getId(), $pagination->page, $pagination->limit],
+            function () use ($user, $pagination): array {
+                $total = $this->watchlistItemRepository->countUserWatchlistItems($user);
 
-        if ($total === 0) {
+                return [
+                    'total' => $total,
+                    'items' => $total === 0
+                        ? []
+                        : $this->watchlistItemRepository->findUserWatchlistItems(
+                            $user,
+                            $pagination->limit,
+                            $pagination->getOffset()
+                        ),
+                ];
+            },
+            [CacheTag::watchlist($user)],
+        );
+
+        if ($cachePayload['total'] === 0) {
             return null;
         }
 
-        $items = $this->watchlistItemRepository->findUserWatchlistItems(
-            $user,
-            $pagination->limit,
-            $pagination->getOffset()
-        );
-
         return new PaginatedResponse(
-            items:       $items,
-            total:       $total,
+            items:       $cachePayload['items'],
+            total:       $cachePayload['total'],
             page:        $pagination->page,
             limit:       $pagination->limit,
-            total_pages: (int) ceil($total / $pagination->limit),
+            total_pages: (int) ceil($cachePayload['total'] / $pagination->limit),
         );
     }
 
@@ -85,6 +101,8 @@ final readonly class WatchlistService implements WatchlistServiceInterface
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();
+
+        $this->cacheManager->invalidate(CacheTag::watchlist($user));
 
         return $item;
     }
@@ -119,5 +137,7 @@ final readonly class WatchlistService implements WatchlistServiceInterface
         } catch (Throwable) {
             throw new WatchlistItemDeletionException();
         }
+
+        $this->cacheManager->invalidate(CacheTag::watchlist($user));
     }
 }
