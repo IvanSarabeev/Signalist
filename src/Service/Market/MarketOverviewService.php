@@ -10,7 +10,7 @@ use App\Service\Finnhub\FinnhubServiceInterface;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 
-final readonly class MarketOverviewServiceService implements MarketOverviewServiceInterface
+final readonly class MarketOverviewService implements MarketOverviewServiceInterface
 {
     private const MARKET_PREFIX = 'MarketOverview :';
 

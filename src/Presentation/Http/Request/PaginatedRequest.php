@@ -15,8 +15,8 @@ readonly class PaginatedRequest
     public static function fromRequest(Request $request): self
     {
         return new self(
-            page: max(1, $request->query->getInt('page', 1)),
-            limit: max(50, $request->query->getInt('limit', 10)),
+            page: min(100, max(1, $request->query->getInt('page', 1))),
+            limit: min(50, max(1, $request->query->getInt('limit', 10))),
         );
     }
 

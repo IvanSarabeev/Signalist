@@ -17,6 +17,9 @@ use App\Presentation\Http\Request\Alert\UpdateAlertRequest;
 use App\Presentation\Http\Request\PaginatedRequest;
 use App\Presentation\Http\Response\PaginatedResponse;
 use App\Repository\AlertRepository;
+use App\Service\Cache\CacheManagerInterface;
+use App\Service\Cache\CacheProfile;
+use App\Service\Cache\CacheTag;
 use App\Service\Stock\StockServiceInterface;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -35,6 +38,7 @@ final readonly class AlertService implements AlertServiceInterface
         private StockServiceInterface  $stockService,
         private EntityManagerInterface $entityManager,
         private LoggerInterface        $logger,
+        private CacheManagerInterface  $cacheManager,
     )
     { }
 
@@ -47,24 +51,36 @@ final readonly class AlertService implements AlertServiceInterface
      */
     public function getAlerts(User $user, PaginatedRequest $paginatedRequest): ?PaginatedResponse
     {
-        $total = $this->alertRepository->countUserAlerts($user);
+        $cachePayload = $this->cacheManager->get(
+            CacheProfile::USER_ALERTS,
+            [$user->getId(), $paginatedRequest->page, $paginatedRequest->limit],
+            function () use ($user, $paginatedRequest): array {
+                $total = $this->alertRepository->countUserAlerts($user);
 
-        if ($total === 0) {
+                return [
+                    'total' => $total,
+                    'items' => $total === 0
+                        ? []
+                        : $this->alertRepository->findUserAlertItems(
+                            $user,
+                            $paginatedRequest->limit,
+                            $paginatedRequest->getOffset(),
+                        ),
+                ];
+            },
+            [CacheTag::alerts($user)]
+        );
+
+        if ($cachePayload['total'] === 0) {
             return null;
         }
 
-        $alerts = $this->alertRepository->findUserAlertItems(
-            $user,
-            $paginatedRequest->limit,
-            $paginatedRequest->getOffset()
-        );
-
         return new PaginatedResponse(
-            items:       $alerts,
-            total:       $total,
+            items:       $cachePayload['items'],
+            total:       $cachePayload['total'],
             page:        $paginatedRequest->page,
             limit:       $paginatedRequest->limit,
-            total_pages: (int) ceil($total / $paginatedRequest->limit)
+            total_pages: (int) ceil($cachePayload['total'] / $paginatedRequest->limit)
         );
     }
 
@@ -85,7 +101,12 @@ final readonly class AlertService implements AlertServiceInterface
             throw new AlertNotFoundException();
         }
 
-        return $alert->toAlert();
+        return $this->cacheManager->get(
+            CacheProfile::ALERT_DETAIL,
+            [$id],
+            fn (): array => $alert->toArray(),
+            [CacheTag::alert($id), CacheTag::alerts($user)],
+        );
     }
 
     /**
@@ -129,15 +150,18 @@ final readonly class AlertService implements AlertServiceInterface
 
         try {
             $this->entityManager->flush();
-        } catch (ORMException $exception) {
+        } catch (Exception $exception) {
             $this->entityManager->rollback();
 
             $this->logger->error(self::ALERT_PREFIX . 'Entity Manager error', [
+                'user_id' => $user->getId(),
                 'message' => $exception->getMessage(),
             ]);
 
             throw new AlertExistingException();
         }
+
+        $this->cacheManager->invalidate(CacheTag::alerts($user));
 
         return $alert;
     }
@@ -205,13 +229,17 @@ final readonly class AlertService implements AlertServiceInterface
 
         try {
             $this->entityManager->flush();
-        } catch (ORMException $exception) {
-            $this->logger->error(self::ALERT_PREFIX . 'Failed to update alert', [
+        } catch (Exception $exception) {
+            $this->logger->error(self::ALERT_PREFIX . 'failed to update alert', [
+                'id'      => $id,
+                'user_id' => $user->getId(),
                 'message' => $exception->getMessage(),
             ]);
 
             throw new AlertUpdateException();
         }
+
+        $this->cacheManager->delete(CacheProfile::ALERT_DETAIL, [$id]);
 
         return $alert;
     }
@@ -236,8 +264,19 @@ final readonly class AlertService implements AlertServiceInterface
         try {
             $this->entityManager->remove($alert);
             $this->entityManager->flush();
-        } catch (Throwable) {
+        } catch (Throwable $exception) {
+            $this->logger->error(self::ALERT_PREFIX . 'failed to delete alert', [
+                'id'      => $id,
+                'user_id' => $user->getId(),
+                'message' => $exception->getMessage(),
+            ]);
+
             throw new AlertDeletionFailed();
         }
+
+        $this->cacheManager->invalidate([
+            CacheTag::alert($id),
+            CacheTag::alerts($user)
+        ]);
     }
 }
