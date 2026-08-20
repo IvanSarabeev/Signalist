@@ -23,6 +23,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Throwable;
 
 /**
@@ -35,10 +36,11 @@ final readonly class FinnhubService implements FinnhubServiceInterface
     private const FINHUB_LOG_PREFIX = 'Finnhub :';
 
     public function __construct(
+        #[Autowire(param: 'finnhub.popular_symbols')]
+        private array                       $popularSymbols,
         private FinnhubClientInterface      $finnhubClient,
         private LoggerInterface             $logger,
         private FinnhubCompanyProfileMapper $stockProfileMapper,
-        private FinnhubConfig               $finnhubConfig,
         private FinnhubQuoteMapper          $quoteMapper,
         private CacheManagerInterface       $cacheManager,
     )
@@ -113,7 +115,7 @@ final readonly class FinnhubService implements FinnhubServiceInterface
      */
     public function getPopularStocks(int $limit = 10): array
     {
-        $symbols = array_slice($this->finnhubConfig->getPopularSymbols(), 0, $limit);
+        $symbols = array_slice($this->popularSymbols, 0, $limit);
 
         $results = [];
 
