@@ -95,18 +95,16 @@ final readonly class AlertService implements AlertServiceInterface
      */
     public function getAlert(User $user, int $id): array
     {
+        $alert = $this->alertRepository->findUserAlertItem($user, $id);
+
+        if (!$alert) {
+            throw new AlertNotFoundException();
+        }
+
         return $this->cacheManager->get(
             CacheProfile::ALERT_DETAIL,
             [$id],
-            function () use ($user, $id): array {
-                $alert = $this->alertRepository->findUserAlertItem($user, $id);
-
-                if (!$alert) {
-                    throw new AlertNotFoundException();
-                }
-
-                return $alert->toArray();
-            },
+            fn (): array => $alert->toArray(),
             [CacheTag::alert($id), CacheTag::alerts($user)],
         );
     }
